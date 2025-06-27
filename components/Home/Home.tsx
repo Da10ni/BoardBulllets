@@ -3,20 +3,20 @@ import StatCard from "@/components/StatCard/StatCard";
 import BottomNavigation from "@/components/ui/BottomNavigation";
 import { Colors } from "@/constants/Colors";
 import { QuestionStats } from "@/utils/type";
-import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import { DrawerActions, useNavigation } from "@react-navigation/native";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
   StatusBar,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { styles } from "./Home.styles";
-import { useNavigation, DrawerActions } from "@react-navigation/native";
 import Header from "../Header/Header";
+import { styles } from "./Home.styles";
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -58,9 +58,11 @@ const HomeScreen: React.FC = () => {
 
   const handleSubmitQuestion = () => {
     console.log("Submit question pressed");
+    router.push("/questionsScreen");
   };
   const handleMyQuiz = () => {
     console.log("My performance pressed");
+    router.push("/quiz");
   };
 
   const handleMyPerformance = () => {
@@ -69,6 +71,7 @@ const HomeScreen: React.FC = () => {
 
   const handleExplore = () => {
     console.log("Explore pressed");
+    router.push("/bbExplore");
   };
 
   const handleViewMore = () => {

@@ -1,8 +1,8 @@
-import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { Colors } from '../../constants/Colors';
-import { NavItem } from '../../utils/type';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons } from "@expo/vector-icons";
+import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Colors } from "../../constants/Colors";
+import { NavItem } from "../../utils/type";
 
 interface BottomNavigationProps {
   onNavPress: (id: string) => void;
@@ -10,23 +10,23 @@ interface BottomNavigationProps {
 
 const BottomNavigation: React.FC<BottomNavigationProps> = ({ onNavPress }) => {
   const navItems: NavItem[] = [
-  {
-    id: 'home',
-    label: 'Home',
-    icon: <Ionicons name="home-outline" size={20} color="#3257a8" />,
-    active: true,
-  },
-  {
-    id: 'profile',
-    label: 'Profile',
-    icon: <Feather name="user" size={20} color="#3257a8" />,
-  },
-  {
-    id: 'pricing',
-    label: 'Pricing',
-    icon: <Feather name="shopping-cart" size={20} color="#3257a8" />,
-  },
-];
+    {
+      id: "home",
+      label: "Home",
+      icon: <Ionicons name="home-outline" size={20} color="#3257a8" />,
+      active: true,
+    },
+    {
+      id: "profile",
+      label: "Profile",
+      icon: <Feather name="user" size={20} color="#3257a8" />,
+    },
+    {
+      id: "pricing",
+      label: "Pricing",
+      icon: <Feather name="shopping-cart" size={20} color="#3257a8" />,
+    },
+  ];
   return (
     <View style={styles.container}>
       {navItems.map((item) => (
@@ -47,7 +47,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ onNavPress }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: Colors.background.primary,
     borderTopWidth: 1,
     borderTopColor: Colors.border,
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   },
   navItem: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 8,
   },
   icon: {
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   },
   activeLabel: {
     color: Colors.primary,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
 

@@ -1,20 +1,31 @@
-import React from "react";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { Linking, Text, View, StyleSheet, Image } from "react-native";
-import HomeScreen from "../Home/Home";
-import {
-  Feather,
-  FontAwesome,
-  Ionicons,
-  SimpleLineIcons,
-} from "@expo/vector-icons";
 import { Colors } from "@/constants/Colors";
+import { Feather, Ionicons, SimpleLineIcons } from "@expo/vector-icons";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItem,
+} from "@react-navigation/drawer";
+import { router } from "expo-router";
+import React from "react";
+import {
+  Image,
+  Linking,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import HomeScreen from "../Home/Home";
 
 const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => {
-  const drawerLabelStyle = { color: "#ffffff", fontSize: 16, marign: 20, paddingLeft:30, };
+  const drawerLabelStyle = {
+    color: "#ffffff",
+    fontSize: 16,
+    marign: 20,
+    paddingLeft: 30,
+  };
 
   return (
     <Drawer.Navigator
@@ -34,7 +45,10 @@ const DrawerNavigator = () => {
                 marginRight: 12,
               }}
             />
-            <View style={styles.menu}>
+            <Pressable
+              style={styles.menu}
+              onPress={() => router.push("/userProfile")}
+            >
               <Text
                 style={{
                   fontSize: 18,
@@ -53,7 +67,7 @@ const DrawerNavigator = () => {
               >
                 STUDENT
               </Text>
-            </View>
+            </Pressable>
           </View>
 
           <DrawerItem
@@ -107,14 +121,12 @@ const DrawerNavigator = () => {
           <View style={styles.footer}>
             <Text style={styles.footerText}>BOARDBULLETS</Text>
           </View>
-          
         </DrawerContentScrollView>
       )}
     >
-      <Drawer.Screen name="home" component={HomeScreen} />
+      <Drawer.Screen name="(home)" component={HomeScreen} />
       {/* <Drawer.Screen name="last-quiz" component={LastQuizScreen} />
       <Drawer.Screen name="bb-points" component={BBPointsScreen} /> */}
-      
     </Drawer.Navigator>
   );
 };
@@ -139,18 +151,17 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   footer: {
-  padding: 16,
-  marginTop:"82%",
-  alignItems: 'center',
-},
+    padding: 16,
+    marginTop: "82%",
+    alignItems: "center",
+  },
 
-footerText: {
-  color: '#ffffff',
-  fontSize: 34,
-  fontWeight: 'semibold',
-  letterSpacing: 1,
-},
-
+  footerText: {
+    color: "#ffffff",
+    fontSize: 34,
+    fontWeight: "semibold",
+    letterSpacing: 1,
+  },
 });
 
 export default DrawerNavigator;

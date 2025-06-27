@@ -1,14 +1,14 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-const TabsHome = () => {
+const BBexplore = () => {
   return (
     <View>
-      <Text>TabsHome</Text>
+      <Text>BBexplore</Text>
     </View>
   );
 };
 
-export default TabsHome;
+export default BBexplore;
 
 const styles = StyleSheet.create({});

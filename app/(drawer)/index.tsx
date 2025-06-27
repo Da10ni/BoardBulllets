@@ -1,9 +1,8 @@
-import React from 'react';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import HomeScreen from '@/components/Home/Home';
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import React from "react";
 // import LastQuizScreen from '@/screens/LastQuizScreen';
 // import BBPointsScreen from '@/screens/BBPointsScreen';
-import CustomDrawerContent from '@/components/ui/CustomDrawer'; // custom drawer
+import CustomDrawerContent from "@/components/ui/CustomDrawer"; // custom drawer
 // import { Linking } from 'react-native';
 
 const Drawer = createDrawerNavigator();
@@ -16,7 +15,7 @@ const DrawerNavigator = () => {
       }}
       drawerContent={(props) => <CustomDrawerContent {...props} />}
     >
-      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="(home)" component={HomeScreen} />
       {/* <Drawer.Screen name="LastQuizReview" component={LastQuizScreen} />
       <Drawer.Screen name="BBPoints" component={BBPointsScreen} /> */}
     </Drawer.Navigator>
