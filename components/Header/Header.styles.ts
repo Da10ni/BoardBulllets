@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginTop:25,
     paddingHorizontal: 20,
-   // paddingVertical: 16,
+    // marginBottom: -10,
     backgroundColor: Colors.background.primary,
   },
   headerButton: {
@@ -28,5 +28,11 @@ export const styles = StyleSheet.create({
   moreIcon: {
     fontSize: 28,
     color: Colors.text.primary,
+  },
+  statDivider: {
+    width: "100%",
+    height: 1,
+    backgroundColor: Colors.primary ,
+    fontWeight: "light",
   },
 });

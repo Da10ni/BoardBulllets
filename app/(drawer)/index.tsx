@@ -8,6 +8,7 @@ import CustomDrawerContent from "@/components/ui/CustomDrawer"; // custom drawer
 const Drawer = createDrawerNavigator();
 
 const DrawerNavigator = () => {
+  
   return (
     <Drawer.Navigator
       screenOptions={{

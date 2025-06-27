@@ -16,6 +16,7 @@ const Header: React.FC = () => {
   };
 
   return (
+    <View>
     <View style={styles.header}>
       <TouchableOpacity onPress={handleMenuPress} style={styles.headerButton}>
         <Text style={styles.menuIcon}>☰</Text>
@@ -24,7 +25,10 @@ const Header: React.FC = () => {
       <TouchableOpacity onPress={handleMorePress} style={styles.headerButton}>
         <Text style={styles.moreIcon}>⋮</Text>
       </TouchableOpacity>
+    
     </View>
+      <View style={styles.statDivider} />
+      </View>
   );
 };
 
