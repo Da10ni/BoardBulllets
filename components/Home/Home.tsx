@@ -14,9 +14,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { router } from "expo-router";
 import { styles } from "./Home.styles";
 import { useNavigation, DrawerActions } from "@react-navigation/native";
 import Header from "../Header/Header";
+import QuizMe from "../QuizMe/QuizMe";
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -60,7 +62,7 @@ const HomeScreen: React.FC = () => {
     console.log("Submit question pressed");
   };
   const handleMyQuiz = () => {
-    console.log("My performance pressed");
+    router.push("/QuizMe");
   };
 
   const handleMyPerformance = () => {
