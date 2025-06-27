@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import React from "react";
 import {
   SafeAreaView,
@@ -20,6 +21,7 @@ const BBExploreScreen = () => {
 
   const handleSettings = () => {
     console.log("Settings pressed");
+    router.push("/bbExploreSettings");
   };
 
   const handleSocialMedia = (platform) => {
@@ -182,7 +184,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   actionButton: {
-    backgroundColor: "#4A90E2",
+    backgroundColor: "#5B8BC4",
     borderRadius: 25,
     paddingVertical: 18,
     alignItems: "center",
@@ -209,13 +211,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   facebookIcon: {
-    backgroundColor: "#3B5998",
+    backgroundColor: "#5B8BC4",
   },
   twitterIcon: {
-    backgroundColor: "#1DA1F2",
+    backgroundColor: "#5B8BC4",
   },
   instagramIcon: {
-    backgroundColor: "#E4405F",
+    backgroundColor: "#5B8BC4",
   },
   bottomNavigation: {
     flexDirection: "row",

@@ -4,7 +4,6 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -24,8 +23,8 @@ const Icon = ({
     "more-vert": "⋮",
     "keyboard-arrow-down": "▼",
     home: "🏠",
-    person: "👤",
-    "local-offer": "🏷️",
+    "": "👤",
+    Pricing: "🏷️",
     add: "+",
   };
 
@@ -87,35 +86,14 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({ navigation }) => {
           <View style={styles.inputsContainer}>
             <View style={styles.inputGroup}>
               <Text style={styles.inputLabel}>CORRECT ANSWER</Text>
-              <TextInput
-                style={styles.textInput}
-                value={correctAnswer}
-                onChangeText={setCorrectAnswer}
-                placeholder="Enter correct answer"
-                multiline
-              />
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>DISTRACTOR 1</Text>
-              <TextInput
-                style={styles.textInput}
-                value={distractor1}
-                onChangeText={setDistractor1}
-                placeholder="Enter first distractor"
-                multiline
-              />
+              <Text style={styles.inputLabelRed}>DISTRACTOR 1</Text>
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>DISTRACTOR 2</Text>
-              <TextInput
-                style={styles.textInput}
-                value={distractor2}
-                onChangeText={setDistractor2}
-                placeholder="Enter second distractor"
-                multiline
-              />
+              <Text style={styles.inputLabelRed}>DISTRACTOR 2</Text>
             </View>
           </View>
 
@@ -168,7 +146,7 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#fff",
   },
   header: {
     flexDirection: "row",
@@ -201,24 +179,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 20,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    //
   },
   submitTitle: {
+    textAlign: "center",
     fontSize: 16,
     fontWeight: "bold",
-    color: "#6C7B7F",
+    color: "#4066af",
     marginBottom: 10,
     letterSpacing: 0.5,
   },
   submitDescription: {
     fontSize: 12,
-    color: "#8A8A8A",
+    textAlign: "center",
+
+    color: "black",
     lineHeight: 16,
     marginBottom: 20,
   },
@@ -230,7 +205,16 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: 12,
-    color: "#6C7B7F",
+    textAlign: "center",
+    color: "green",
+    fontWeight: "600",
+    marginBottom: 8,
+    letterSpacing: 0.5,
+  },
+  inputLabelRed: {
+    fontSize: 12,
+    textAlign: "center",
+    color: "red",
     fontWeight: "600",
     marginBottom: 8,
     letterSpacing: 0.5,
