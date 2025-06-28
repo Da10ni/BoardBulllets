@@ -13,6 +13,6 @@ export interface QuestionStats {
 export interface NavItem {
   id: string;
   label: string;
-  icon: string;
+  icon: any;
   active?: boolean;
 }
