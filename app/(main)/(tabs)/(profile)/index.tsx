@@ -1,3 +1,4 @@
+import Icon from "@expo/vector-icons/FontAwesome";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -9,7 +10,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
 
 const ProfileScreen = () => {
   return (
@@ -35,7 +35,7 @@ const ProfileScreen = () => {
               />
               <TouchableOpacity
                 style={styles.editButton}
-                onPress={() => router.push("/edit-profile")}
+                onPress={() => router.push("/editProfile")}
               >
                 <Text style={styles.editIcon}>✏️</Text>
               </TouchableOpacity>

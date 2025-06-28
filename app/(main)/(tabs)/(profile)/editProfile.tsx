@@ -1,3 +1,4 @@
+import Icon from "@expo/vector-icons/MaterialIcons";
 import React, { useState } from "react";
 import {
   Alert,
@@ -9,7 +10,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
 
 const EditProfileScreen = () => {
   const [formData, setFormData] = useState({
@@ -53,11 +53,6 @@ const EditProfileScreen = () => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
-
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
-      </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Edit Profile Title */}
