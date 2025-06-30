@@ -1,3 +1,4 @@
+import { EvilIcons } from "@expo/vector-icons";
 import Icon from "@expo/vector-icons/FontAwesome";
 import { router } from "expo-router";
 import React from "react";
@@ -33,12 +34,7 @@ const ProfileScreen = () => {
                 }}
                 style={styles.profileImage}
               />
-              <TouchableOpacity
-                style={styles.editButton}
-                onPress={() => router.push("/editProfile")}
-              >
-                {/* <Text style={styles.editIcon}>✏️</Text> */}
-              </TouchableOpacity>
+              
             </View>
 
             {/* Name and Student Info */}
@@ -64,6 +60,12 @@ const ProfileScreen = () => {
                   <Icon name="instagram" size={18} color="#4864AC" />
                 </TouchableOpacity>
               </View>
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => router.push("/editProfile")}
+              >
+                <EvilIcons name="pencil" size={40} style={styles.editIcon}/>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -174,18 +176,19 @@ const styles = StyleSheet.create({
   },
   editButton: {
     position: "absolute",
-    right: -5,
-    top: -5,
-    width: 30,
-    height: 30,
+    right: 5,
+    //top: 15,
+   // width: 30,
+    //height: 30,
+    transform: [{ skewY: "-180deg" }],
    // backgroundColor: "#999",
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
   },
   editIcon: {
-    color: "#FFFFFF",
-    fontSize: 12,
+    color: "#000",
+    //marginTop:5,
   },
   nameSection: {
     flex: 1,

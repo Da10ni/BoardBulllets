@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   restoreText: {
-    color: "#4A90E2",
+    color: "#4864AC",
     fontSize: 14,
     textAlign: "center",
     fontWeight: "500",

@@ -77,7 +77,7 @@ const MyPerformanceScreen = () => {
                   <View
                     style={[styles.statLine, { backgroundColor: "#4CAF50" }]}
                   />
-                  <Text style={styles.sideStatNumber}>1100</Text>
+                  <Text style={[styles.sideStatNumber, {color: "#4CAF50"}]}>1100</Text>
                   <Text style={styles.sideStatLabel}>
                     TOTAL QUESTIONS CORRECT
                   </Text>
@@ -86,7 +86,7 @@ const MyPerformanceScreen = () => {
                   <View
                     style={[styles.statLine, { backgroundColor: "#FF6B6B" }]}
                   />
-                  <Text style={styles.sideStatNumber}>900</Text>
+                  <Text style={[styles.sideStatNumber, {color: "#FF6B6B"}]}>900</Text>
                   <Text style={styles.sideStatLabel}>
                     TOTAL QUESTIONS INCORRECT
                   </Text>
@@ -290,13 +290,13 @@ const styles = StyleSheet.create({
   statLine: {
     width: 3,
     height: 20,
-    backgroundColor: "#4A90E2",
+    backgroundColor: "#4864AC",
     marginRight: 10,
   },
   sideStatNumber: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#4A90E2",
+    color: "#4864AC",
     marginRight: 5,
   },
   sideStatLabel: {
@@ -370,6 +370,7 @@ const styles = StyleSheet.create({
   },
   questionSection: {
     paddingHorizontal: 20,
+    flexDirection: "column",
   },
   questionHeader: {
     flexDirection: "row",
