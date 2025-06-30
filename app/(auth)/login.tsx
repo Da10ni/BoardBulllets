@@ -64,14 +64,20 @@ const LoginScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
-        <Text style={styles.headerSubtitle}>Learn & Earn</Text>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerTitleBold}>BOARD</Text>
+          <Text style={styles.headerTitleNormal}>BULLETS</Text>
+        </View>
+        <View style={styles.subtitleContainer}>
+          <Text style={styles.headerSubtitleBold}>Learn</Text>
+          <Text style={styles.headerSubtitleNormal}> & Earn</Text>
+        </View>
       </View>
 
       {/* Icon Container */}
       <View style={styles.iconContainer}>
         <View style={styles.iconCircle}>
-          <Ionicons name="person-outline" size={40} color="#4864AC" />
+          <Ionicons name="percent-outline" size={40} color="#4864AC" />
         </View>
       </View>
 
@@ -151,8 +157,6 @@ const LoginScreen = () => {
             </TouchableOpacity>
           </View>
 
-
-
           <View style={styles.copyright}>
             <Text style={styles.statement}>COPYRIGHT (C) 2017 BOARDBULLETS,INC.</Text>
             <Text style={styles.policy}>PRIVACY POLICY AND TERMS OF USE</Text>
@@ -191,23 +195,43 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     zIndex: 1,
   },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    left: 90,
+  },
+  headerTitleBold: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold", // BOARD bold
+    letterSpacing: 1,
+  },
+  headerTitleNormal: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "200", // BULLETS normal weight
+    letterSpacing: 1,
+  },
   backButtonText: {
     color: "#4A90E2",
     fontSize: 24,
     fontWeight: "bold",
   },
-  headerTitle: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "bold",
-    letterSpacing: 1,
-    left: 90,
+  subtitleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    left: 120,
+    marginTop: 5,
   },
-  headerSubtitle: {
+  headerSubtitleBold: {
     color: "white",
     fontSize: 16,
-    marginTop: 5,
-    left: 120,
+    fontWeight: "bold", // Learn bold
+  },
+  headerSubtitleNormal: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "200", // & Earn same weight as BULLETS
   },
   iconContainer: {
     alignItems: "center",
@@ -233,7 +257,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: "normal", // LOGIN weight kam
     color: "white",
     marginBottom: 10,
     textAlign: "center",

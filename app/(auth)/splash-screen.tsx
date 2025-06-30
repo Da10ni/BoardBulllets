@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
+
 export interface SplashScreenProps {
   onComplete?: () => void; // Callback jab splash complete ho
 }
@@ -37,26 +38,26 @@ const splashData = [
   {
     id: 1,
     icon: "desktop-outline",
-    title: "USER FRIENDLY DESIGN",
-    subtitle: "SIMPLIFIED INTERFACE FOR\nEASY NAVIGATION",
+    title: "User Friendly Design",
+    subtitle: "Simplified interface for\neasy navigation",
   },
   {
     id: 2,
     icon: "bar-chart-outline",
-    title: "PERFORMANCE GOALS",
-    subtitle: "TRACK YOUR PROGRESS WITH\nDETAILED ANALYTICS",
+    title: "Performance Goals",
+    subtitle: "Track your progress with\ndetailed analytics",
   },
   {
     id: 3,
     icon: "trophy-outline",
-    title: "EARN BIG POINTS",
-    subtitle: "COMPETE WITH OTHERS AND\nWIN REWARDS",
+    title: "Earn Big Points",
+    subtitle: "Compete with others and\nwin rewards",
   },
   {
     id: 4,
     icon: "star-outline",
-    title: "UPGRADE TO PREMIUM",
-    subtitle: "UNLOCK ADVANCED FEATURES\nAND PREMIUM CONTENT",
+    title: "Upgrade to Premium",
+    subtitle: "Unlock advanced features\nand premium content",
   },
 ];
 
@@ -65,13 +66,11 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
 
   const handleLogin = () => {
     onComplete?.(); // Hide splash screen first
-
     router.push("/login");
   };
 
   const handleSignup = () => {
     onComplete?.(); // Hide splash screen first
-
     router.push("/register");
   };
 
@@ -80,15 +79,16 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
       <View style={styles.carouselItemContainer}>
         {item.isLogo ? (
           <View style={styles.mainLogoContainer}>
-            <View style={styles.logoBackground}>
-              <Text style={styles.logoText}>{item.title}</Text>
-            </View>
+            <Text style={styles.logoText}>
+              <Text style={styles.logoTextBold}>BOARD</Text>
+              <Text style={styles.logoTextNormal}>BULLETS</Text>
+            </Text>
           </View>
         ) : (
           <>
             <View style={styles.iconContainer}>
               <View style={styles.iconBackground}>
-                <Ionicons name={item.icon as any} size={40} color="#4A90E2" />
+                <Ionicons name={item.icon as any} size={50} color="white" />
               </View>
             </View>
             <Text style={styles.title}>{item.title}</Text>
@@ -106,7 +106,10 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
       <LinearGradient colors={["#4864AC", "#357ABD"]} style={styles.gradient}>
         <View style={styles.whiteBackground} />
         <View style={styles.header}>
-          <Text style={styles.headerText}>LEARN & EARN!</Text>
+          <Text style={styles.headerText}>
+            <Text style={styles.headerTextBold}>Learn</Text>
+            <Text style={styles.headerTextNormal}> & Earn!</Text>
+          </Text>
         </View>
         <View style={styles.topLogoContainer}></View>
 
@@ -141,17 +144,17 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
             ))}
           </View>
 
-          {/* âœ… LOGIN / SIGN UP Navigation - Original code with fixed routing */}
+          {/* LOGIN / SIGN UP Navigation */}
           <View style={styles.authButtonsContainer}>
             <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-              <Text style={styles.loginText}>LOGIN</Text>
+              <Text style={styles.loginText}>Log In</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.signupButton}
               onPress={handleSignup}
             >
-              <Text style={styles.signupText}>SIGN UP</Text>
+              <Text style={styles.signupText}>Sign Up</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -210,10 +213,15 @@ const styles = StyleSheet.create({
   headerText: {
     color: "white",
     fontSize: 16,
-    fontWeight: "600",
     letterSpacing: 1,
     textAlign: "right",
   },
+    headerTextBold: {
+      fontWeight: "bold",
+    },
+    headerTextNormal: {
+      fontWeight: "200",
+    },
 
   // Fixed top logo - never moves
   topLogoContainer: {
@@ -249,6 +257,8 @@ const styles = StyleSheet.create({
   mainLogoContainer: {
     alignItems: "center",
     justifyContent: "center",
+    width: "100%",
+    height: "100%",
   },
   logoBackground: {
     backgroundColor: "rgba(255, 255, 255, 0.1)",
@@ -260,10 +270,17 @@ const styles = StyleSheet.create({
   },
   logoText: {
     color: "white",
-    fontSize: 22,
-    fontWeight: "bold",
-    letterSpacing: 2,
+    fontSize: 32,
+    letterSpacing: 4,
     textAlign: "center",
+    width: "100%",
+    lineHeight: 38,
+  },
+  logoTextBold: {
+    fontWeight: "800",
+  },
+  logoTextNormal: {
+    fontWeight: "300",
   },
 
   // Feature screen styles
@@ -275,17 +292,9 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: "white",
+    backgroundColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 5,
   },
   title: {
     color: "white",

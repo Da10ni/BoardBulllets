@@ -68,8 +68,14 @@ const ForgotPasswordScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
-        <Text style={styles.headerSubtitle}>Learn & Earn</Text>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerTitleBold}>BOARD</Text>
+          <Text style={styles.headerTitleNormal}>BULLETS</Text>
+        </View>
+        <View style={styles.subtitleContainer}>
+          <Text style={styles.headerSubtitleBold}>Learn</Text>
+          <Text style={styles.headerSubtitleNormal}> & Earn</Text>
+        </View>
       </View>
 
       {/* Icon Container */}
@@ -83,9 +89,7 @@ const ForgotPasswordScreen = () => {
         {/* Form */}
         <View style={styles.formContainer}>
           <Text style={styles.title}>FORGOT PASSWORD</Text>
-          <Text style={styles.subtitle}>
-            ENTER YOUR EMAIL ADDRESS AND WE'LL SEND YOU A VERIFICATION CODE TO RESET YOUR PASSWORD.
-          </Text>
+          
 
           <View style={styles.inputContainer}>
             <Ionicons name="mail-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
@@ -101,7 +105,7 @@ const ForgotPasswordScreen = () => {
           </View>
 
           <TouchableOpacity style={styles.sendButton} onPress={handleSendCode}>
-            <Text style={styles.sendButtonText}>SEND VERIFICATION CODE</Text>
+            <Text style={styles.sendButtonText}>SUBMIT</Text>
           </TouchableOpacity>
 
            <View style={styles.copyright}>
@@ -138,18 +142,38 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     zIndex: 1,
   },
-  headerTitle: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "bold",
-    letterSpacing: 1,
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     left: 90,
   },
-  headerSubtitle: {
+  headerTitleBold: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold", // BOARD bold
+    letterSpacing: 1,
+  },
+  headerTitleNormal: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "200", // BULLETS normal weight
+    letterSpacing: 1,
+  },
+  subtitleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    left: 120,
+    marginTop: 5,
+  },
+  headerSubtitleBold: {
     color: "white",
     fontSize: 16,
-    marginTop: 5,
-    left: 120,
+    fontWeight: "bold", // Learn bold
+  },
+  headerSubtitleNormal: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "200", // & Earn same weight as BULLETS
   },
   iconContainer: {
     alignItems: "center",
@@ -174,7 +198,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: "normal", // Weight kam kiya
     color: "white",
     marginBottom: 10,
     textAlign: "center",
