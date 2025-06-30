@@ -76,7 +76,7 @@ const SignupScreen = () => {
       {/* Icon Container */}
       <View style={styles.iconContainer}>
         <View style={styles.iconCircle}>
-          <FontAwesome name="lock" size={50} color="#4A90E2" />
+          <FontAwesome name="lock" size={50} color="#4864AC" />
         </View>
       </View>
 
@@ -155,7 +155,7 @@ const SignupScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#4A90E2",
+    backgroundColor: "#4864AC",
   },
   whiteBackground: {
    position: "absolute",
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   signupButtonText: {
-    color: "#4A90E2",
+    color: "#4864AC",
     fontSize: 16,
     fontWeight: "bold",
   },

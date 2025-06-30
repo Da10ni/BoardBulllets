@@ -51,17 +51,17 @@ const ProfileScreen = () => {
                 <TouchableOpacity
                   style={[styles.socialIcon, styles.facebookIcon]}
                 >
-                  <Icon name="facebook" size={18} color="#4A90E2" />
+                  <Icon name="facebook" size={18} color="#4864AC" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.socialIcon, styles.twitterIcon]}
                 >
-                  <Icon name="twitter" size={18} color="#4A90E2" />
+                  <Icon name="twitter" size={18} color="#4864AC" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.socialIcon, styles.instagramIcon]}
                 >
-                  <Icon name="instagram" size={18} color="#4A90E2" />
+                  <Icon name="instagram" size={18} color="#4864AC" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#4A90E2",
+    color: "#4864AC",
     letterSpacing: 1,
   },
   content: {
@@ -218,13 +218,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   facebookIcon: {
-    borderColor: "#4A90E2",
+    borderColor: "#4864AC",
   },
   twitterIcon: {
-    borderColor: "#4A90E2",
+    borderColor: "#4864AC",
   },
   instagramIcon: {
-    borderColor: "#4A90E2",
+    borderColor: "#4864AC",
   },
   detailsContainer: {
     paddingTop: 20,
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
   },
   fieldLabel: {
     fontSize: 11,
-    color: "#4A90E2",
+    color: "#4864AC",
     fontWeight: "600",
     marginBottom: 8,
     letterSpacing: 0.5,

@@ -103,7 +103,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
     <View style={overlayStyles.overlay}>
       <StatusBar barStyle="light-content" backgroundColor="#4A90E2" />
 
-      <LinearGradient colors={["#4A90E2", "#357ABD"]} style={styles.gradient}>
+      <LinearGradient colors={["#4864AC", "#357ABD"]} style={styles.gradient}>
         <View style={styles.whiteBackground} />
         <View style={styles.header}>
           <Text style={styles.headerText}>LEARN & EARN!</Text>
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     zIndex: 20,
   },
   topLogoText: {
-    color: "#4A90E2",
+    color: "#4864AC",
     fontSize: 16,
     fontWeight: "bold",
     letterSpacing: 1.5,

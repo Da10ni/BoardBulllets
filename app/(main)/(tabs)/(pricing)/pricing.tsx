@@ -22,16 +22,16 @@ const SubscriptionScreen = () => {
         {/* Feature Icons Row */}
         <View style={styles.iconRow}>
           <View style={styles.iconItem}>
-            <Ionicons name="desktop-outline" size={32} color="#4A90E2" />
+            <Ionicons name="desktop-outline" size={32} color="#4864AC" />
           </View>
           <View style={styles.iconItem}>
-            <Ionicons name="bar-chart-outline" size={32} color="#4A90E2" />
+            <Ionicons name="bar-chart-outline" size={32} color="#4864AC" />
           </View>
           <View style={styles.iconItem}>
-            <Ionicons name="notifications-outline" size={32} color="#4A90E2" />
+            <Ionicons name="notifications-outline" size={32} color="#4864AC" />
           </View>
           <View style={styles.iconItem}>
-            <Ionicons name="trophy-outline" size={32} color="#4A90E2" />
+            <Ionicons name="trophy-outline" size={32} color="#4864AC" />
           </View>
         </View>
 
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     height: 16,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: "#4A90E2",
+    borderColor: "#4864AC",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 8,
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#4A90E2",
+    backgroundColor: "#4864AC",
   },
   radioLabel: {
     fontSize: 10,
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   subscribeButton: {
-    backgroundColor: "#4A90E2",
+    backgroundColor: "#4864AC",
     paddingVertical: 12,
     borderRadius: 25,
     alignItems: "center",

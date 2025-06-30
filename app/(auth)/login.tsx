@@ -65,7 +65,7 @@ const LoginScreen = () => {
       {/* Icon Container */}
       <View style={styles.iconContainer}>
         <View style={styles.iconCircle}>
-          <Ionicons name="person-outline" size={40} color="#4A90E2" />
+          <Ionicons name="person-outline" size={40} color="#4864AC" />
         </View>
       </View>
 
@@ -128,7 +128,7 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#4A90E2",
+    backgroundColor: "#4864AC",
   },
   whiteBackground: {
    position: "absolute",
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   loginButtonText: {
-    color: "#4A90E2",
+    color: "#4864AC",
     fontSize: 16,
     fontWeight: "bold",
   },

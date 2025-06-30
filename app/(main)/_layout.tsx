@@ -32,7 +32,7 @@ function CustomDrawerHeader({ title }: CustomDrawerHeaderProps) {
     <SafeAreaView style={headerStyles.container} edges={["top"]}>
       <View style={headerStyles.header}>
         <TouchableOpacity onPress={openDrawer} style={headerStyles.menuButton}>
-          <Ionicons name="menu" size={24} color="#4A90E2" />
+          <Ionicons name="menu" size={24} color="#4864AC" />
         </TouchableOpacity>
         <Text style={headerStyles.title}>{title}</Text>
         <View style={headerStyles.placeholder} />
@@ -45,30 +45,31 @@ const headerStyles = StyleSheet.create({
   container: {
     backgroundColor: "#ffffff",
     borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
+    borderBottomColor: "#4864AC",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    height: 56,
+    marginBottom:10,
+    //paddingVertical: 12,
+    height: 30,
   },
   menuButton: {
-    padding: 8,
-    marginLeft: -8,
-    color: "4A90E2",
+    //padding: 8,
+    marginLeft: 8,
+    color: "#4864AC",
   },
   title: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#4A90E2",
+    color: "#4864AC",
     letterSpacing: 0.5,
   },
-  placeholder: {
-    width: 40,
-  },
+  // placeholder: {
+  //   width: 40,
+  // },
 });
 
 // Custom Drawer Content Component
@@ -144,7 +145,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
 const drawerStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#3e64ad",
+    backgroundColor: "#4864AC",
   },
   safeArea: {
     flex: 1,
@@ -275,6 +276,7 @@ export default function RootLayout() {
           options={{
             drawerLabel: "Home",
             title: "BoardBullets",
+            
             header: () => <CustomDrawerHeader title="BOARDBULLETS" />,
           }}
         />

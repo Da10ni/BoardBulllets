@@ -14,6 +14,7 @@ export const styles = StyleSheet.create({
   homeSection: {
     paddingHorizontal: 20,
     paddingVertical: 10,
+    alignItems: "center",
   },
   homeLabel: {
     fontSize: 16,

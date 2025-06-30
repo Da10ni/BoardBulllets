@@ -266,7 +266,7 @@ const HomeScreen: React.FC = () => {
                 onPress={handleMyQuiz}
               >
                 <View style={styles.actionButtonIcon}>
-                  <Feather name="send" size={28} color="#5A67D8" />
+                  <Feather name="send" size={28} color="#4864AC" />
                 </View>
                 <Text style={styles.actionButtonLabel}>QUIZ ME</Text>
               </TouchableOpacity>
@@ -276,7 +276,7 @@ const HomeScreen: React.FC = () => {
                 onPress={handleSubmitQuestion}
               >
                 <View style={styles.actionButtonIcon}>
-                  <Feather name="cloud" size={28} color="#5A67D8" />
+                  <Feather name="upload-cloud" size={28} color="#4864AC" />
                 </View>
                 <Text style={styles.actionButtonLabel}>SUBMIT A QUESTION</Text>
               </TouchableOpacity>
@@ -288,7 +288,7 @@ const HomeScreen: React.FC = () => {
                 onPress={handleMyPerformance}
               >
                 <View style={styles.actionButtonIcon}>
-                  <Feather name="pie-chart" size={28} color="#5A67D8" />
+                  <Feather name="pie-chart" size={28} color="#4864AC" />
                 </View>
                 <Text style={styles.actionButtonLabel}>MY PERFORMANCE</Text>
               </TouchableOpacity>
@@ -298,7 +298,7 @@ const HomeScreen: React.FC = () => {
                 onPress={handleExplore}
               >
                 <View style={styles.actionButtonIcon}>
-                  <Ionicons name="bulb-outline" size={28} color="#5A67D8" />
+                  <Ionicons name="bulb-outline" size={28} color="#4864AC" />
                 </View>
                 <Text style={styles.actionButtonLabel}>BB EXPLORE</Text>
               </TouchableOpacity>

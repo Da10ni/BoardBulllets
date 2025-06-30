@@ -12,14 +12,39 @@ export default function TabsLayout() {
           ios: { position: "absolute" },
           default: {},
         }),
+        // GLOBAL COLOR SETTINGS
+        tabBarActiveTintColor: "#4864AC",        // Active tab color (currently blue)
+        tabBarInactiveTintColor: "#B0B0B0",     // Inactive tab color (light gray)
+        
+        // OPTIONAL: Additional styling
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: "600",
+        },
+        tabBarStyle: {
+          ...Platform.select({
+            ios: { position: "absolute" },
+            default: {},
+          }),
+          backgroundColor: "#FFFFFF",           // Tab bar background
+          borderTopColor: "#E5E7EB",           // Top border color
+          borderTopWidth: 1,
+          paddingTop: 5,
+          paddingBottom: Platform.OS === 'ios' ? 25 : 10,
+          height: Platform.OS === 'ios' ? 85 : 65,
+        },
       }}
     >
       <Tabs.Screen
         name="(home)"
         options={{
           title: "Home",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color="#4A90E2"/>
+          tabBarIcon: ({ color, focused }) => (
+            <IconSymbol 
+              size={28} 
+              name="house.fill" 
+              color={focused ? "#4864AC" : "#B0B0B0"} // Using the same colors
+            />
           ),
         }}
       />
@@ -27,8 +52,12 @@ export default function TabsLayout() {
         name="(profile)"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="user-o"  color="#4A90E2" />
+          tabBarIcon: ({ color, focused }) => (
+            <FontAwesome 
+              size={28} 
+              name="user-o" 
+              color={focused ? "#4864AC" : "#B0B0B0"} // Using the same colors
+            />
           ),
         }}
       />
@@ -36,8 +65,12 @@ export default function TabsLayout() {
         name="(pricing)/pricing"
         options={{
           title: "Pricing",
-          tabBarIcon: ({ color }) => (
-            <AntDesign name="shoppingcart" size={28}  color="#4A90E2" />
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign 
+              name="shoppingcart" 
+              size={28} 
+              color={focused ? "#4864AC" : "#B0B0B0"} // Using the same colors
+            />
           ),
         }}
       />
