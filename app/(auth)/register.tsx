@@ -1,5 +1,6 @@
 // app/Signup.tsx
 import AlertPopup from "@/components/Alert/Alert";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -59,67 +60,84 @@ const SignupScreen = () => {
       <AlertPopup
         alertVisible={showAlert}
         setAlertVisible={setShowAlert}
-        alertTitle="A Verfication Code has been sent to the given email"
+        alertTitle="A Verification Code has been sent to the given email"
         onSuccess={() => router.push("/confirm-code")}
       />
-      {/* Header  */}
+      
+      {/* Diagonal White Background */}
+      <View style={styles.whiteBackground} />
+      
+      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
-          <Text style={styles.backButtonText}>â†</Text>
-        </TouchableOpacity>
         <Text style={styles.headerTitle}>BOARDBULLETS</Text>
+        <Text style={styles.headerSubtitle}>Learn & Earn</Text>
       </View>
 
-      {/* Logo */}
-      <View style={styles.logoContainer}>
-        <View style={styles.logoBackground}>
-          <View style={styles.logo} />
+      {/* Icon Container */}
+      <View style={styles.iconContainer}>
+        <View style={styles.iconCircle}>
+          <FontAwesome name="lock" size={50} color="#4A90E2" />
         </View>
       </View>
 
-      <ScrollView style={styles.scrollContainer}>
+      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         {/* Form */}
         <View style={styles.formContainer}>
-          <Text style={styles.title}>Sign Up</Text>
+          <Text style={styles.title}>SIGN UP</Text>
+          <Text style={styles.subtitle}>
+            CREATE YOUR BOARDBULLETS ACCOUNT TO START LEARNING AND EARNING.
+          </Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Full Name"
-            placeholderTextColor="rgba(255, 255, 255, 0.7)"
-            value={fullName}
-            onChangeText={setFullName}
-          />
+          <View style={styles.inputContainer}>
+            <Ionicons name="person-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="FULL NAME"
+              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              value={fullName}
+              onChangeText={setFullName}
+            />
+          </View>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="rgba(255, 255, 255, 0.7)"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
+          <View style={styles.inputContainer}>
+            <Ionicons name="mail-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="EMAIL ADDRESS"
+              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="rgba(255, 255, 255, 0.7)"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
+          <View style={styles.inputContainer}>
+            <Ionicons name="lock-closed-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="PASSWORD"
+              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+          </View>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Confirm Password"
-            placeholderTextColor="rgba(255, 255, 255, 0.7)"
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            secureTextEntry
-          />
+          <View style={styles.inputContainer}>
+            <Ionicons name="lock-closed-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="CONFIRM PASSWORD"
+              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry
+            />
+          </View>
 
           <TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
-            <Text style={styles.signupButtonText}>Sign Up</Text>
+            <Text style={styles.signupButtonText}>SIGN UP</Text>
           </TouchableOpacity>
 
           <View style={styles.loginContainer}>
@@ -139,68 +157,90 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#4A90E2",
   },
+  whiteBackground: {
+   position: "absolute",
+    top: -170,
+    left: 40,
+    width: 50,
+    height: 570,
+    borderRadius:360,
+    backgroundColor: "white",
+    transform: [{ skewY: "-40deg" }],
+    transformOrigin: "top left",
+    zIndex: 0,
+  },
   header: {
-    flexDirection: "row",
     alignItems: "center",
-    paddingTop: 10,
+    paddingTop: 20,
     paddingHorizontal: 20,
-    paddingBottom: 10,
-  },
-  backButton: {
-    marginRight: 20,
-  },
-  backButtonText: {
-    color: "white",
-    fontSize: 24,
-    fontWeight: "bold",
+    paddingBottom: 20,
+    zIndex: 1,
   },
   headerTitle: {
     color: "white",
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     letterSpacing: 1,
+    left:90,
   },
-  logoContainer: {
+  headerSubtitle: {
+    color: "white",
+    fontSize: 16,
+    marginTop: 5,
+    left: 120,
+  },
+   iconContainer: {
     alignItems: "center",
-    marginVertical: 4,
+    marginTop: 100,
+    right:5,
   },
-  logoBackground: {
-    width: 60,
-    height: 60,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    borderRadius: 30,
+  iconCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
   },
-  logo: {
-    width: 30,
-    height: 15,
-    backgroundColor: "white",
-    borderRadius: 15,
-    transform: [{ rotate: "-45deg" }],
-  },
   scrollContainer: {
     flex: 1,
+    zIndex: 1,
   },
   formContainer: {
     paddingHorizontal: 30,
+    paddingTop: 20,
     paddingBottom: 30,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     color: "white",
-    marginBottom: 30,
+    marginBottom: 10,
     textAlign: "center",
   },
-  input: {
+  subtitle: {
+    fontSize: 12,
+    color: "rgba(255, 255, 255, 0.9)",
+    marginBottom: 30,
+    textAlign: "center",
+    lineHeight: 16,
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 25,
-    paddingHorizontal: 20,
-    paddingVertical: 15,
     marginBottom: 15,
+    paddingHorizontal: 20,
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 15,
     color: "white",
-    fontSize: 16,
+    fontSize: 14,
+    fontWeight: "500",
   },
   signupButton: {
     backgroundColor: "white",

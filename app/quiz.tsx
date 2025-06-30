@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import BottomNavigation from "../components/ui/BottomNavigation";
-import { styles } from "./QuizFlow.styles";
+import { styles } from "@/styles/quiz.styles";
 
 const { width } = Dimensions.get("window");
 

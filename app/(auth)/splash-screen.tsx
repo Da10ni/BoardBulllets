@@ -106,7 +106,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
       <LinearGradient colors={["#4A90E2", "#357ABD"]} style={styles.gradient}>
         <View style={styles.whiteBackground} />
         <View style={styles.header}>
-          <Text style={styles.headerText}>Learn & Earn!</Text>
+          <Text style={styles.headerText}>LEARN & EARN!</Text>
         </View>
         <View style={styles.topLogoContainer}></View>
 
@@ -183,10 +183,10 @@ const styles = StyleSheet.create({
   // Fixed white background - never moves
   whiteBackground: {
     position: "absolute",
-    top: -180,
-    left: 50,
+    top: -230,
+    left: 70,
     width: 50,
-    height: 490,
+    height: 530,
     backgroundColor: "white",
     transform: [{ skewY: `-40deg` }, { translateY: 70 }, { translateX: -20 }],
     transformOrigin: "top left",

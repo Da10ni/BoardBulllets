@@ -7,8 +7,7 @@ const { width } = Dimensions.get("window");
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //backgroundColor: Colors.background.primary,
-    // backgroundColor: "#d9d9d9"
+    //backgroundColo"
   },
   scrollView: {
     flex: 1,
@@ -28,21 +27,6 @@ export const styles = StyleSheet.create({
     height: 20,
   },
 
-  // Timer Section Styles
-  //   timerSection: {
-  //     bottom:0,
-  //     backgroundColor: Colors.background.secondary || '#FFFFFF',
-  //    marginVertical: "77%",
-  //     borderRadius: 12,
-  //     paddingVertical: 30,
-  //     paddingHorizontal: 20,
-  //     alignItems: 'center',
-  //     shadowColor: '#000',
-  //     shadowOffset: { width: 0, height: 2 },
-  //     shadowOpacity: 0.1,
-  //     shadowRadius: 3.84,
-  //     elevation: 5,
-  //   },
   timerSection: {
     backgroundColor: Colors.background.secondary || "#FFFFFF",
     borderRadius: 12,

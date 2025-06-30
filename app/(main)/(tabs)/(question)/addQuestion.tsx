@@ -60,7 +60,6 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#6C7B7F" barStyle="light-content" />
-
       {/* Content */}
       <View style={styles.content}>
         {/* Submit a Question Section */}
