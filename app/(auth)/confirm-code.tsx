@@ -1,8 +1,7 @@
 // app/Verification.tsx
 import AlertPopup from "@/components/Alert/Alert";
-import { Ionicons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useState, useRef } from "react";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -20,39 +19,35 @@ const VerificationScreen = () => {
   const { email } = useLocalSearchParams<{ email: string }>();
   const [code, setCode] = useState(['', '', '', '']);
   const [showAlert, setShowAlert] = useState(false);
-  const inputs = useRef<(TextInput | null)[]>([]);
+  const [lastRouteName,setLastRouteName] = useState("")
+  const navigation = useNavigation();
 
-  const handleCodeChange = (text: string, index: number) => {
-    const newCode = [...code];
-    newCode[index] = text;
-    setCode(newCode);
-
-    // Move to next input if current input has value
-    if (text && index < 3) {
-      inputs.current[index + 1]?.focus();
+  useEffect(() => {
+    // Get the last route in the stack
+    const state = navigation.getState();
+    const lastRoute = state?.routes?.[state.routes.length - 2];      
+    if (lastRoute) {
+      console.log('Last screen was:', lastRoute.name); // Name of the last screen
+      setLastRouteName(lastRoute.name)
     }
-  };
+  }, []);
 
-  const handleKeyPress = (key: string, index: number) => {
-    // Move to previous input if backspace is pressed and current input is empty
-    if (key === 'Backspace' && !code[index] && index > 0) {
-      inputs.current[index - 1]?.focus();
-    }
-  };
 
   const handleVerifyCode = () => {
-    const verificationCode = code.join('');
-    
+    if (!verificationCode) {
+      Alert.alert("Error", "Please enter the verification code.");
+      return;
+    }
     if (verificationCode.length < 4) {
       Alert.alert("Error", "Please enter the complete verification code.");
       return;
     }
-
+console.log(lastRouteName)
     // Here you would typically verify the code
     Alert.alert("Code Verified", "Your code has been verified successfully.", [
       {
         text: "OK",
-        onPress: () => router.push("/change-password"),
+        onPress: () => { lastRouteName === "register" ? router.push("/login") : router.push("/change-password")},
       },
     ]);
   };

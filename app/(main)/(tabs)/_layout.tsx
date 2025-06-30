@@ -8,10 +8,6 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: Platform.select({
-          ios: { position: "absolute" },
-          default: {},
-        }),
         // GLOBAL COLOR SETTINGS
         tabBarActiveTintColor: "#4864AC",        // Active tab color (currently blue)
         tabBarInactiveTintColor: "#B0B0B0",     // Inactive tab color (light gray)
@@ -22,10 +18,7 @@ export default function TabsLayout() {
           fontWeight: "600",
         },
         tabBarStyle: {
-          ...Platform.select({
-            ios: { position: "absolute" },
-            default: {},
-          }),
+          position: Platform.OS === 'ios' ? "absolute" : undefined,
           backgroundColor: "#FFFFFF",           // Tab bar background
           borderTopColor: "#E5E7EB",           // Top border color
           borderTopWidth: 1,
