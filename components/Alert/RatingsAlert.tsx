@@ -48,9 +48,7 @@ const FeedbackPopup: React.FC<FeedbackPopupProps> = ({
           <Text style={styles.title}>YOUR FEEDBACK</Text>
 
           {/* Question */}
-          <Text style={styles.question}>
-            HOW WAS YOUR BOARDBULLETS EXPERIENCE?
-          </Text>
+          <Text style={styles.question}>HOW WAS YOUR B4AI EXPERIENCE?</Text>
 
           {/* Stars Rating */}
           <View style={styles.starsContainer}>{renderStars()}</View>

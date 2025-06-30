@@ -2,7 +2,7 @@
 import AlertPopup from "@/components/Alert/Alert";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -89,19 +89,25 @@ const SignupScreen = () => {
         </View>
       </View>
 
-      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Form */}
         <View style={styles.formContainer}>
           <Text style={styles.title}>
             <Text style={styles.titleBold}>SIGN</Text>
             <Text style={styles.titleNormal}> UP</Text>
           </Text>
-          <Text style={styles.subtitle}>
-            TO CREATE A BOARDBULLETS ACCOUNT
-          </Text>
+          <Text style={styles.subtitle}>TO CREATE A B4AI ACCOUNT</Text>
 
           <View style={styles.inputContainer}>
-            <Ionicons name="person-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <Ionicons
+              name="person-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.input}
               placeholder="FIRST NAME"
@@ -112,7 +118,12 @@ const SignupScreen = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Ionicons name="person-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <Ionicons
+              name="person-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.input}
               placeholder="LAST NAME"
@@ -123,7 +134,12 @@ const SignupScreen = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Ionicons name="mail-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <Ionicons
+              name="mail-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.input}
               placeholder="EMAIL"
@@ -136,7 +152,12 @@ const SignupScreen = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Ionicons name="lock-closed-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <Ionicons
+              name="lock-closed-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.input}
               placeholder="PASSWORD"
@@ -148,7 +169,12 @@ const SignupScreen = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Ionicons name="lock-closed-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <Ionicons
+              name="lock-closed-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.input}
               placeholder="CONFIRM PASSWORD"
@@ -164,7 +190,11 @@ const SignupScreen = () => {
             <Text style={styles.dropdownText}>
               {selectedOption1 || "CHOOSE ONE"}
             </Text>
-            <Ionicons name="chevron-down" size={20} color="rgba(255, 255, 255, 0.7)" />
+            <Ionicons
+              name="chevron-down"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+            />
           </TouchableOpacity>
 
           {/* Dropdown 2 */}
@@ -172,12 +202,19 @@ const SignupScreen = () => {
             <Text style={styles.dropdownText}>
               {selectedOption2 || "CHOOSE ONE"}
             </Text>
-            <Ionicons name="chevron-down" size={20} color="rgba(255, 255, 255, 0.7)" />
+            <Ionicons
+              name="chevron-down"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+            />
           </TouchableOpacity>
 
           {/* Submit Button Container */}
           <View style={styles.submitButtonContainer}>
-            <TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
+            <TouchableOpacity
+              style={styles.signupButton}
+              onPress={handleSignup}
+            >
               <Text style={styles.signupButtonText}>
                 <Text style={styles.signupButtonTextBold}>SIGN</Text>
                 <Text style={styles.signupButtonTextNormal}> UP</Text>
@@ -188,15 +225,16 @@ const SignupScreen = () => {
           {/* Terms Text */}
           <View style={styles.termsContainer}>
             <Text style={styles.termsText}>
-              BY TAPPING SIGN UP, YOU AGREE TO OUR{'\n'}
-              <Text style={styles.linkText}>PRIVACY POLICY</Text> & <Text style={styles.linkText}>TERMS OF USE</Text>.
+              BY TAPPING SIGN UP, YOU AGREE TO OUR{"\n"}
+              <Text style={styles.linkText}>PRIVACY POLICY</Text> &{" "}
+              <Text style={styles.linkText}>TERMS OF USE</Text>.
             </Text>
           </View>
 
           {/* Copyright */}
           <View style={styles.copyrightContainer}>
             <Text style={styles.copyrightText}>
-              COPYRIGHT (C) 2017 BOARDBULLETS, INC.
+              COPYRIGHT (C) 2017 B4AI, INC.
             </Text>
           </View>
         </View>

@@ -1,7 +1,7 @@
 // app/ForgotPassword.tsx
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -81,18 +81,25 @@ const ForgotPasswordScreen = () => {
       {/* Icon Container */}
       <View style={styles.iconContainer}>
         <View style={styles.iconCircle}>
-         <FontAwesome name="lock" size={50} color="#4864AC" />
+          <FontAwesome name="lock" size={50} color="#4864AC" />
         </View>
       </View>
 
-      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Form */}
         <View style={styles.formContainer}>
           <Text style={styles.title}>FORGOT PASSWORD</Text>
-          
 
           <View style={styles.inputContainer}>
-            <Ionicons name="mail-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <Ionicons
+              name="mail-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.input}
               placeholder="EMAIL ADDRESS"
@@ -108,8 +115,8 @@ const ForgotPasswordScreen = () => {
             <Text style={styles.sendButtonText}>SUBMIT</Text>
           </TouchableOpacity>
 
-           <View style={styles.copyright}>
-            <Text style={styles.statement}>COPYRIGHT (C) 2017 BOARDBULLETS,INC.</Text>
+          <View style={styles.copyright}>
+            <Text style={styles.statement}>COPYRIGHT (C) 2017 B4AI,INC.</Text>
             <Text style={styles.policy}>PRIVACY POLICY AND TERMS OF USE</Text>
           </View>
         </View>
@@ -268,7 +275,7 @@ const styles = StyleSheet.create({
   policy: {
     color: "#ebeae8",
     fontSize: 10,
-  }
+  },
 });
 
 export default ForgotPasswordScreen;

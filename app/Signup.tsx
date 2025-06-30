@@ -1,6 +1,6 @@
 // app/Signup.tsx
 import { router } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -65,7 +65,7 @@ const SignupScreen = () => {
         <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
           <Text style={styles.backButtonText}>â†</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
+        <Text style={styles.headerTitle}>B4AI</Text>
       </View>
 
       {/* Logo */}

@@ -2,7 +2,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dimensions,
   StatusBar,
@@ -12,8 +12,8 @@ import {
   View,
 } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
-import { styles } from "../styles/splashScreenStyle"; // Your original styles file
 import { SplashScreenProps } from "../components/Splash/splashScreenTypes"; // Your original types file
+import { styles } from "../styles/splashScreenStyle"; // Your original styles file
 
 const { width, height } = Dimensions.get("window");
 
@@ -21,7 +21,7 @@ const splashData = [
   {
     id: 0,
     isLogo: true,
-    title: "BOARDBULLETS",
+    title: "B4AI",
     subtitle: "",
   },
   {

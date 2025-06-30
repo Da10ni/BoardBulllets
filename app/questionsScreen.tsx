@@ -41,7 +41,7 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({ navigation }) => {
         <TouchableOpacity style={styles.menuButton}>
           <MaterialIcons name="menu" size={24} color="#666" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
+        <Text style={styles.headerTitle}>B4AI</Text>
         <TouchableOpacity style={styles.moreButton}>
           <MaterialIcons name="more-vert" size={24} color="#666" />
         </TouchableOpacity>

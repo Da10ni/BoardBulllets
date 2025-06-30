@@ -1,6 +1,6 @@
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Dimensions,
   Modal,
@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 
-const CustomDrawerHeader = ({ title = "BOARDBULLETS" }) => {
+const CustomDrawerHeader = ({ title = "B4AI" }) => {
   const router = useRouter();
   const navigation = useNavigation();
   const [showDropdown, setShowDropdown] = useState(false);

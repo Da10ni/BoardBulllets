@@ -1,7 +1,7 @@
 // app/Verification.tsx
 import AlertPopup from "@/components/Alert/Alert";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -17,21 +17,20 @@ import {
 
 const VerificationScreen = () => {
   const { email } = useLocalSearchParams<{ email: string }>();
-  const [code, setCode] = useState(['', '', '', '']);
+  const [code, setCode] = useState(["", "", "", ""]);
   const [showAlert, setShowAlert] = useState(false);
-  const [lastRouteName,setLastRouteName] = useState("")
+  const [lastRouteName, setLastRouteName] = useState("");
   const navigation = useNavigation();
 
   useEffect(() => {
     // Get the last route in the stack
     const state = navigation.getState();
-    const lastRoute = state?.routes?.[state.routes.length - 2];      
+    const lastRoute = state?.routes?.[state.routes.length - 2];
     if (lastRoute) {
-      console.log('Last screen was:', lastRoute.name); // Name of the last screen
-      setLastRouteName(lastRoute.name)
+      console.log("Last screen was:", lastRoute.name); // Name of the last screen
+      setLastRouteName(lastRoute.name);
     }
   }, []);
-
 
   const handleVerifyCode = () => {
     if (!verificationCode) {
@@ -42,12 +41,16 @@ const VerificationScreen = () => {
       Alert.alert("Error", "Please enter the complete verification code.");
       return;
     }
-console.log(lastRouteName)
+    console.log(lastRouteName);
     // Here you would typically verify the code
     Alert.alert("Code Verified", "Your code has been verified successfully.", [
       {
         text: "OK",
-        onPress: () => { lastRouteName === "register" ? router.push("/login") : router.push("/change-password")},
+        onPress: () => {
+          lastRouteName === "register"
+            ? router.push("/login")
+            : router.push("/change-password");
+        },
       },
     ]);
   };
@@ -75,13 +78,13 @@ console.log(lastRouteName)
         setAlertVisible={setShowAlert}
         alertTitle="A new verification code has been sent to your email"
       />
-      
+
       {/* Diagonal White Background */}
       <View style={styles.whiteBackground} />
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
+        <Text style={styles.headerTitle}>B4AI</Text>
         <Text style={styles.headerSubtitle}>Learn & Earn</Text>
       </View>
 
@@ -92,11 +95,14 @@ console.log(lastRouteName)
         </View>
       </View>
 
-      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Form */}
         <View style={styles.formContainer}>
           <Text style={styles.title}>CONFIRM CODE</Text>
-          
+
           {/* Code Input Boxes */}
           <View style={styles.codeInputContainer}>
             {code.map((digit, index) => (
@@ -105,23 +111,25 @@ console.log(lastRouteName)
                 style={styles.codeInputWrapper}
                 onPress={() => inputs.current[index]?.focus()}
               >
-                <Text style={styles.codeInputNumber}>
-                  {digit || ''}
-                </Text>
+                <Text style={styles.codeInputNumber}>{digit || ""}</Text>
                 <TextInput
-                  ref={(ref) => inputs.current[index] = ref}
+                  ref={(ref) => (inputs.current[index] = ref)}
                   style={styles.codeInput}
                   value={digit}
                   onChangeText={(text) => handleCodeChange(text, index)}
-                  onKeyPress={({ nativeEvent }) => handleKeyPress(nativeEvent.key, index)}
+                  onKeyPress={({ nativeEvent }) =>
+                    handleKeyPress(nativeEvent.key, index)
+                  }
                   keyboardType="number-pad"
                   maxLength={1}
                   selectTextOnFocus
                 />
-                <View style={[
-                  styles.codeInputLine,
-                  digit ? styles.codeInputLineFilled : null
-                ]} />
+                <View
+                  style={[
+                    styles.codeInputLine,
+                    digit ? styles.codeInputLineFilled : null,
+                  ]}
+                />
               </TouchableOpacity>
             ))}
           </View>
@@ -147,7 +155,7 @@ console.log(lastRouteName)
           {/* Copyright Footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>
-              COPYRIGHT (C) 2017 BOARDBULLETS, INC.{'\n'}
+              COPYRIGHT (C) 2017 B4AI, INC.{"\n"}
               PRIVACY POLICY | TERMS
             </Text>
           </View>

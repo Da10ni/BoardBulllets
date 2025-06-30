@@ -2,7 +2,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dimensions,
   StatusBar,
@@ -32,7 +32,7 @@ const splashData = [
   {
     id: 0,
     isLogo: true,
-    title: "BOARDBULLETS",
+    title: "B4AI",
     subtitle: "",
   },
   {
@@ -216,12 +216,12 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     textAlign: "right",
   },
-    headerTextBold: {
-      fontWeight: "bold",
-    },
-    headerTextNormal: {
-      fontWeight: "200",
-    },
+  headerTextBold: {
+    fontWeight: "bold",
+  },
+  headerTextNormal: {
+    fontWeight: "200",
+  },
 
   // Fixed top logo - never moves
   topLogoContainer: {

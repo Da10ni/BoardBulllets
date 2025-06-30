@@ -1,25 +1,25 @@
 // components/screens/ReviewScreen/ReviewScreen.tsx
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  SafeAreaView,
-  TextInput,
-  Alert,
-} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { useState } from "react";
+import {
+  Alert,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const ReviewScreen = () => {
   const navigation = useNavigation();
   const [selectedRating, setSelectedRating] = useState(0);
   const [feedback, setFeedback] = useState("");
 
-const handleStarPress = (rating: number): void => {
+  const handleStarPress = (rating: number): void => {
     setSelectedRating(rating);
-};
+  };
 
   const handleSubmit = () => {
     if (selectedRating === 0) {
@@ -76,9 +76,7 @@ const handleStarPress = (rating: number): void => {
       {/* Main Content */}
       <View style={styles.content}>
         <View style={styles.feedbackCard}>
-          <Text style={styles.questionText}>
-            HOW WAS YOUR BOARDBULLETS EXPERIENCE?
-          </Text>
+          <Text style={styles.questionText}>HOW WAS YOUR B4AI EXPERIENCE?</Text>
 
           {/* Star Rating */}
           <View style={styles.starsContainer}>{renderStars()}</View>

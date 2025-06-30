@@ -1,7 +1,7 @@
 // app/ResetPassword.tsx
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -68,7 +68,7 @@ const ResetPasswordScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
+        <Text style={styles.headerTitle}>B4AI</Text>
         <Text style={styles.headerSubtitle}>Learn & Earn</Text>
       </View>
 
@@ -79,16 +79,24 @@ const ResetPasswordScreen = () => {
         </View>
       </View>
 
-      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Form */}
         <View style={styles.formContainer}>
           <Text style={styles.title}>RESET PASSWORD</Text>
           <Text style={styles.subtitle}>
-            CREATE A NEW PASSWORD FOR YOUR BOARDBULLETS ACCOUNT.
+            CREATE A NEW PASSWORD FOR YOUR B4AI ACCOUNT.
           </Text>
 
           <View style={styles.inputContainer}>
-            <Ionicons name="lock-closed-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <Ionicons
+              name="lock-closed-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.input}
               placeholder="NEW PASSWORD"
@@ -100,7 +108,12 @@ const ResetPasswordScreen = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Ionicons name="lock-closed-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <Ionicons
+              name="lock-closed-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.input}
               placeholder="CONFIRM NEW PASSWORD"
@@ -119,7 +132,7 @@ const ResetPasswordScreen = () => {
           </TouchableOpacity>
 
           <View style={styles.copyright}>
-            <Text style={styles.statement}>COPYRIGHT (C) 2017 BOARDBULLETS,INC.</Text>
+            <Text style={styles.statement}>COPYRIGHT (C) 2017 B4AI,INC.</Text>
             <Text style={styles.policy}>PRIVACY POLICY AND TERMS OF USE</Text>
           </View>
         </View>
@@ -246,7 +259,7 @@ const styles = StyleSheet.create({
   policy: {
     color: "#ebeae8",
     fontSize: 10,
-  }
+  },
 });
 
 export default ResetPasswordScreen;
