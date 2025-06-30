@@ -19,7 +19,7 @@ export default function TabsLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+            <IconSymbol size={28} name="house.fill" color="#4A90E2"/>
           ),
         }}
       />
@@ -28,7 +28,7 @@ export default function TabsLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="user-o" color={color} />
+            <FontAwesome size={28} name="user-o"  color="#4A90E2" />
           ),
         }}
       />
@@ -37,7 +37,7 @@ export default function TabsLayout() {
         options={{
           title: "Pricing",
           tabBarIcon: ({ color }) => (
-            <AntDesign name="shoppingcart" size={28} color={color} />
+            <AntDesign name="shoppingcart" size={28}  color="#4A90E2" />
           ),
         }}
       />

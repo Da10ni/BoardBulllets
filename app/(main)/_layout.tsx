@@ -32,7 +32,7 @@ function CustomDrawerHeader({ title }: CustomDrawerHeaderProps) {
     <SafeAreaView style={headerStyles.container} edges={["top"]}>
       <View style={headerStyles.header}>
         <TouchableOpacity onPress={openDrawer} style={headerStyles.menuButton}>
-          <Ionicons name="menu" size={24} color="#333333" />
+          <Ionicons name="menu" size={24} color="#4A90E2" />
         </TouchableOpacity>
         <Text style={headerStyles.title}>{title}</Text>
         <View style={headerStyles.placeholder} />
@@ -58,11 +58,12 @@ const headerStyles = StyleSheet.create({
   menuButton: {
     padding: 8,
     marginLeft: -8,
+    color: "4A90E2",
   },
   title: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#333333",
+    color: "#4A90E2",
     letterSpacing: 0.5,
   },
   placeholder: {

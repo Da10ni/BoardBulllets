@@ -37,7 +37,7 @@ const ProfileScreen = () => {
                 style={styles.editButton}
                 onPress={() => router.push("/editProfile")}
               >
-                <Text style={styles.editIcon}>✏️</Text>
+                {/* <Text style={styles.editIcon}>✏️</Text> */}
               </TouchableOpacity>
             </View>
 
@@ -51,17 +51,17 @@ const ProfileScreen = () => {
                 <TouchableOpacity
                   style={[styles.socialIcon, styles.facebookIcon]}
                 >
-                  <Icon name="facebook" size={18} color="#3B5998" />
+                  <Icon name="facebook" size={18} color="#4A90E2" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.socialIcon, styles.twitterIcon]}
                 >
-                  <Icon name="twitter" size={18} color="#1DA1F2" />
+                  <Icon name="twitter" size={18} color="#4A90E2" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.socialIcon, styles.instagramIcon]}
                 >
-                  <Icon name="instagram" size={18} color="#E4405F" />
+                  <Icon name="instagram" size={18} color="#4A90E2" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   profileSection: {
-    paddingVertical: 20,
+    paddingVertical: 10,
     paddingHorizontal: 10,
   },
   profileRow: {
@@ -168,9 +168,9 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   profileImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
   editButton: {
     position: "absolute",
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     top: -5,
     width: 30,
     height: 30,
-    backgroundColor: "#999",
+   // backgroundColor: "#999",
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
@@ -208,7 +208,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     gap: 15,
-    marginTop: 10,
   },
   socialIcon: {
     width: 35,
@@ -219,13 +218,13 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   facebookIcon: {
-    borderColor: "#3B5998",
+    borderColor: "#4A90E2",
   },
   twitterIcon: {
-    borderColor: "#1DA1F2",
+    borderColor: "#4A90E2",
   },
   instagramIcon: {
-    borderColor: "#E4405F",
+    borderColor: "#4A90E2",
   },
   detailsContainer: {
     paddingTop: 20,

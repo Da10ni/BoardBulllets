@@ -60,18 +60,6 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#6C7B7F" barStyle="light-content" />
-
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.menuButton}>
-          <Icon name="menu" size={24} color="#666" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
-        <TouchableOpacity style={styles.moreButton}>
-          <Icon name="more-vert" size={24} color="#666" />
-        </TouchableOpacity>
-      </View>
-
       {/* Content */}
       <View style={styles.content}>
         {/* Submit a Question Section */}
