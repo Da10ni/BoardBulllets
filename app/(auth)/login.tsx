@@ -106,7 +106,7 @@ const LoginScreen = () => {
           style={styles.forgotPassword}
           onPress={handleForgotPassword}
         >
-          <Text style={styles.forgotPasswordText}>○ REMEMBER ME</Text>
+          <Text style={styles.forgotPasswordText}>Forget Password ? </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   forgotPassword: {
-    alignSelf: "flex-start",
+    alignSelf: "flex-end",
     marginBottom: 30,
     marginTop: 10,
   },
