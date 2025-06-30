@@ -1,11 +1,13 @@
 // app/Verification.tsx
 import AlertPopup from "@/components/Alert/Alert";
+import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -16,16 +18,33 @@ import {
 
 const VerificationScreen = () => {
   const { email } = useLocalSearchParams<{ email: string }>();
-  const [verificationCode, setVerificationCode] = useState("");
+  const [code, setCode] = useState(['', '', '', '']);
   const [showAlert, setShowAlert] = useState(false);
-  const handleVerifyCode = () => {
-    if (!verificationCode) {
-      Alert.alert("Error", "Please enter the verification code.");
-      return;
-    }
+  const inputs = useRef<(TextInput | null)[]>([]);
 
+  const handleCodeChange = (text: string, index: number) => {
+    const newCode = [...code];
+    newCode[index] = text;
+    setCode(newCode);
+
+    // Move to next input if current input has value
+    if (text && index < 3) {
+      inputs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyPress = (key: string, index: number) => {
+    // Move to previous input if backspace is pressed and current input is empty
+    if (key === 'Backspace' && !code[index] && index > 0) {
+      inputs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleVerifyCode = () => {
+    const verificationCode = code.join('');
+    
     if (verificationCode.length < 4) {
-      Alert.alert("Error", "Please enter a valid verification code.");
+      Alert.alert("Error", "Please enter the complete verification code.");
       return;
     }
 
@@ -33,7 +52,7 @@ const VerificationScreen = () => {
     Alert.alert("Code Verified", "Your code has been verified successfully.", [
       {
         text: "OK",
-        onPress: () => router.push("/login"),
+        onPress: () => router.push("/change-password"),
       },
     ]);
   };
@@ -55,66 +74,90 @@ const VerificationScreen = () => {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <StatusBar backgroundColor="#4A90E2" barStyle="light-content" />
+      <StatusBar backgroundColor="#4864AC" barStyle="light-content" />
       <AlertPopup
         alertVisible={showAlert}
         setAlertVisible={setShowAlert}
         alertTitle="A new verification code has been sent to your email"
       />
+      
+      {/* Diagonal White Background */}
+      <View style={styles.whiteBackground} />
+
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
-          <Text style={styles.backButtonText}>â†</Text>
-        </TouchableOpacity>
         <Text style={styles.headerTitle}>BOARDBULLETS</Text>
+        <Text style={styles.headerSubtitle}>Learn & Earn</Text>
       </View>
 
-      {/* Logo */}
-      <View style={styles.logoContainer}>
-        <View style={styles.logoBackground}>
-          <View style={styles.logo} />
+      {/* Icon Container */}
+      <View style={styles.iconContainer}>
+        <View style={styles.iconCircle}>
+          <Ionicons name="lock-closed" size={40} color="#4864AC" />
         </View>
       </View>
 
-      {/* Form */}
-      <View style={styles.formContainer}>
-        <Text style={styles.title}>Verify Email</Text>
-        <Text style={styles.subtitle}>
-          We've sent a verification code to {email || "your email"}. Please
-          enter the code below.
-        </Text>
+      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        {/* Form */}
+        <View style={styles.formContainer}>
+          <Text style={styles.title}>CONFIRM CODE</Text>
+          
+          {/* Code Input Boxes */}
+          <View style={styles.codeInputContainer}>
+            {code.map((digit, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.codeInputWrapper}
+                onPress={() => inputs.current[index]?.focus()}
+              >
+                <Text style={styles.codeInputNumber}>
+                  {digit || ''}
+                </Text>
+                <TextInput
+                  ref={(ref) => inputs.current[index] = ref}
+                  style={styles.codeInput}
+                  value={digit}
+                  onChangeText={(text) => handleCodeChange(text, index)}
+                  onKeyPress={({ nativeEvent }) => handleKeyPress(nativeEvent.key, index)}
+                  keyboardType="number-pad"
+                  maxLength={1}
+                  selectTextOnFocus
+                />
+                <View style={[
+                  styles.codeInputLine,
+                  digit ? styles.codeInputLineFilled : null
+                ]} />
+              </TouchableOpacity>
+            ))}
+          </View>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Verification Code"
-          placeholderTextColor="rgba(255, 255, 255, 0.7)"
-          value={verificationCode}
-          onChangeText={setVerificationCode}
-          keyboardType="number-pad"
-          maxLength={6}
-        />
+          {/* Submit Button */}
+          <View style={styles.submitButtonContainer}>
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={handleVerifyCode}
+            >
+              <Text style={styles.submitButtonText}>SUBMIT</Text>
+            </TouchableOpacity>
+          </View>
 
-        <TouchableOpacity
-          style={styles.verifyButton}
-          onPress={handleVerifyCode}
-        >
-          <Text style={styles.verifyButtonText}>Verify Code</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.resendButton}
-          onPress={handleResendCode}
-        >
-          <Text style={styles.resendButtonText}>Resend Code</Text>
-        </TouchableOpacity>
-
-        <View style={styles.backToLoginContainer}>
-          <Text style={styles.backToLoginText}>Remember your password? </Text>
-          <TouchableOpacity onPress={handleBackToLogin}>
-            <Text style={styles.backToLoginLink}>Log In</Text>
+          {/* Resend Button */}
+          <TouchableOpacity
+            style={styles.resendButton}
+            onPress={handleResendCode}
+          >
+            <Text style={styles.resendButtonText}>RESEND</Text>
           </TouchableOpacity>
+
+          {/* Copyright Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>
+              COPYRIGHT (C) 2017 BOARDBULLETS, INC.{'\n'}
+              PRIVACY POLICY | TERMS
+            </Text>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
@@ -122,111 +165,144 @@ const VerificationScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#4A90E2",
+    backgroundColor: "#4864AC",
+  },
+  whiteBackground: {
+    position: "absolute",
+    top: -170,
+    left: 40,
+    width: 50,
+    height: 570,
+    borderRadius: 360,
+    backgroundColor: "white",
+    transform: [{ skewY: "-40deg" }],
+    transformOrigin: "top left",
+    zIndex: 0,
   },
   header: {
-    flexDirection: "row",
     alignItems: "center",
-    paddingTop: 50,
+    paddingTop: 20,
     paddingHorizontal: 20,
     paddingBottom: 20,
-  },
-  backButton: {
-    marginRight: 20,
-  },
-  backButtonText: {
-    color: "white",
-    fontSize: 24,
-    fontWeight: "bold",
+    zIndex: 1,
   },
   headerTitle: {
     color: "white",
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     letterSpacing: 1,
+    left: 90,
   },
-  logoContainer: {
+  headerSubtitle: {
+    color: "white",
+    fontSize: 16,
+    marginTop: 5,
+    left: 120,
+  },
+  iconContainer: {
     alignItems: "center",
-    marginVertical: 30,
+    marginTop: 100,
+    right: 5,
+    zIndex: 1,
   },
-  logoBackground: {
-    width: 60,
-    height: 60,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    borderRadius: 30,
+  iconCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
   },
-  logo: {
-    width: 30,
-    height: 15,
-    backgroundColor: "white",
-    borderRadius: 15,
-    transform: [{ rotate: "-45deg" }],
+  scrollContainer: {
+    flex: 1,
+    zIndex: 1,
   },
   formContainer: {
-    flex: 1,
     paddingHorizontal: 30,
+    paddingTop: 40,
+    paddingBottom: 30,
+    alignItems: "center",
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     color: "white",
-    marginBottom: 15,
+    marginBottom: 40,
     textAlign: "center",
+    letterSpacing: 1,
   },
-  subtitle: {
-    fontSize: 16,
-    color: "rgba(255, 255, 255, 0.8)",
-    textAlign: "center",
-    marginBottom: 30,
-    lineHeight: 22,
+  codeInputContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 50,
+    paddingHorizontal: 40,
+    width: "100%",
   },
-  input: {
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    marginBottom: 30,
+  codeInputWrapper: {
+    alignItems: "center",
+    flex: 1,
+    marginHorizontal: 8,
+  },
+  codeInputNumber: {
     color: "white",
-    fontSize: 16,
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 10,
+    height: 30,
     textAlign: "center",
-    letterSpacing: 2,
   },
-  verifyButton: {
+  codeInput: {
+    position: "absolute",
+    opacity: 0,
+    width: 1,
+    height: 1,
+  },
+  codeInputLine: {
+    width: "100%",
+    height: 3,
+    backgroundColor: "rgba(255, 255, 255, 0.4)",
+    borderRadius: 1.5,
+  },
+  codeInputLineFilled: {
+    backgroundColor: "white",
+  },
+  submitButtonContainer: {
+    position: "relative",
+    marginBottom: 30,
+  },
+  submitButton: {
     backgroundColor: "white",
     borderRadius: 25,
     paddingVertical: 15,
+    paddingHorizontal: 50,
     alignItems: "center",
-    marginBottom: 20,
+    minWidth: 200,
   },
-  verifyButtonText: {
-    color: "#4A90E2",
+  submitButtonText: {
+    color: "#4864AC",
     fontSize: 16,
     fontWeight: "bold",
+    letterSpacing: 1,
   },
   resendButton: {
-    alignItems: "center",
-    marginBottom: 30,
+    marginBottom: 50,
+    paddingVertical: 10,
   },
   resendButtonText: {
     color: "rgba(255, 255, 255, 0.8)",
     fontSize: 14,
-    textDecorationLine: "underline",
+    fontWeight: "500",
+    letterSpacing: 0.5,
   },
-  backToLoginContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
+  footer: {
     alignItems: "center",
+    marginTop: 60,
   },
-  backToLoginText: {
-    color: "rgba(255, 255, 255, 0.8)",
-    fontSize: 14,
-  },
-  backToLoginLink: {
-    color: "white",
-    fontSize: 14,
-    fontWeight: "bold",
+  footerText: {
+    color: "rgba(255, 255, 255, 0.6)",
+    fontSize: 10,
+    textAlign: "center",
+    lineHeight: 14,
+    letterSpacing: 0.5,
   },
 });
 
