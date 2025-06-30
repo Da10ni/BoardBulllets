@@ -1,6 +1,6 @@
 // app/Signup.tsx
 import AlertPopup from "@/components/Alert/Alert";
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -17,14 +17,17 @@ import {
 } from "react-native";
 
 const SignupScreen = () => {
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [selectedOption1, setSelectedOption1] = useState("");
+  const [selectedOption2, setSelectedOption2] = useState("");
   const [showAlert, setShowAlert] = useState(false);
 
   const handleSignup = () => {
-    if (!fullName || !email || !password || !confirmPassword) {
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
@@ -56,7 +59,7 @@ const SignupScreen = () => {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <StatusBar backgroundColor="#4A90E2" barStyle="light-content" />
+      <StatusBar backgroundColor="#4864AC" barStyle="light-content" />
       <AlertPopup
         alertVisible={showAlert}
         setAlertVisible={setShowAlert}
@@ -76,7 +79,7 @@ const SignupScreen = () => {
       {/* Icon Container */}
       <View style={styles.iconContainer}>
         <View style={styles.iconCircle}>
-          <FontAwesome name="lock" size={50} color="#4864AC" />
+          <Ionicons name="person-outline" size={40} color="#4864AC" />
         </View>
       </View>
 
@@ -85,17 +88,28 @@ const SignupScreen = () => {
         <View style={styles.formContainer}>
           <Text style={styles.title}>SIGN UP</Text>
           <Text style={styles.subtitle}>
-            CREATE YOUR BOARDBULLETS ACCOUNT TO START LEARNING AND EARNING.
+            TO CREATE A BOARDBULLETS ACCOUNT
           </Text>
 
           <View style={styles.inputContainer}>
             <Ionicons name="person-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
             <TextInput
               style={styles.input}
-              placeholder="FULL NAME"
+              placeholder="FIRST NAME"
               placeholderTextColor="rgba(255, 255, 255, 0.7)"
-              value={fullName}
-              onChangeText={setFullName}
+              value={firstName}
+              onChangeText={setFirstName}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <Ionicons name="person-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="LAST NAME"
+              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              value={lastName}
+              onChangeText={setLastName}
             />
           </View>
 
@@ -103,7 +117,7 @@ const SignupScreen = () => {
             <Ionicons name="mail-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
             <TextInput
               style={styles.input}
-              placeholder="EMAIL ADDRESS"
+              placeholder="EMAIL"
               placeholderTextColor="rgba(255, 255, 255, 0.7)"
               value={email}
               onChangeText={setEmail}
@@ -136,15 +150,42 @@ const SignupScreen = () => {
             />
           </View>
 
-          <TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
-            <Text style={styles.signupButtonText}>SIGN UP</Text>
+          {/* Dropdown 1 */}
+          <TouchableOpacity style={styles.dropdownContainer}>
+            <Text style={styles.dropdownText}>
+              {selectedOption1 || "CHOOSE ONE"}
+            </Text>
+            <Ionicons name="chevron-down" size={20} color="rgba(255, 255, 255, 0.7)" />
           </TouchableOpacity>
 
-          <View style={styles.loginContainer}>
-            <Text style={styles.loginText}>Already have an account? </Text>
-            <TouchableOpacity onPress={handleLogin}>
-              <Text style={styles.loginLink}>Log In</Text>
+          {/* Dropdown 2 */}
+          <TouchableOpacity style={styles.dropdownContainer}>
+            <Text style={styles.dropdownText}>
+              {selectedOption2 || "CHOOSE ONE"}
+            </Text>
+            <Ionicons name="chevron-down" size={20} color="rgba(255, 255, 255, 0.7)" />
+          </TouchableOpacity>
+
+          {/* Submit Button Container */}
+          <View style={styles.submitButtonContainer}>
+            <TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
+              <Text style={styles.signupButtonText}>SIGN UP</Text>
             </TouchableOpacity>
+          </View>
+
+          {/* Terms Text */}
+          <View style={styles.termsContainer}>
+            <Text style={styles.termsText}>
+              BY TAPPING SIGN UP, YOU AGREE TO OUR{'\n'}
+              <Text style={styles.linkText}>PRIVACY POLICY</Text> & <Text style={styles.linkText}>TERMS OF USE</Text>.
+            </Text>
+          </View>
+
+          {/* Copyright */}
+          <View style={styles.copyrightContainer}>
+            <Text style={styles.copyrightText}>
+              COPYRIGHT (C) 2017 BOARDBULLETS, INC.
+            </Text>
           </View>
         </View>
       </ScrollView>
@@ -158,12 +199,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#4864AC",
   },
   whiteBackground: {
-   position: "absolute",
-    top: -170,
-    left: 40,
+    position: "absolute",
+    top: -30,
+    left: 20,
     width: 50,
-    height: 570,
-    borderRadius:360,
+    height: 200,
+    borderRadius: 360,
     backgroundColor: "white",
     transform: [{ skewY: "-40deg" }],
     transformOrigin: "top left",
@@ -181,7 +222,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     letterSpacing: 1,
-    left:90,
+    left: 90,
   },
   headerSubtitle: {
     color: "white",
@@ -189,15 +230,17 @@ const styles = StyleSheet.create({
     marginTop: 5,
     left: 120,
   },
-   iconContainer: {
+  iconContainer: {
     alignItems: "center",
-    marginTop: 100,
-    right:5,
+    marginTop: -55,
+    right: 117,
+    zIndex: 1,
   },
   iconCircle: {
     width: 80,
     height: 80,
     borderRadius: 40,
+
     justifyContent: "center",
     alignItems: "center",
   },
@@ -214,7 +257,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "white",
-    marginBottom: 10,
+    marginBottom: 5,
     textAlign: "center",
   },
   subtitle: {
@@ -242,32 +285,62 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
   },
+  dropdownContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 25,
+    marginBottom: 15,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
+  dropdownText: {
+    color: "rgba(255, 255, 255, 0.7)",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  submitButtonContainer: {
+    position: "relative",
+    marginTop: 20,
+    marginBottom: 30,
+  },
   signupButton: {
     backgroundColor: "white",
     borderRadius: 25,
     paddingVertical: 15,
     alignItems: "center",
-    marginTop: 15,
-    marginBottom: 30,
+    minWidth: 200,
   },
   signupButtonText: {
     color: "#4864AC",
     fontSize: 16,
     fontWeight: "bold",
+    letterSpacing: 1,
   },
-  loginContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
+  termsContainer: {
     alignItems: "center",
+    marginBottom: 20,
+    paddingHorizontal: 10,
   },
-  loginText: {
+  termsText: {
     color: "rgba(255, 255, 255, 0.8)",
-    fontSize: 14,
+    fontSize: 11,
+    textAlign: "center",
+    lineHeight: 16,
   },
-  loginLink: {
-    color: "white",
-    fontSize: 14,
-    fontWeight: "bold",
+  linkText: {
+    textDecorationLine: "underline",
+  },
+  copyrightContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  copyrightText: {
+    color: "rgba(255, 255, 255, 0.6)",
+    fontSize: 10,
+    textAlign: "center",
+    letterSpacing: 0.5,
   },
 });
 

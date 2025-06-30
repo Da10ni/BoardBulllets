@@ -1,10 +1,12 @@
 // app/ResetPassword.tsx
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -59,62 +61,69 @@ const ResetPasswordScreen = () => {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <StatusBar backgroundColor="#4A90E2" barStyle="light-content" />
+      <StatusBar backgroundColor="#4864AC" barStyle="light-content" />
+
+      {/* Diagonal White Background */}
+      <View style={styles.whiteBackground} />
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
-          <Text style={styles.backButtonText}>â†</Text>
-        </TouchableOpacity>
         <Text style={styles.headerTitle}>BOARDBULLETS</Text>
+        <Text style={styles.headerSubtitle}>Learn & Earn</Text>
       </View>
 
-      {/* Logo */}
-      <View style={styles.logoContainer}>
-        <View style={styles.logoBackground}>
-          <View style={styles.logo} />
+      {/* Icon Container */}
+      <View style={styles.iconContainer}>
+        <View style={styles.iconCircle}>
+          <FontAwesome name="unlock-alt" size={40} color="#4864AC" />
         </View>
       </View>
 
-      {/* Form */}
-      <View style={styles.formContainer}>
-        <Text style={styles.title}>Reset Password</Text>
-        <Text style={styles.subtitle}>
-          Create a new password for your account
-        </Text>
+      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+        {/* Form */}
+        <View style={styles.formContainer}>
+          <Text style={styles.title}>RESET PASSWORD</Text>
+          <Text style={styles.subtitle}>
+            CREATE A NEW PASSWORD FOR YOUR BOARDBULLETS ACCOUNT.
+          </Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="New Password"
-          placeholderTextColor="rgba(255, 255, 255, 0.7)"
-          value={newPassword}
-          onChangeText={setNewPassword}
-          secureTextEntry
-        />
+          <View style={styles.inputContainer}>
+            <Ionicons name="lock-closed-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="NEW PASSWORD"
+              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              value={newPassword}
+              onChangeText={setNewPassword}
+              secureTextEntry
+            />
+          </View>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm New Password"
-          placeholderTextColor="rgba(255, 255, 255, 0.7)"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-        />
+          <View style={styles.inputContainer}>
+            <Ionicons name="lock-closed-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="CONFIRM NEW PASSWORD"
+              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry
+            />
+          </View>
 
-        <TouchableOpacity
-          style={styles.resetButton}
-          onPress={handleResetPassword}
-        >
-          <Text style={styles.resetButtonText}>Reset Password</Text>
-        </TouchableOpacity>
-
-        <View style={styles.backToLoginContainer}>
-          <Text style={styles.backToLoginText}>Remember your password? </Text>
-          <TouchableOpacity onPress={handleBackToLogin}>
-            <Text style={styles.backToLoginLink}>Log In</Text>
+          <TouchableOpacity
+            style={styles.resetButton}
+            onPress={handleResetPassword}
+          >
+            <Text style={styles.resetButtonText}>RESET PASSWORD</Text>
           </TouchableOpacity>
+
+          <View style={styles.copyright}>
+            <Text style={styles.statement}>COPYRIGHT (C) 2017 BOARDBULLETS,INC.</Text>
+            <Text style={styles.policy}>PRIVACY POLICY AND TERMS OF USE</Text>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
@@ -122,74 +131,93 @@ const ResetPasswordScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#4A90E2",
+    backgroundColor: "#4864AC",
+  },
+  whiteBackground: {
+    position: "absolute",
+    top: -170,
+    left: 40,
+    width: 50,
+    height: 570,
+    borderRadius: 360,
+    backgroundColor: "white",
+    transform: [{ skewY: "-40deg" }],
+    transformOrigin: "top left",
+    zIndex: 0,
   },
   header: {
-    flexDirection: "row",
     alignItems: "center",
-    paddingTop: 50,
+    paddingTop: 20,
     paddingHorizontal: 20,
     paddingBottom: 20,
-  },
-  backButton: {
-    marginRight: 20,
-  },
-  backButtonText: {
-    color: "white",
-    fontSize: 24,
-    fontWeight: "bold",
+    zIndex: 1,
   },
   headerTitle: {
     color: "white",
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
     letterSpacing: 1,
+    left: 90,
   },
-  logoContainer: {
+  headerSubtitle: {
+    color: "white",
+    fontSize: 16,
+    marginTop: 5,
+    left: 120,
+  },
+  iconContainer: {
     alignItems: "center",
-    marginVertical: 30,
+    marginTop: 100,
+    right: 5,
+    zIndex: 1,
   },
-  logoBackground: {
-    width: 60,
-    height: 60,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
-    borderRadius: 30,
+  iconCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
   },
-  logo: {
-    width: 30,
-    height: 15,
-    backgroundColor: "white",
-    borderRadius: 15,
-    transform: [{ rotate: "-45deg" }],
+  scrollContainer: {
+    flex: 1,
+    zIndex: 1,
   },
   formContainer: {
-    flex: 1,
     paddingHorizontal: 30,
+    paddingTop: 20,
+    paddingBottom: 30,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     color: "white",
-    marginBottom: 15,
+    marginBottom: 10,
     textAlign: "center",
   },
   subtitle: {
-    fontSize: 16,
-    color: "rgba(255, 255, 255, 0.8)",
+    fontSize: 12,
+    color: "rgba(255, 255, 255, 0.9)",
+    marginBottom: 40,
     textAlign: "center",
-    marginBottom: 30,
-    lineHeight: 22,
+    lineHeight: 16,
   },
-  input: {
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 25,
-    paddingHorizontal: 20,
-    paddingVertical: 15,
     marginBottom: 15,
+    paddingHorizontal: 20,
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    paddingVertical: 15,
     color: "white",
-    fontSize: 16,
+    fontSize: 14,
+    fontWeight: "500",
   },
   resetButton: {
     backgroundColor: "white",
@@ -200,24 +228,25 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   resetButtonText: {
-    color: "#4A90E2",
+    color: "#4864AC",
     fontSize: 16,
     fontWeight: "bold",
   },
-  backToLoginContainer: {
-    flexDirection: "row",
+  copyright: {
+    flex: 1,
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 70,
   },
-  backToLoginText: {
-    color: "rgba(255, 255, 255, 0.8)",
-    fontSize: 14,
+  statement: {
+    color: "#ebeae8",
+    fontSize: 10,
   },
-  backToLoginLink: {
-    color: "white",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
+  policy: {
+    color: "#ebeae8",
+    fontSize: 10,
+  }
 });
 
 export default ResetPasswordScreen;

@@ -98,12 +98,10 @@ const ForgotPasswordScreen = () => {
           <Text style={styles.sendButtonText}>Send Verification Code</Text>
         </TouchableOpacity>
 
-        <View style={styles.backToLoginContainer}>
-          <Text style={styles.backToLoginText}>Remember your password? </Text>
-          <TouchableOpacity onPress={handleBackToLogin}>
-            <Text style={styles.backToLoginLink}>Log In</Text>
-          </TouchableOpacity>
-        </View>
+          <View style={styles.copyright}>
+                    <Text style={styles.statement}>COPYRIGHT (C) 2017 BOARDBULLETS,INC.</Text>
+                    <Text style={styles.policy}>PRIVACY POLICY AND TERMS OF USE</Text>
+                  </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -206,6 +204,21 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 14,
     fontWeight: "bold",
+  },
+  copyright: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  statement: {
+    color: "#ebeae8",
+    fontSize: 10,
+  },
+  policy: {
+    color: "#ebeae8",
+    fontSize: 10,
   },
 });
 

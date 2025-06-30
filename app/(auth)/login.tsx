@@ -19,12 +19,14 @@ const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  
+  const [rememberMe, setRememberMe] = useState(false);
+
   const handleLogin = () => {
     if (!email || !password) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
+    console.log("Remember Me:", rememberMe);
     setShowAlert(true);
   };
 
@@ -40,6 +42,10 @@ const LoginScreen = () => {
     router.back();
   };
 
+  const toggleRememberMe = () => {
+    setRememberMe(!rememberMe);
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -52,10 +58,10 @@ const LoginScreen = () => {
         alertVisible={showAlert}
         onSuccess={() => router.replace("/(main)/(tabs)/(home)")}
       />
-      
+
       {/* Diagonal White Background */}
       <View style={styles.whiteBackground} />
-      
+
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>BOARDBULLETS</Text>
@@ -70,56 +76,92 @@ const LoginScreen = () => {
       </View>
 
       {/* Form */}
-      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-      <View style={styles.formContainer}>
-        <Text style={styles.title}>LOG IN</Text>
-        <Text style={styles.subtitle}>
-          PLEASE ENTER THE EMAIL ADDRESS ASSOCIATED WITH YOUR BOARDBULLETS ACCOUNT.
-        </Text>
+      <ScrollView
+        style={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.formContainer}>
+          <Text style={styles.title}>LOG IN</Text>
+          <Text style={styles.subtitle}>
+            PLEASE ENTER THE EMAIL ADDRESS ASSOCIATED WITH YOUR BOARDBULLETS
+            ACCOUNT.
+          </Text>
 
-        <View style={styles.inputContainer}>
-          <Ionicons name="mail-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
-          <TextInput
-            style={styles.input}
-            placeholder="EMAIL ADDRESS"
-            placeholderTextColor="rgba(255, 255, 255, 0.7)"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
-        </View>
+          <View style={styles.inputContainer}>
+            <Ionicons
+              name="mail-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="EMAIL ADDRESS"
+              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+          </View>
 
-        <View style={styles.inputContainer}>
-          <Ionicons name="lock-closed-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
-          <TextInput
-            style={styles.input}
-            placeholder="PASSWORD"
-            placeholderTextColor="rgba(255, 255, 255, 0.7)"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-        </View>
-
-        <TouchableOpacity
-          style={styles.forgotPassword}
-          onPress={handleForgotPassword}
-        >
-          <Text style={styles.forgotPasswordText}>Forget Password ? </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>LOG IN</Text>
-        </TouchableOpacity>
-
-        <View style={styles.signupContainer}>
-          <Text style={styles.signupText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={handleSignup}>
-            <Text style={styles.signupLink}>Sign Up</Text>
+          <View style={styles.inputContainer}>
+            <Ionicons
+              name="lock-closed-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="PASSWORD"
+              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+          </View>
+           <TouchableOpacity 
+            style={styles.rememberMeContainer} 
+            onPress={toggleRememberMe}
+            activeOpacity={0.7}
+          >
+            <View style={styles.checkboxContainer}>
+              <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
+                {rememberMe && (
+                  <Ionicons name="checkmark" size={12} color="#4864AC" />
+                )}
+              </View>
+            </View>
+            <Text style={styles.rememberMeText}>REMEMBER ME</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+            <Text style={styles.loginButtonText}>LOG IN</Text>
+          </TouchableOpacity>
+
+          <View style={styles.buttons}>
+            <TouchableOpacity onPress={handleSignup}>
+              <Text style={styles.signupLink}>CREATE AN ACCOUNT</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleForgotPassword}
+            >
+              <Text style={styles.forgotPasswordText}>FORGOT PASSWORD ? </Text>
+            </TouchableOpacity>
+          </View>
+
+
+
+          <View style={styles.copyright}>
+            <Text style={styles.statement}>COPYRIGHT (C) 2017 BOARDBULLETS,INC.</Text>
+            <Text style={styles.policy}>PRIVACY POLICY AND TERMS OF USE</Text>
+          </View>
+
+          {/* <View style={styles.signupContainer}>
+            <Text style={styles.signupText}>Don't have an account? </Text>
+          </View> */}
         </View>
-      </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -131,12 +173,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#4864AC",
   },
   whiteBackground: {
-   position: "absolute",
+    position: "absolute",
     top: -170,
     left: 40,
     width: 50,
     height: 570,
-    borderRadius:360,
+    borderRadius: 360,
     backgroundColor: "white",
     transform: [{ skewY: "-40deg" }],
     transformOrigin: "top left",
@@ -159,7 +201,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     letterSpacing: 1,
-    left:90,
+    left: 90,
   },
   headerSubtitle: {
     color: "white",
@@ -170,7 +212,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     alignItems: "center",
     marginTop: 100,
-    right:5,
+    right: 5,
   },
   iconCircle: {
     width: 80,
@@ -179,7 +221,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-   scrollContainer: {
+  scrollContainer: {
     flex: 1,
     zIndex: 1,
   },
@@ -221,11 +263,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
   },
-  forgotPassword: {
-    alignSelf: "flex-end",
-    marginBottom: 30,
-    marginTop: 10,
-  },
   forgotPasswordText: {
     color: "rgba(255, 255, 255, 0.8)",
     fontSize: 12,
@@ -243,20 +280,67 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  signupContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
   signupText: {
     color: "rgba(255, 255, 255, 0.8)",
     fontSize: 14,
   },
   signupLink: {
-    color: "white",
-    fontSize: 14,
-    fontWeight: "bold",
+     color: "rgba(255, 255, 255, 0.8)",
+    fontSize: 12,
+    fontWeight: "500"
   },
+  buttons: {
+    flex:1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+  },
+    rememberMeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 15,
+    marginTop: 5,
+    paddingHorizontal: 5,
+  },
+  checkboxContainer: {
+    marginRight: 12,
+  },
+  checkbox: {
+    width: 12,
+    height: 12,
+    borderRadius: 9,
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.7)",
+    backgroundColor: "transparent",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  checkboxChecked: {
+    backgroundColor: "white",
+    borderColor: "white",
+  },
+  rememberMeText: {
+    color: "rgba(255, 255, 255, 0.9)",
+    fontSize: 12,
+    fontWeight: "500",
+    letterSpacing: 0.5,
+  },
+  copyright: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  statement: {
+    color: "#ebeae8",
+    fontSize: 10,
+  },
+  policy: {
+    color: "#ebeae8",
+    fontSize: 10,
+  }
+
 });
 
 export default LoginScreen;
