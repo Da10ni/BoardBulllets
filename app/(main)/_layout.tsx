@@ -1,11 +1,10 @@
-// app/_layout.tsx
+// app/(main)/_layout.tsx
 import { drawerItems } from "@/constants/drawerOptions";
 import { Ionicons } from "@expo/vector-icons";
-import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { router, usePathname } from "expo-router";
 import { Drawer } from "expo-router/drawer";
-import React from "react";
+import React, { useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -15,17 +14,36 @@ import {
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Dropdown from "@/components/drowpdown/DropDown";
 
-// Custom Drawer Header Component
-interface CustomDrawerHeaderProps {
-  title: string;
-}
-
-function CustomDrawerHeader({ title }: CustomDrawerHeaderProps) {
+// Custom Header Component with Dropdown
+function CustomDrawerHeader({ title, more }) {
   const navigation = useNavigation();
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
+  };
+
+  const handleMorePress = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const handleDropdownOption = (option) => {
+    switch(option) {
+      case 'settings':
+        console.log('Settings pressed');
+        // router.push('/settings');
+        break;
+      case 'review':
+        console.log('Submit Review pressed');
+        router.push('/review');
+        break;
+      case 'terms':
+        console.log('Terms & Conditions pressed');
+        // router.push('/terms');
+        break;
+    }
   };
 
   return (
@@ -34,9 +52,20 @@ function CustomDrawerHeader({ title }: CustomDrawerHeaderProps) {
         <TouchableOpacity onPress={openDrawer} style={headerStyles.menuButton}>
           <Ionicons name="menu" size={24} color="#4864AC" />
         </TouchableOpacity>
+        
         <Text style={headerStyles.title}>{title}</Text>
-        <View style={headerStyles.placeholder} />
+        
+        <TouchableOpacity onPress={handleMorePress} style={headerStyles.moreButton}>
+          <Text style={headerStyles.moreIcon}>{more}</Text>
+        </TouchableOpacity>
       </View>
+      
+      {/* Dropdown Component */}
+      <Dropdown 
+        visible={showDropdown}
+        onClose={() => setShowDropdown(false)}
+        onOptionSelect={handleDropdownOption}
+      />
     </SafeAreaView>
   );
 }
@@ -52,31 +81,40 @@ const headerStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    marginBottom:10,
-    //paddingVertical: 12,
+    marginBottom: 10,
     height: 30,
   },
   menuButton: {
-    //padding: 8,
     marginLeft: 8,
-    color: "#4864AC",
+    padding: 4,
   },
   title: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#4864AC",
     letterSpacing: 0.5,
+    flex: 1,
+    textAlign: "center",
   },
-  // placeholder: {
-  //   width: 40,
-  // },
+  moreButton: {
+    padding: 4,
+  },
+  moreIcon: {
+    fontSize: 22,
+    color: "#4864AC",
+    fontWeight: "bold",
+  },
 });
 
 // Custom Drawer Content Component
-
-function CustomDrawerContent(props: DrawerContentComponentProps) {
+function CustomDrawerContent(props) {
   const currentPath = usePathname();
-  const handleNavigation = (route: string) => {
+  
+  interface NavigationProps {
+    route: string;
+  }
+
+  const handleNavigation = ({ route }: NavigationProps): void => {
     router.navigate(route);
   };
 
@@ -185,23 +223,6 @@ const drawerStyles = StyleSheet.create({
     marginTop: 2,
     letterSpacing: 0.3,
   },
-  completionContainer: {
-    alignItems: "center",
-  },
-  completionCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    borderWidth: 2,
-    borderColor: "rgba(255, 255, 255, 0.3)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  completionText: {
-    color: "#ffffff",
-    fontSize: 12,
-    fontWeight: "bold",
-  },
   navigationSection: {
     flex: 1,
     paddingHorizontal: 20,
@@ -276,8 +297,17 @@ export default function RootLayout() {
           options={{
             drawerLabel: "Home",
             title: "BoardBullets",
-            
-            header: () => <CustomDrawerHeader title="BOARDBULLETS" />,
+            header: () => <CustomDrawerHeader title="BOARDBULLETS" more="⋮" />,
+          }}
+        />
+        
+        {/* Review Screen */}
+        <Drawer.Screen
+          name="review"
+          options={{
+            drawerLabel: "Review",
+            title: "Review",
+            headerShown: false, // Review screen ka apna header hai
           }}
         />
       </Drawer>

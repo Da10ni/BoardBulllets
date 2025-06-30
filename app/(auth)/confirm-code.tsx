@@ -1,7 +1,7 @@
 // app/Verification.tsx
 import AlertPopup from "@/components/Alert/Alert";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useState } from "react";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -18,22 +18,35 @@ const VerificationScreen = () => {
   const { email } = useLocalSearchParams<{ email: string }>();
   const [verificationCode, setVerificationCode] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+  const [lastRouteName,setLastRouteName] = useState("")
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    // Get the last route in the stack
+    const state = navigation.getState();
+    const lastRoute = state?.routes?.[state.routes.length - 2];      
+    if (lastRoute) {
+      console.log('Last screen was:', lastRoute.name); // Name of the last screen
+      setLastRouteName(lastRoute.name)
+    }
+  }, []);
+
+
   const handleVerifyCode = () => {
     if (!verificationCode) {
       Alert.alert("Error", "Please enter the verification code.");
       return;
     }
-
     if (verificationCode.length < 4) {
       Alert.alert("Error", "Please enter a valid verification code.");
       return;
     }
-
+console.log(lastRouteName)
     // Here you would typically verify the code
     Alert.alert("Code Verified", "Your code has been verified successfully.", [
       {
         text: "OK",
-        onPress: () => router.push("/login"),
+        onPress: () => { lastRouteName === "register" ? router.push("/login") : router.push("/change-password")},
       },
     ]);
   };

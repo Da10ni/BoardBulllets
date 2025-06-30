@@ -39,7 +39,9 @@ export default function QuizFlow() {
   const [currentScreen, setCurrentScreen] = useState("timer");
   const [selectedTime, setSelectedTime] = useState(10);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [userAnswers, setUserAnswers] = useState<{ [key: number]: number | null }>({});
+  const [userAnswers, setUserAnswers] = useState<{
+    [key: number]: number | null;
+  }>({});
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
@@ -153,8 +155,8 @@ export default function QuizFlow() {
   };
 
   const renderTimerScreen = () => (
-    <ScrollView 
-      contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.timerSection}>
@@ -205,7 +207,7 @@ export default function QuizFlow() {
   );
 
   const renderQuestionScreen = () => (
-    <ScrollView 
+    <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
       showsVerticalScrollIndicator={false}
     >
@@ -222,7 +224,7 @@ export default function QuizFlow() {
             <Ionicons name="menu" size={24} color="#666" />
           </TouchableOpacity>
         </View>
-        
+
         <View style={styles.progressDots}>
           {QUIZ_DATA.map((_, index) => (
             <View
@@ -235,9 +237,9 @@ export default function QuizFlow() {
             />
           ))}
         </View>
-        
+
         <Text style={styles.questionText}>{currentQuestion.question}</Text>
-        
+
         <View style={styles.optionsContainer}>
           {currentQuestion.options.map((option, index) => (
             <TouchableOpacity
@@ -266,7 +268,7 @@ export default function QuizFlow() {
             </TouchableOpacity>
           ))}
         </View>
-        
+
         {/* Next Button - Now in scrollable area */}
         <View style={{ marginTop: 30, marginBottom: 20 }}>
           <TouchableOpacity
@@ -357,9 +359,9 @@ export default function QuizFlow() {
   );
 
   const renderCircle = (
-    label: string, 
-    value: string | number, 
-    ref: React.RefObject<any>, 
+    label: string,
+    value: string | number,
+    ref: React.RefObject<any>,
     color: string
   ) => (
     <View style={{ alignItems: "center", margin: 10 }}>
@@ -448,9 +450,27 @@ export default function QuizFlow() {
     // Question answers pattern from image
     const questionAnswers = [
       // Row 1: 1-10
-      true, false, true, true, false, false, null, true, false, true,
+      true,
+      false,
+      true,
+      true,
+      false,
+      false,
+      null,
+      true,
+      false,
+      true,
       // Row 2: 11-20
-      null, false, true, true, null, false, false, true, true, true,
+      null,
+      false,
+      true,
+      true,
+      null,
+      false,
+      false,
+      true,
+      true,
+      true,
     ];
 
     return (
@@ -461,13 +481,7 @@ export default function QuizFlow() {
       >
         {/* Header with Arrow */}
         <View style={summaryStyles.header}>
-          <TouchableOpacity style={summaryStyles.backArrow}>
-            <Text style={summaryStyles.arrowText}>←</Text>
-          </TouchableOpacity>
           <Text style={summaryStyles.headerTitle}>QUIZ SUMMARY</Text>
-          <TouchableOpacity style={summaryStyles.downArrow}>
-            <Text style={summaryStyles.arrowText}>↓</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Circles Grid - Exactly like image */}
@@ -499,15 +513,8 @@ export default function QuizFlow() {
             {/* Row 1: Questions 1-10 */}
             <View style={summaryStyles.dotsRow}>
               {questionAnswers
-                .slice(0, 10)
+                .slice(0)
                 .map((isCorrect, i) => renderReviewDot(i, isCorrect))}
-            </View>
-
-            {/* Row 2: Questions 11-20 */}
-            <View style={summaryStyles.dotsRow}>
-              {questionAnswers
-                .slice(10, 20)
-                .map((isCorrect, i) => renderReviewDot(i + 10, isCorrect))}
             </View>
           </View>
         </View>
@@ -528,7 +535,7 @@ export default function QuizFlow() {
     const isCorrect = currentAnswer === currentQuestion.correctAnswer;
 
     return (
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={{ flexGrow: 1, padding: 20 }}
         showsVerticalScrollIndicator={false}
       >
@@ -619,6 +626,7 @@ export default function QuizFlow() {
   const summaryStyles = StyleSheet.create({
     scrollContainer: {
       flex: 1,
+      backgroundColor: "white",
     },
     container: {
       alignItems: "center",
@@ -629,20 +637,9 @@ export default function QuizFlow() {
     header: {
       flexDirection: "row",
       alignItems: "center",
-      justifyContent: "space-between",
+      justifyContent: "center",
       width: "100%",
       marginBottom: 30,
-    },
-    backArrow: {
-      padding: 10,
-    },
-    downArrow: {
-      padding: 10,
-    },
-    arrowText: {
-      fontSize: 24,
-      color: "#333",
-      fontWeight: "bold",
     },
     headerTitle: {
       fontSize: 16,
@@ -696,9 +693,10 @@ export default function QuizFlow() {
       alignItems: "center",
     },
     dotsRow: {
-      flexDirection: "row",
-      marginBottom: 15,
-      justifyContent: "center",
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      gap: 12
     },
     reviewDot: {
       width: 32,

@@ -37,7 +37,7 @@ const ProfileScreen = () => {
                 style={styles.editButton}
                 onPress={() => router.push("/editProfile")}
               >
-                {/* <Text style={styles.editIcon}>✏️</Text> */}
+                <Icon name="edit" size={12} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
 
@@ -174,18 +174,28 @@ const styles = StyleSheet.create({
   },
   editButton: {
     position: "absolute",
-    right: -5,
-    top: -5,
-    width: 30,
-    height: 30,
-   // backgroundColor: "#999",
-    borderRadius: 15,
+    right: 0,
+    top: 2,
+    width: 28,
+    height: 28,
+    backgroundColor: "#4864AC",
+    borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   editIcon: {
     color: "#FFFFFF",
-    fontSize: 12,
+    fontSize: 18,
   },
   nameSection: {
     flex: 1,
