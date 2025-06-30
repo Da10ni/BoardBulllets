@@ -44,14 +44,31 @@ const HomeScreen: React.FC = () => {
   const incorrectPercentage =
     stats.total > 0 ? Math.round((stats.incorrect / stats.total) * 100) : 0;
 
+  // Fix: Generic string type instead of specific union type
   const handleNavPress = (id: string) => {
-    console.log(`Navigating to: ${id}`);
-    // Handle navigation here
+    // Type assertion ya conditional routing
+    switch(id) {
+      case '/(drawer)':
+        router.push('/(drawer)');
+        break;
+      case '/questionsScreen':
+        router.push('/questionsScreen');
+        break;
+      case '/quiz':
+        router.push('/quiz');
+        break;
+      case '/bbExplore':
+        router.push('/bbExplore');
+        break;
+      default:
+        console.log(`Unknown route: ${id}`);
+    }
   };
 
   const handleMenuPress = () => {
     navigation.dispatch(DrawerActions.openDrawer()); // ✅ safe
   };
+  
   const handleMorePress = () => {
     console.log("More pressed");
   };
@@ -60,13 +77,15 @@ const HomeScreen: React.FC = () => {
     console.log("Submit question pressed");
     router.push("/questionsScreen");
   };
+  
   const handleMyQuiz = () => {
-    console.log("My performance pressed");
+    console.log("My quiz pressed");
     router.push("/quiz");
   };
 
   const handleMyPerformance = () => {
     console.log("My performance pressed");
+    router.push("/performance");
   };
 
   const handleExplore = () => {
@@ -94,34 +113,33 @@ const HomeScreen: React.FC = () => {
             <Text style={styles.homeLabel}>HOME</Text>
           </View>
 
-          {/* Main Progress Circle */}
-          <View style={styles.progressview}>
+          {/* Progress and Stats Combined Section */}
+          <View style={styles.progressAndStatsSection}>
+            {/* Main Progress Circle */}
             <View style={styles.progressSection}>
-              <CircularProgressComponent
-                size={180}
-                width={10}
-                fill={progressFill}
-                centerText={stats.total.toString()}
-                centerSubText="QUESTIONS"
-                tintColor={Colors.primary}
-                backgroundColor={Colors.secondary}
-              />
+              <View style={styles.mainCircleContainer}>
+                <CircularProgressComponent
+                  size={180}
+                  strokeWidth={10}
+                  correctPercentage={correctPercentage}
+                  incorrectPercentage={incorrectPercentage}
+                  centerText={stats.total.toString()}
+                  centerSubText="QUESTIONS"
+                />
+              </View>
             </View>
 
-            {/* Stats Row */}
-            <View style={styles.statsRow}>
+            {/* Stats Container */}
+            <View style={styles.statsContainer}>
               <View style={styles.statItem}>
-                <View style={styles.statDivider} />
-                <Text
-                  style={[styles.statPercentage, { color: Colors.success }]}
-                >
+                <Text style={[styles.statValue, styles.correctStat]}>
                   {stats.correct}({correctPercentage}%)
                 </Text>
                 <Text style={styles.statLabel}>CORRECT QUESTIONS</Text>
               </View>
 
               <View style={styles.statItem}>
-                <Text style={[styles.statPercentage, { color: Colors.error }]}>
+                <Text style={[styles.statValue, styles.incorrectStat]}>
                   {stats.incorrect}({incorrectPercentage}%)
                 </Text>
                 <Text style={styles.statLabel}>INCORRECT QUESTIONS</Text>
@@ -137,68 +155,93 @@ const HomeScreen: React.FC = () => {
             <Text style={styles.viewMoreText}>VIEW MORE</Text>
           </TouchableOpacity>
 
-          {/* Bottom Stats Cards */}
-          <View style={styles.bottomStatsContainer}>
-            <StatCard
-              percentage={`${correctPercentage}%`}
-              label="CUMULATIVE"
-              sublabel="PERCENTAGE"
-              color={Colors.text.light}
-            />
-            <StatCard
-              percentage={`${stats.correct}/${stats.total}`}
-              label="SUBJECT"
-              sublabel="WISE COUNT"
-              color={Colors.text.light}
-            />
-            <StatCard
-              percentage={stats.correct.toString()}
-              label="TOTAL"
-              sublabel="CORRECT ANSWER"
-              color={Colors.text.light}
-            />
+          {/* Stat Circles Container */}
+          <View style={styles.statCirclesContainer}>
+            <View style={styles.statCircleContainer}>
+              <View style={styles.statCircle}>
+                <Text style={[styles.statCirclePercentage, { color: Colors.primary }]}>
+                  {correctPercentage}%
+                </Text>
+              </View>
+              <Text style={styles.statCircleLabel}>CUMULATIVE{"\n"}PERCENTAGE</Text>
+            </View>
+
+            <View style={styles.statCircleContainer}>
+              <View style={styles.statCircle}>
+                <Text style={[styles.statCirclePercentage, { color: Colors.primary }]}>
+                  {stats.correct}/{stats.total}
+                </Text>
+              </View>
+              <Text style={styles.statCircleLabel}>SUBJECT{"\n"}WISE COUNT</Text>
+            </View>
+
+            <View style={styles.statCircleContainer}>
+              <View style={styles.statCircle}>
+                <Text style={[styles.statCirclePercentage, { color: Colors.primary }]}>
+                  {stats.correct}
+                </Text>
+              </View>
+              <Text style={styles.statCircleLabel}>TOTAL{"\n"}CORRECT ANSWER</Text>
+            </View>
           </View>
 
-          <View style={styles.iconGrid}>
-            <View style={styles.row}>
+          {/* Action Buttons */}
+          <View style={styles.actionButtonsContainer}>
+            <View style={styles.actionButtonsRow}>
               <TouchableOpacity
                 style={[
-                  styles.cell,
-                  styles.centerBorderRight,
-                  styles.centerBorderBottom,
+                  styles.actionButton,
+                  styles.actionButtonBorderRight,
+                  styles.actionButtonBorderBottom,
                 ]}
                 onPress={handleMyQuiz}
               >
-                <Feather name="send" size={28} color="#3257a8" />
-                <Text style={styles.cellLabel}>QUIZ ME</Text>
+                <View style={styles.actionButtonIcon}>
+                  <Feather name="send" size={28} color="#3257a8" />
+                </View>
+                <Text style={styles.actionButtonLabel}>QUIZ ME</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.cell, styles.centerBorderBottom]}
+                style={[
+                  styles.actionButton,
+                  styles.actionButtonBorderBottom,
+                ]}
                 onPress={handleSubmitQuestion}
               >
-                <Feather name="upload-cloud" size={28} color="#3257a8" />
-                <Text style={styles.cellLabel}>SUBMIT A QUESTION</Text>
+                <View style={styles.actionButtonIcon}>
+                  <Feather name="upload-cloud" size={28} color="#3257a8" />
+                </View>
+                <Text style={styles.actionButtonLabel}>SUBMIT A QUESTION</Text>
               </TouchableOpacity>
             </View>
 
-            <View style={styles.row}>
+            <View style={styles.actionButtonsRow}>
               <TouchableOpacity
-                style={[styles.cell, styles.centerBorderRight]}
+                style={[
+                  styles.actionButton,
+                  styles.actionButtonBorderRight,
+                ]}
                 onPress={handleMyPerformance}
               >
-                <Feather name="pie-chart" size={28} color="#3257a8" />
-                <Text style={styles.cellLabel}>MY PERFORMANCE</Text>
+                <View style={styles.actionButtonIcon}>
+                  <Feather name="pie-chart" size={28} color="#3257a8" />
+                </View>
+                <Text style={styles.actionButtonLabel}>MY PERFORMANCE</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.cell} onPress={handleExplore}>
-                <Ionicons name="bulb-outline" size={28} color="#3257a8" />
-                <Text style={styles.cellLabel}>BB EXPLORE</Text>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={handleExplore}
+              >
+                <View style={styles.actionButtonIcon}>
+                  <Ionicons name="bulb-outline" size={28} color="#3257a8" />
+                </View>
+                <Text style={styles.actionButtonLabel}>BB EXPLORE</Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          <View style={styles.spacer} />
         </ScrollView>
 
         {/* Bottom Navigation */}
@@ -207,4 +250,5 @@ const HomeScreen: React.FC = () => {
     </>
   );
 };
+
 export default HomeScreen;

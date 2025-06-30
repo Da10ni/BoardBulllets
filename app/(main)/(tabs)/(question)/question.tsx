@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from "react-native";
 
 interface QuestionScreenProps {
@@ -36,59 +37,68 @@ const QuestionScreen: React.FC<QuestionScreenProps> = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#6C7B7F" barStyle="light-content" />
 
-      {/* Content */}
-      <View style={styles.content}>
-        {/* Submit a Question Section */}
-        <View style={styles.submitSection}>
-          <Text style={styles.submitTitle}>SUBMIT A QUESTION</Text>
-          <Text style={styles.submitDescription}>
-            THE DISPLAYING CONTENT WILL GIVE{"\n"}
-            BY NISARG EXAMPLE VESTIBULUM VE-{"\n"}
-            HICULA A PARTURIENT METUS. IPSUM{"\n"}
-            CONSEQUAT ADIPISCING A ADIPISCING.
-          </Text>
-          <TouchableOpacity style={styles.submitButtonContainer}>
-            <Text style={styles.submitButtonText}>
-              ENTER YOUR QUESTION (E.G.{"\n"}
-              ASSOCIATED WITH A X-RAY SHOWING{"\n"}
-              FEMORAL HEAD SCLEROSIS?) MAX{"\n"}
-              CHAR. 300
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Content */}
+        <View style={styles.content}>
+          {/* Submit a Question Section */}
+          <View style={styles.submitSection}>
+            <Text style={styles.submitTitle}>SUBMIT A QUESTION</Text>
+            <Text style={styles.submitDescription}>
+              THE DISPLAYING CONTENT WILL GIVE{"\n"}
+              BY NISARG EXAMPLE VESTIBULUM VE-{"\n"}
+              HICULA A PARTURIENT METUS. IPSUM{"\n"}
+              CONSEQUAT ADIPISCING A ADIPISCING.
             </Text>
-          </TouchableOpacity>
-
-          {/* Answer Options */}
-          <View style={styles.answersContainer}>
-            <TouchableOpacity
-              style={styles.correctAnswerButton}
-              onPress={handleCorrectAnswer}
-            >
-              <Text style={styles.correctAnswerText}>CORRECT ANSWER</Text>
+            <TouchableOpacity style={styles.submitButtonContainer}>
+              <Text style={styles.submitButtonText}>
+                ENTER YOUR QUESTION (E.G.{"\n"}
+                ASSOCIATED WITH A X-RAY SHOWING{"\n"}
+                FEMORAL HEAD SCLEROSIS?) MAX{"\n"}
+                CHAR. 300
+              </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.distractorButton}
-              onPress={handleDistractor1}
-            >
-              <Text style={styles.distractorText}>DISTRACTOR 1</Text>
-            </TouchableOpacity>
+            {/* Answer Options */}
+            <View style={styles.answersContainer}>
+              <TouchableOpacity
+                style={styles.correctAnswerButton}
+                onPress={handleCorrectAnswer}
+              >
+                <Text style={styles.correctAnswerText}>CORRECT ANSWER</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.distractorButton}
-              onPress={handleDistractor2}
-            >
-              <Text style={styles.distractorText}>DISTRACTOR 2</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.distractorButton}
+                onPress={handleDistractor1}
+              >
+                <Text style={styles.distractorText}>DISTRACTOR 1</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.distractorButton}
+                onPress={handleDistractor2}
+              >
+                <Text style={styles.distractorText}>DISTRACTOR 2</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
 
-        {/* Next Button */}
-        <TouchableOpacity
-          style={styles.nextButton}
-          onPress={() => router.push("/addQuestion")}
-        >
-          <MaterialIcons name="arrow-forward" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
+          {/* Spacer for bottom padding */}
+          <View style={styles.spacer} />
+        </View>
+      </ScrollView>
+
+      {/* Fixed Next Button - Outside ScrollView */}
+      <TouchableOpacity
+        style={styles.fixedNextButton}
+        onPress={() => router.push("/addQuestion")}
+      >
+        <MaterialIcons name="arrow-forward" size={24} color="white" />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -97,12 +107,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F5F5F5",
-    marginTop: 56,
+    marginTop: 20,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
   },
   content: {
     flex: 1,
     padding: 20,
-    position: "relative",
   },
   submitSection: {
     backgroundColor: "transparent",
@@ -173,7 +189,28 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     letterSpacing: 0.5,
   },
+  nextButtonContainer: {
+    alignItems: "flex-end",
+    marginTop: 30,
+    marginBottom: 20,
+  },
   nextButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#6C7B7F",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  fixedNextButton: {
     position: "absolute",
     bottom: 30,
     right: 30,
@@ -191,6 +228,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  spacer: {
+    height: 50,
   },
 });
 

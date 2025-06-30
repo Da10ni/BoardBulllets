@@ -36,6 +36,7 @@ export const styles = StyleSheet.create({
   progressSection: {
     alignItems: "center",
     justifyContent: "center",
+    paddingVertical: 30,
   },
   mainCircleContainer: {
     justifyContent: "center",
@@ -60,14 +61,20 @@ export const styles = StyleSheet.create({
     letterSpacing: 1,
   },
 
-  // Stats container
+  // Stats container - FIXED: Added missing statsRow
   statsContainer: {
     justifyContent: "center",
-    marginLeft: 30,
-    flex: 0,
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  statsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   statItem: {
     alignItems: "flex-start",
+    flex: 1,
     marginBottom: 15,
   },
   statValue: {

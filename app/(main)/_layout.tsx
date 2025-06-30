@@ -8,12 +8,12 @@ import { Drawer } from "expo-router/drawer";
 import React from "react";
 import {
   Image,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Custom Drawer Header Component

@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from "react-native";
 
 const SettingsScreen = () => {
@@ -46,38 +47,47 @@ const SettingsScreen = () => {
         <Text style={styles.headerTitle}>BOARDBULLETS</Text>
       </View>
 
-      {/* Page Title */}
-      <Text style={styles.pageTitle}>SETTINGS</Text>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Page Title */}
+        <Text style={styles.pageTitle}>SETTINGS</Text>
 
-      {/* Gray Background Section */}
-      <View style={styles.graySection} />
+        {/* Gray Background Section */}
+        <View style={styles.graySection} />
 
-      {/* User Info Section */}
-      <View style={styles.userInfoSection}>
-        <Text style={styles.userName}>JOHN DOE</Text>
-        <Text style={styles.userEmail}>johndoe@gmail.com</Text>
-      </View>
+        {/* User Info Section */}
+        <View style={styles.userInfoSection}>
+          <Text style={styles.userName}>JOHN DOE</Text>
+          <Text style={styles.userEmail}>johndoe@gmail.com</Text>
+        </View>
 
-      {/* Action Buttons */}
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={handleDeleteAccount}
-        >
-          <Text style={styles.buttonText}>DELETE ACCOUNT</Text>
-        </TouchableOpacity>
+        {/* Action Buttons */}
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={handleDeleteAccount}
+          >
+            <Text style={styles.buttonText}>DELETE ACCOUNT</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={handleChangePassword}
-        >
-          <Text style={styles.buttonText}>CHANGE PASSWORD</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={handleChangePassword}
+          >
+            <Text style={styles.buttonText}>CHANGE PASSWORD</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton} onPress={handleLogOut}>
-          <Text style={styles.buttonText}>LOG OUT</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity style={styles.actionButton} onPress={handleLogOut}>
+            <Text style={styles.buttonText}>LOG OUT</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Spacer for bottom padding */}
+        <View style={styles.spacer} />
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -86,6 +96,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
   },
   header: {
     alignItems: "center",
@@ -154,6 +171,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     letterSpacing: 1,
+  },
+  spacer: {
+    height: 50,
   },
 });
 

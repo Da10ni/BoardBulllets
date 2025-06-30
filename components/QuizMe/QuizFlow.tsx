@@ -37,8 +37,8 @@ export default function QuizFlow() {
   const [currentScreen, setCurrentScreen] = useState('timer'); // timer, question, summary, results, home
   const [selectedTime, setSelectedTime] = useState(10);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [userAnswers, setUserAnswers] = useState({});
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [userAnswers, setUserAnswers] = useState<{ [key: number]: number | null }>({});
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
@@ -49,7 +49,7 @@ export default function QuizFlow() {
 
   // Timer countdown effect
   useEffect(() => {
-    let interval;
+    let interval: ReturnType<typeof setInterval>;
     if (quizStarted && timeRemaining > 0 && currentScreen === 'question') {
       interval = setInterval(() => {
         setTimeRemaining(time => {
@@ -64,7 +64,11 @@ export default function QuizFlow() {
     return () => clearInterval(interval);
   }, [quizStarted, timeRemaining, currentScreen]);
 
-  const handleNavPress = (id) => {
+  interface NavPressProps {
+    id: string;
+  }
+
+  const handleNavPress = (id: string): void => {
     console.log(`Navigating to: ${id}`);
   };
 
@@ -76,7 +80,11 @@ export default function QuizFlow() {
     setUserAnswers({});
   };
 
-  const handleAnswerSelect = (answerIndex) => {
+  interface AnswerSelectHandler {
+    (answerIndex: number): void;
+  }
+
+  const handleAnswerSelect: AnswerSelectHandler = (answerIndex) => {
     setSelectedAnswer(answerIndex);
   };
 
@@ -128,7 +136,11 @@ export default function QuizFlow() {
     return { correct, total: totalQuestions, percentage: Math.round((correct / totalQuestions) * 100) };
   };
 
-  const formatTime = (seconds) => {
+  interface TimeFormatter {
+    (seconds: number): string;
+  }
+
+  const formatTime: TimeFormatter = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;

@@ -552,7 +552,7 @@ export default function QuizFlow() {
 
         <View style={styles.homeSection}>
           <Text style={styles.homeLabel}>
-            {currentScreen === "timer" && "QUIZ ME"}
+            {currentScreen === "timer" && ""}
             {currentScreen === "question" && "QUIZ IN PROGRESS"}
             {currentScreen === "summary" && "QUIZ COMPLETE"}
             {currentScreen === "results" && "QUIZ REVIEW"}

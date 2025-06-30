@@ -39,8 +39,8 @@ export default function QuizFlow() {
   const [currentScreen, setCurrentScreen] = useState("timer");
   const [selectedTime, setSelectedTime] = useState(10);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [userAnswers, setUserAnswers] = useState({});
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [userAnswers, setUserAnswers] = useState<{ [key: number]: number | null }>({});
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
@@ -50,10 +50,10 @@ export default function QuizFlow() {
   const currentQuestion = QUIZ_DATA[currentQuestionIndex];
   const totalQuestions = QUIZ_DATA.length;
 
-  const completedAnim = useRef(null);
-  const incorrectAnim = useRef(null);
-  const pointsAnim = useRef(null);
-  const rankAnim = useRef(null);
+  const completedAnim = useRef<any>(null);
+  const incorrectAnim = useRef<any>(null);
+  const pointsAnim = useRef<any>(null);
+  const rankAnim = useRef<any>(null);
 
   // Timer countdown effect
   useEffect(() => {
@@ -153,19 +153,11 @@ export default function QuizFlow() {
   };
 
   const renderTimerScreen = () => (
-    <View style={{ flex: 1 }}>
-      <View
-        style={[
-          styles.timerSection,
-          {
-            position: "absolute",
-            top: 290,
-            width: "100%",
-            alignSelf: "center",
-            // zIndex: 999, // ensures it's above other content
-          },
-        ]}
-      >
+    <ScrollView 
+      contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={styles.timerSection}>
         <View style={styles.iconsRow}>
           <View style={styles.iconContainer}>
             <Feather name="shuffle" size={24} color="#ADB5BD" />
@@ -209,79 +201,89 @@ export default function QuizFlow() {
           <Text style={styles.startQuizButtonText}>START QUIZ</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 
   const renderQuestionScreen = () => (
-    <View style={styles.questionContainer}>
-      <View style={styles.questionHeader}>
-        <View style={styles.timerDisplay}>
-          <Ionicons name="time-outline" size={16} color="#666" />
-          <Text style={styles.timerText}>{formatTime(timeRemaining)}</Text>
+    <ScrollView 
+      contentContainerStyle={{ flexGrow: 1 }}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={styles.questionContainer}>
+        <View style={styles.questionHeader}>
+          <View style={styles.timerDisplay}>
+            <Ionicons name="time-outline" size={16} color="#666" />
+            <Text style={styles.timerText}>{formatTime(timeRemaining)}</Text>
+          </View>
+          <Text style={styles.questionCounter}>
+            QUESTION {currentQuestionIndex + 1}
+          </Text>
+          <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+            <Ionicons name="menu" size={24} color="#666" />
+          </TouchableOpacity>
         </View>
-        <Text style={styles.questionCounter}>
-          QUESTION {currentQuestionIndex + 1}
-        </Text>
-        <TouchableOpacity onPress={() => setIsModalVisible(true)}>
-          <Ionicons name="menu" size={24} color="#666" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.progressDots}>
-        {QUIZ_DATA.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.progressDot,
-              index < currentQuestionIndex && styles.completedDot,
-              index === currentQuestionIndex && styles.activeDot,
-            ]}
-          />
-        ))}
-      </View>
-      <Text style={styles.questionText}>{currentQuestion.question}</Text>
-      <View style={styles.optionsContainer}>
-        {currentQuestion.options.map((option, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              styles.optionButton,
-              selectedAnswer === index && styles.selectedOption,
-              showCorrectAnswer &&
-                index === currentQuestion.correctAnswer &&
-                styles.correctOption,
-              showCorrectAnswer &&
-                selectedAnswer === index &&
-                selectedAnswer !== currentQuestion.correctAnswer &&
-                styles.incorrectOption,
-            ]}
-            onPress={() => !showCorrectAnswer && handleAnswerSelect(index)}
-          >
-            <Text
+        
+        <View style={styles.progressDots}>
+          {QUIZ_DATA.map((_, index) => (
+            <View
+              key={index}
               style={[
-                styles.optionText,
-                selectedAnswer === index && styles.selectedOptionText,
+                styles.progressDot,
+                index < currentQuestionIndex && styles.completedDot,
+                index === currentQuestionIndex && styles.activeDot,
               ]}
+            />
+          ))}
+        </View>
+        
+        <Text style={styles.questionText}>{currentQuestion.question}</Text>
+        
+        <View style={styles.optionsContainer}>
+          {currentQuestion.options.map((option, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.optionButton,
+                selectedAnswer === index && styles.selectedOption,
+                showCorrectAnswer &&
+                  index === currentQuestion.correctAnswer &&
+                  styles.correctOption,
+                showCorrectAnswer &&
+                  selectedAnswer === index &&
+                  selectedAnswer !== currentQuestion.correctAnswer &&
+                  styles.incorrectOption,
+              ]}
+              onPress={() => !showCorrectAnswer && handleAnswerSelect(index)}
             >
-              {option}
+              <Text
+                style={[
+                  styles.optionText,
+                  selectedAnswer === index && styles.selectedOptionText,
+                ]}
+              >
+                {option}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+        
+        {/* Next Button - Now in scrollable area */}
+        <View style={{ marginTop: 30, marginBottom: 20 }}>
+          <TouchableOpacity
+            style={[
+              styles.nextButton,
+              selectedAnswer === null && styles.disabledButton,
+            ]}
+            onPress={handleNextQuestion}
+            disabled={selectedAnswer === null}
+          >
+            <Text style={styles.nextButtonText}>
+              {currentQuestionIndex === totalQuestions - 1
+                ? "FINISH QUIZ"
+                : "NEXT QUESTION"}
             </Text>
           </TouchableOpacity>
-        ))}
-      </View>
-      <View style={{ position: "absolute", bottom: -20, left: 20, right: 20 }}>
-        <TouchableOpacity
-          style={[
-            styles.nextButton,
-            selectedAnswer === null && styles.disabledButton,
-          ]}
-          onPress={handleNextQuestion}
-          disabled={selectedAnswer === null}
-        >
-          <Text style={styles.nextButtonText}>
-            {currentQuestionIndex === totalQuestions - 1
-              ? "FINISH QUIZ"
-              : "NEXT QUESTION"}
-          </Text>
-        </TouchableOpacity>
+        </View>
       </View>
 
       <Modal
@@ -351,49 +353,15 @@ export default function QuizFlow() {
           </View>
         </View>
       </Modal>
-    </View>
+    </ScrollView>
   );
 
-  //   const renderSummaryScreen = () => {
-  //     const score = calculateScore();
-
-  //     return (
-  //       <View style={styles.summaryContainer}>
-  //         <Text style={styles.summaryTitle}>QUIZ SUMMARY</Text>
-
-  //         <View style={styles.scoreContainer}>
-  //           <View style={styles.scoreCircle}>
-  //             <Text style={styles.scorePercentage}>{score.percentage}%</Text>
-  //             <Text style={styles.scoreLabel}>SCORE</Text>
-  //           </View>
-  //         </View>
-
-  //         <View style={styles.statsContainer}>
-  //           <View style={styles.statItem}>
-  //             <Text style={styles.statNumber}>{score.correct}</Text>
-  //             <Text style={styles.statLabel}>CORRECT</Text>
-  //           </View>
-  //           <View style={styles.statItem}>
-  //             <Text style={styles.statNumber}>{score.total - score.correct}</Text>
-  //             <Text style={styles.statLabel}>INCORRECT</Text>
-  //           </View>
-  //           <View style={styles.statItem}>
-  //             <Text style={styles.statNumber}>{score.total}</Text>
-  //             <Text style={styles.statLabel}>TOTAL</Text>
-  //           </View>
-  //         </View>
-
-  //         <TouchableOpacity style={styles.reviewButton} onPress={handleReviewQuiz}>
-  //           <Text style={styles.reviewButtonText}>REVIEW QUIZ</Text>
-  //         </TouchableOpacity>
-
-  //         <TouchableOpacity style={styles.homeButton} onPress={handleBackToHome}>
-  //           <Text style={styles.homeButtonText}>BACK TO HOME</Text>
-  //         </TouchableOpacity>
-  //       </View>
-  //     );
-  //   };
-  const renderCircle = (label, value, ref, color) => (
+  const renderCircle = (
+    label: string, 
+    value: string | number, 
+    ref: React.RefObject<any>, 
+    color: string
+  ) => (
     <View style={{ alignItems: "center", margin: 10 }}>
       <AnimatedCircularProgress
         ref={ref}
@@ -411,7 +379,7 @@ export default function QuizFlow() {
       <Text style={{ marginTop: 5, fontWeight: "600" }}>{label}</Text>
     </View>
   );
-  // 👇 Move this useEffect OUT of renderSummaryScreen and to the top level
+
   useEffect(() => {
     if (currentScreen === "summary") {
       const score = calculateScore();
@@ -425,8 +393,6 @@ export default function QuizFlow() {
       rankAnim.current?.animate(rank === "Expert" ? 100 : 50);
     }
   }, [currentScreen]);
-
-  // Replace your existing renderSummaryScreen function with this:
 
   const renderSummaryScreen = () => {
     const score = calculateScore();
@@ -482,27 +448,9 @@ export default function QuizFlow() {
     // Question answers pattern from image
     const questionAnswers = [
       // Row 1: 1-10
-      true,
-      false,
-      true,
-      true,
-      false,
-      false,
-      null,
-      true,
-      false,
-      true,
+      true, false, true, true, false, false, null, true, false, true,
       // Row 2: 11-20
-      null,
-      false,
-      true,
-      true,
-      null,
-      false,
-      false,
-      true,
-      true,
-      true,
+      null, false, true, true, null, false, false, true, true, true,
     ];
 
     return (
@@ -575,7 +523,99 @@ export default function QuizFlow() {
     );
   };
 
-  // Add these styles to your stylesheet:
+  const renderResultsScreen = () => {
+    const currentAnswer = userAnswers[currentQuestion.id];
+    const isCorrect = currentAnswer === currentQuestion.correctAnswer;
+
+    return (
+      <ScrollView 
+        contentContainerStyle={{ flexGrow: 1, padding: 20 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.resultsContainer}>
+          <View style={styles.resultHeader}>
+            <Text style={styles.questionCounter}>
+              QUESTION {currentQuestionIndex + 1}
+            </Text>
+            <Text
+              style={[
+                styles.resultStatus,
+                isCorrect ? styles.correct : styles.incorrect,
+              ]}
+            >
+              {isCorrect ? "CORRECT" : "INCORRECT"}
+            </Text>
+          </View>
+
+          <Text style={styles.questionText}>{currentQuestion.question}</Text>
+
+          <View style={styles.optionsContainer}>
+            {currentQuestion.options.map((option, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.resultOption,
+                  index === currentQuestion.correctAnswer &&
+                    styles.correctResultOption,
+                  currentAnswer === index &&
+                    currentAnswer !== currentQuestion.correctAnswer &&
+                    styles.incorrectResultOption,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.resultOptionText,
+                    index === currentQuestion.correctAnswer &&
+                      styles.correctResultText,
+                  ]}
+                >
+                  {option}
+                </Text>
+                {index === currentQuestion.correctAnswer && (
+                  <Ionicons name="checkmark-circle" size={20} color="#4CAF50" />
+                )}
+                {currentAnswer === index &&
+                  currentAnswer !== currentQuestion.correctAnswer && (
+                    <Ionicons name="close-circle" size={20} color="#F44336" />
+                  )}
+              </View>
+            ))}
+          </View>
+
+          <View style={styles.navigationButtons}>
+            {currentQuestionIndex > 0 && (
+              <TouchableOpacity
+                style={styles.navButton}
+                onPress={() => setCurrentQuestionIndex((prev) => prev - 1)}
+              >
+                <Ionicons name="chevron-back" size={20} color="#3257a8" />
+                <Text style={styles.navButtonText}>PREVIOUS</Text>
+              </TouchableOpacity>
+            )}
+
+            {currentQuestionIndex < totalQuestions - 1 ? (
+              <TouchableOpacity
+                style={styles.navButton}
+                onPress={() => setCurrentQuestionIndex((prev) => prev + 1)}
+              >
+                <Text style={styles.navButtonText}>NEXT</Text>
+                <Ionicons name="chevron-forward" size={20} color="#3257a8" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.finishButton}
+                onPress={handleBackToHome}
+              >
+                <Text style={styles.finishButtonText}>FINISH REVIEW</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+      </ScrollView>
+    );
+  };
+
+  // Summary Styles
   const summaryStyles = StyleSheet.create({
     scrollContainer: {
       flex: 1,
@@ -686,117 +726,23 @@ export default function QuizFlow() {
     },
   });
 
-  const renderResultsScreen = () => {
-    const currentAnswer = userAnswers[currentQuestion.id];
-    const isCorrect = currentAnswer === currentQuestion.correctAnswer;
-
-    return (
-      <View style={styles.resultsContainer}>
-        <View style={styles.resultHeader}>
-          <Text style={styles.questionCounter}>
-            QUESTION {currentQuestionIndex + 1}
-          </Text>
-          <Text
-            style={[
-              styles.resultStatus,
-              isCorrect ? styles.correct : styles.incorrect,
-            ]}
-          >
-            {isCorrect ? "CORRECT" : "INCORRECT"}
-          </Text>
-        </View>
-
-        <Text style={styles.questionText}>{currentQuestion.question}</Text>
-
-        <View style={styles.optionsContainer}>
-          {currentQuestion.options.map((option, index) => (
-            <View
-              key={index}
-              style={[
-                styles.resultOption,
-                index === currentQuestion.correctAnswer &&
-                  styles.correctResultOption,
-                currentAnswer === index &&
-                  currentAnswer !== currentQuestion.correctAnswer &&
-                  styles.incorrectResultOption,
-              ]}
-            >
-              <Text
-                style={[
-                  styles.resultOptionText,
-                  index === currentQuestion.correctAnswer &&
-                    styles.correctResultText,
-                ]}
-              >
-                {option}
-              </Text>
-              {index === currentQuestion.correctAnswer && (
-                <Ionicons name="checkmark-circle" size={20} color="#4CAF50" />
-              )}
-              {currentAnswer === index &&
-                currentAnswer !== currentQuestion.correctAnswer && (
-                  <Ionicons name="close-circle" size={20} color="#F44336" />
-                )}
-            </View>
-          ))}
-        </View>
-
-        <View style={styles.navigationButtons}>
-          {currentQuestionIndex > 0 && (
-            <TouchableOpacity
-              style={styles.navButton}
-              onPress={() => setCurrentQuestionIndex((prev) => prev - 1)}
-            >
-              <Ionicons name="chevron-back" size={20} color="#3257a8" />
-              <Text style={styles.navButtonText}>PREVIOUS</Text>
-            </TouchableOpacity>
-          )}
-
-          {currentQuestionIndex < totalQuestions - 1 ? (
-            <TouchableOpacity
-              style={styles.navButton}
-              onPress={() => setCurrentQuestionIndex((prev) => prev + 1)}
-            >
-              <Text style={styles.navButtonText}>NEXT</Text>
-              <Ionicons name="chevron-forward" size={20} color="#3257a8" />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={styles.finishButton}
-              onPress={handleBackToHome}
-            >
-              <Text style={styles.finishButtonText}>FINISH REVIEW</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      </View>
-    );
-  };
-
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-      >
-        <Header />
+      {/* Home Section - Fixed at top */}
+      <View style={styles.homeSection}>
+        <Text style={styles.homeLabel}>
+          {currentScreen === "timer" && "QUIZ ME"}
+          {currentScreen === "question" && "QUIZ IN PROGRESS"}
+          {currentScreen === "summary" && "QUIZ COMPLETE"}
+          {currentScreen === "results" && "QUIZ REVIEW"}
+        </Text>
+      </View>
 
-        <View style={styles.homeSection}>
-          <Text style={styles.homeLabel}>
-            {currentScreen === "timer" && "QUIZ ME"}
-            {currentScreen === "question" && "QUIZ IN PROGRESS"}
-            {currentScreen === "summary" && "QUIZ COMPLETE"}
-            {currentScreen === "results" && "QUIZ REVIEW"}
-          </Text>
-        </View>
-
-        {currentScreen === "timer" && renderTimerScreen()}
-        {currentScreen === "question" && renderQuestionScreen()}
-        {currentScreen === "summary" && renderSummaryScreen()}
-        {currentScreen === "results" && renderResultsScreen()}
-
-        <View style={styles.spacer} />
-      </ScrollView>
+      {/* Scrollable Content Based on Screen */}
+      {currentScreen === "timer" && renderTimerScreen()}
+      {currentScreen === "question" && renderQuestionScreen()}
+      {currentScreen === "summary" && renderSummaryScreen()}
+      {currentScreen === "results" && renderResultsScreen()}
 
       {/* <BottomNavigation onNavPress={handleNavPress} /> */}
     </SafeAreaView>

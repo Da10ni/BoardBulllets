@@ -39,8 +39,8 @@ export default function QuizFlow() {
   const [currentScreen, setCurrentScreen] = useState("timer");
   const [selectedTime, setSelectedTime] = useState(10);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [userAnswers, setUserAnswers] = useState({});
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [userAnswers, setUserAnswers] = useState<{ [key: number]: number | null }>({});
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
@@ -50,10 +50,10 @@ export default function QuizFlow() {
   const currentQuestion = QUIZ_DATA[currentQuestionIndex];
   const totalQuestions = QUIZ_DATA.length;
 
-  const completedAnim = useRef(null);
-  const incorrectAnim = useRef(null);
-  const pointsAnim = useRef(null);
-  const rankAnim = useRef(null);
+  const completedAnim = useRef<any>(null);
+  const incorrectAnim = useRef<any>(null);
+  const pointsAnim = useRef<any>(null);
+  const rankAnim = useRef<any>(null);
 
   // Timer countdown effect
   useEffect(() => {
@@ -130,7 +130,7 @@ export default function QuizFlow() {
     router.push("/(drawer)");
   };
 
-  const calculateScore = () => {
+  const calculateScore = (): { correct: number; total: number; percentage: number } => {
     let correct = 0;
     QUIZ_DATA.forEach((question) => {
       if (userAnswers[question.id] === question.correctAnswer) {
@@ -393,7 +393,12 @@ export default function QuizFlow() {
   //       </View>
   //     );
   //   };
-  const renderCircle = (label, value, ref, color) => (
+  const renderCircle = (
+    label: string, 
+    value: string | number, 
+    ref: React.RefObject<any>, 
+    color: string
+  ) => (
     <View style={{ alignItems: "center", margin: 10 }}>
       <AnimatedCircularProgress
         ref={ref}

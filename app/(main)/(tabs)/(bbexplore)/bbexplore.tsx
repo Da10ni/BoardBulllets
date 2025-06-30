@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from "react-native";
 
 const BBExploreScreen = () => {
@@ -31,56 +32,66 @@ const BBExploreScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
-      {/* Page Title */}
-      <Text style={styles.pageTitle}>BB EXPLORE</Text>
+      
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Page Title */}
+        <Text style={styles.pageTitle}>BB EXPLORE</Text>
 
-      {/* Gray Background Section */}
-      <View style={styles.graySection} />
+        {/* Gray Background Section */}
+        <View style={styles.graySection} />
 
-      {/* Action Buttons */}
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={handleManageSubscription}
-        >
-          <Text style={styles.buttonText}>MANAGE SUBSCRIPTION</Text>
-        </TouchableOpacity>
+        {/* Action Buttons */}
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={handleManageSubscription}
+          >
+            <Text style={styles.buttonText}>MANAGE SUBSCRIPTION</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={handleAboutBoardBullets}
-        >
-          <Text style={styles.buttonText}>ABOUT BOARDBULLETS</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={handleAboutBoardBullets}
+          >
+            <Text style={styles.buttonText}>ABOUT BOARDBULLETS</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton} onPress={handleSettings}>
-          <Text style={styles.buttonText}>SETTINGS</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity style={styles.actionButton} onPress={handleSettings}>
+            <Text style={styles.buttonText}>SETTINGS</Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* Social Media Icons */}
-      <View style={styles.socialMediaContainer}>
-        <TouchableOpacity
-          style={[styles.socialIcon, styles.facebookIcon]}
-          onPress={() => handleSocialMedia("Facebook")}
-        >
-          <Icon name="facebook" size={22} color="#FFFFFF" />
-        </TouchableOpacity>
+        {/* Social Media Icons */}
+        <View style={styles.socialMediaContainer}>
+          <TouchableOpacity
+            style={[styles.socialIcon, styles.facebookIcon]}
+            onPress={() => handleSocialMedia("Facebook")}
+          >
+            <Icon name="facebook" size={22} color="#FFFFFF" />
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.socialIcon, styles.twitterIcon]}
-          onPress={() => handleSocialMedia("Twitter")}
-        >
-          <Icon name="twitter" size={22} color="#FFFFFF" />
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.socialIcon, styles.twitterIcon]}
+            onPress={() => handleSocialMedia("Twitter")}
+          >
+            <Icon name="twitter" size={22} color="#FFFFFF" />
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.socialIcon, styles.instagramIcon]}
-          onPress={() => handleSocialMedia("Instagram")}
-        >
-          <Icon name="instagram" size={22} color="#FFFFFF" />
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            style={[styles.socialIcon, styles.instagramIcon]}
+            onPress={() => handleSocialMedia("Instagram")}
+          >
+            <Icon name="instagram" size={22} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Spacer for bottom padding */}
+        <View style={styles.spacer} />
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -89,6 +100,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
   },
   header: {
     flexDirection: "row",
@@ -182,6 +200,9 @@ const styles = StyleSheet.create({
   },
   instagramIcon: {
     backgroundColor: "#5B8BC4",
+  },
+  spacer: {
+    height: 50,
   },
   bottomNavigation: {
     flexDirection: "row",
