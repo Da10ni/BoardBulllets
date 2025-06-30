@@ -478,7 +478,6 @@ const renderResultsScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <Header />
         
         <View style={styles.homeSection}>
           <Text style={styles.homeLabel}>

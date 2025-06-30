@@ -12,8 +12,8 @@ import {
   View,
 } from "react-native";
 import Carousel from "react-native-reanimated-carousel";
-import { styles } from "./splashScreenStyle"; // Your original styles file
-import { SplashScreenProps } from "./splashScreenTypes"; // Your original types file
+import { styles } from "../styles/splashScreenStyle"; // Your original styles file
+import { SplashScreenProps } from "../components/Splash/splashScreenTypes"; // Your original types file
 
 const { width, height } = Dimensions.get("window");
 
@@ -96,7 +96,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
       <LinearGradient colors={["#4A90E2", "#357ABD"]} style={styles.gradient}>
         <View style={styles.whiteBackground} />
         <View style={styles.header}>
-          <Text style={styles.headerText}>Learn & Earn!</Text>
+          <Text style={styles.headerText}>LEARN & EARN!</Text>
         </View>
         <View style={styles.topLogoContainer}></View>
 

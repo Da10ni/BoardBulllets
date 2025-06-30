@@ -11,11 +11,11 @@ export default function RootLayout() {
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
+  const colorScheme = useColorScheme(); // Move this ABOVE the return
+
   if (!loaded) {
     return null;
   }
-
-  const colorScheme = useColorScheme();
 
   return (
     <SafeAreaProvider>
@@ -34,3 +34,4 @@ export default function RootLayout() {
     </SafeAreaProvider>
   );
 }
+
