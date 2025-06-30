@@ -9,7 +9,7 @@ interface DrawerItem {
 
 export const drawerItems: DrawerItem[] = [
   { label: "HOME", icon: "home-outline", route: "/", isActive: true },
-  { label: "LAST QUIZ REVIEW", icon: "time-outline", route: "/quiz" },
+  { label: "LAST QUIZ REVIEW", icon: "time-outline", route: "/(quiz)/quiz" },
   { label: "BB POINTS", icon: "trophy-outline", route: "/bbpoints" },
   { label: "WEBSITE", icon: "laptop-outline", route: "website" },
 ];

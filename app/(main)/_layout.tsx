@@ -109,12 +109,8 @@ const headerStyles = StyleSheet.create({
 // Custom Drawer Content Component
 function CustomDrawerContent(props) {
   const currentPath = usePathname();
-  
-  interface NavigationProps {
-    route: string;
-  }
 
-  const handleNavigation = ({ route }: NavigationProps): void => {
+  const handleNavigation = (route: string): void => {
     router.navigate(route);
   };
 
