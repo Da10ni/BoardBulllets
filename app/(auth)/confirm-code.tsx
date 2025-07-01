@@ -2,6 +2,7 @@
 import AlertPopup from "@/components/Alert/Alert";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import {
   Alert,
   KeyboardAvoidingView,
