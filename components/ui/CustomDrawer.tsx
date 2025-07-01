@@ -1,7 +1,6 @@
 import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
 import { Linking, StyleSheet, Text } from "react-native";
 
 const CustomDrawer = (props: any) => {
@@ -12,7 +11,7 @@ const CustomDrawer = (props: any) => {
       {...props}
       contentContainerStyle={styles.container}
     >
-      <Text style={styles.title}>BOARDBULLETS</Text>
+      <Text style={styles.title}>B4AI</Text>
 
       <DrawerItem
         label="Home"

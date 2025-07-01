@@ -1,14 +1,13 @@
 import { router } from "expo-router";
-import React from "react";
 import {
   Alert,
   SafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  ScrollView,
 } from "react-native";
 
 const SettingsScreen = () => {
@@ -47,7 +46,7 @@ const SettingsScreen = () => {
         <Text style={styles.headerTitle}>SETTINGS</Text>
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}

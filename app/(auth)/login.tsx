@@ -1,7 +1,7 @@
 import AlertPopup from "@/components/Alert/Alert";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -64,14 +64,20 @@ const LoginScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
-        <Text style={styles.headerSubtitle}>Learn & Earn</Text>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerTitleBold}>B4 </Text>
+          <Text style={styles.headerTitleNormal}>AI</Text>
+        </View>
+        <View style={styles.subtitleContainer}>
+          <Text style={styles.headerSubtitleBold}>Learn</Text>
+          <Text style={styles.headerSubtitleNormal}> & Earn</Text>
+        </View>
       </View>
 
       {/* Icon Container */}
       <View style={styles.iconContainer}>
         <View style={styles.iconCircle}>
-          <Ionicons name="person-outline" size={40} color="#4864AC" />
+          <Ionicons name="person-outline" size={45} color="#4864AC" />
         </View>
       </View>
 
@@ -83,13 +89,13 @@ const LoginScreen = () => {
         <View style={styles.formContainer}>
           <Text style={styles.title}>LOG IN</Text>
           <Text style={styles.subtitle}>
-            PLEASE ENTER THE EMAIL ADDRESS ASSOCIATED WITH YOUR BOARDBULLETS
-            ACCOUNT.
+            PLEASE ENTER THE EMAIL ADDRESS ASSOCIATED WITH YOUR B4 AI ACCOUNT.
           </Text>
-
+         
+         <View style={[styles.inputContainer, { marginTop: 30 }]}></View>
           <View style={styles.inputContainer}>
             <Ionicons
-              name="mail-outline"
+              name="person-outline"
               size={20}
               color="rgba(255, 255, 255, 0.7)"
               style={styles.inputIcon}
@@ -121,13 +127,15 @@ const LoginScreen = () => {
               secureTextEntry
             />
           </View>
-           <TouchableOpacity 
-            style={styles.rememberMeContainer} 
+          <TouchableOpacity
+            style={styles.rememberMeContainer}
             onPress={toggleRememberMe}
             activeOpacity={0.7}
           >
             <View style={styles.checkboxContainer}>
-              <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
+              <View
+                style={[styles.checkbox, rememberMe && styles.checkboxChecked]}
+              >
                 {rememberMe && (
                   <Ionicons name="checkmark" size={12} color="#4864AC" />
                 )}
@@ -144,23 +152,15 @@ const LoginScreen = () => {
             <TouchableOpacity onPress={handleSignup}>
               <Text style={styles.signupLink}>CREATE AN ACCOUNT</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleForgotPassword}
-            >
-              <Text style={styles.forgotPasswordText}>FORGOT PASSWORD ? </Text>
+            <TouchableOpacity onPress={handleForgotPassword}>
+              <Text style={styles.forgotPasswordText}>FORGOT PASSWORD ?</Text>
             </TouchableOpacity>
           </View>
 
-
-
           <View style={styles.copyright}>
-            <Text style={styles.statement}>COPYRIGHT (C) 2017 BOARDBULLETS,INC.</Text>
+            <Text style={styles.statement}>COPYRIGHT (C) 2017 B4 AI,INC.</Text>
             <Text style={styles.policy}>PRIVACY POLICY AND TERMS OF USE</Text>
           </View>
-
-          {/* <View style={styles.signupContainer}>
-            <Text style={styles.signupText}>Don't have an account? </Text>
-          </View> */}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -191,33 +191,53 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     zIndex: 1,
   },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    left: 105,
+  },
+  headerTitleBold: {
+    color: "white",
+    fontSize: 25,
+    fontWeight: "bold",
+    letterSpacing: 1,
+  },
+  headerTitleNormal: {
+    color: "white",
+    fontSize: 25,
+    fontWeight: "200",
+    letterSpacing: 1,
+  },
   backButtonText: {
     color: "#4A90E2",
     fontSize: 24,
     fontWeight: "bold",
   },
-  headerTitle: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "bold",
-    letterSpacing: 1,
-    left: 90,
+  subtitleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    left: 120,
+    marginTop: 5,
   },
-  headerSubtitle: {
+  headerSubtitleBold: {
     color: "white",
     fontSize: 16,
-    marginTop: 5,
-    left: 120,
+    fontWeight: "bold",
+  },
+  headerSubtitleNormal: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "200",
   },
   iconContainer: {
     alignItems: "center",
-    marginTop: 100,
-    right: 5,
+    marginTop: 80,
+    right: 20,
   },
   iconCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 90,
+    height: 90,
+    borderRadius: 45,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -228,12 +248,12 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
     paddingHorizontal: 30,
-    marginTop: 20,
+    marginTop: 30,
     zIndex: 1,
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: "normal",
     color: "white",
     marginBottom: 10,
     textAlign: "center",
@@ -241,7 +261,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 12,
     color: "rgba(255, 255, 255, 0.9)",
-    marginBottom: 40,
+    marginTop: 20,
     textAlign: "center",
     lineHeight: 16,
   },
@@ -254,7 +274,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   inputIcon: {
-    marginRight: 10,
+    marginRight: 15,
   },
   input: {
     flex: 1,
@@ -285,17 +305,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   signupLink: {
-     color: "rgba(255, 255, 255, 0.8)",
+    color: "rgba(255, 255, 255, 0.8)",
     fontSize: 12,
-    fontWeight: "500"
+    fontWeight: "500",
   },
   buttons: {
-    flex:1,
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 20,
   },
-    rememberMeContainer: {
+  rememberMeContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 15,
@@ -339,8 +359,7 @@ const styles = StyleSheet.create({
   policy: {
     color: "#ebeae8",
     fontSize: 10,
-  }
-
+  },
 });
 
 export default LoginScreen;
