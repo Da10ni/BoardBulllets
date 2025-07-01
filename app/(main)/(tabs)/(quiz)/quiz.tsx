@@ -25,14 +25,45 @@ const QUIZ_DATA = [
     question: "NERVE INJURED WITH A MEDIAL EPICONDYLE FRACTURE?",
     options: ["MEDIAN NERVE", "RADIAL NERVE", "ULNAR NERVE"],
     correctAnswer: 2, // index of correct answer
+    explanation:
+      "The ulnar nerve passes posterior to the medial epicondyle and is commonly injured with fractures in this area.",
+    difficulty: "VERY GOOD",
+    popularity: "VERY HIGH",
   },
   {
     id: 2,
     question: "WHICH BONE IS THE LONGEST IN THE HUMAN BODY?",
     options: ["TIBIA", "FEMUR", "HUMERUS", "RADIUS"],
     correctAnswer: 1,
+    explanation:
+      "The femur (thigh bone) is the longest and strongest bone in the human body.",
+    difficulty: "EASY",
+    popularity: "HIGH",
   },
-  // Add more questions as needed
+  {
+    id: 3,
+    question: "WHAT IS THE SMALLEST BONE IN THE HUMAN BODY?",
+    options: ["STAPES", "MALLEUS", "INCUS", "HYOID"],
+    correctAnswer: 0,
+    explanation:
+      "The stapes (stirrup bone) in the middle ear is the smallest bone in the human body.",
+    difficulty: "MEDIUM",
+    popularity: "MEDIUM",
+  },
+  // Add more questions to get to 20
+  ...Array.from({ length: 10 }, (_, i) => ({
+    id: i + 4,
+    question: `SAMPLE QUESTION ${i + 4}?`,
+    options: ["OPTION A", "OPTION B", "OPTION C", "OPTION D"],
+    correctAnswer: Math.floor(Math.random() * 4),
+    explanation: `This is the explanation for question ${i + 4}.`,
+    difficulty: ["EASY", "MEDIUM", "HARD", "VERY GOOD"][
+      Math.floor(Math.random() * 4)
+    ],
+    popularity: ["LOW", "MEDIUM", "HIGH", "VERY HIGH"][
+      Math.floor(Math.random() * 4)
+    ],
+  })),
 ];
 
 export default function QuizFlow() {
@@ -45,9 +76,15 @@ export default function QuizFlow() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
-  const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const [reviewQuestionIndex, setReviewQuestionIndex] = useState(0); // For feedback screen
+  const [modalVisible, setModalVisible] = useState(false);
+  const [feedbackOptions, setFeedbackOptions] = useState({
+    spelling: false,
+    grammar: false,
+    content: false,
+    other: false,
+  });
   const timeOptions = [5, 10, 20];
   const currentQuestion = QUIZ_DATA[currentQuestionIndex];
   const totalQuestions = QUIZ_DATA.length;
@@ -74,10 +111,6 @@ export default function QuizFlow() {
     return () => clearInterval(interval);
   }, [quizStarted, timeRemaining, currentScreen]);
 
-  const handleNavPress = (id: string) => {
-    console.log(`Navigating to: ${id}`);
-  };
-
   const handleStartQuiz = () => {
     setTimeRemaining(selectedTime * 60); // Convert minutes to seconds
     setQuizStarted(true);
@@ -98,12 +131,11 @@ export default function QuizFlow() {
     }));
 
     setSelectedAnswer(null);
-    setShowCorrectAnswer(false);
 
     if (currentQuestionIndex < totalQuestions - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
     } else {
-      // Quiz completed
+      // Quiz completed - go directly to summary
       setCurrentScreen("summary");
     }
   };
@@ -113,19 +145,22 @@ export default function QuizFlow() {
     setQuizStarted(false);
   };
 
-  const handleReviewQuiz = () => {
-    setCurrentScreen("results");
-    setCurrentQuestionIndex(0);
-    setShowCorrectAnswer(true);
+  const handleQuestionReview = (questionIndex: number) => {
+    setReviewQuestionIndex(questionIndex);
+    setCurrentScreen("feedback");
   };
 
+  const handleBackToSummary = () => {
+    setCurrentScreen("summary");
+  };
+
+  
   const handleBackToHome = () => {
     setCurrentScreen("timer");
     setCurrentQuestionIndex(0);
     setUserAnswers({});
     setSelectedAnswer(null);
     setQuizStarted(false);
-    setShowCorrectAnswer(false);
   };
 
   const handleClose = () => {
@@ -134,13 +169,24 @@ export default function QuizFlow() {
 
   const calculateScore = () => {
     let correct = 0;
+    let incorrect = 0;
+    let notAttempted = 0;
+
     QUIZ_DATA.forEach((question) => {
-      if (userAnswers[question.id] === question.correctAnswer) {
+      const userAnswer = userAnswers[question.id];
+      if (userAnswer === undefined || userAnswer === null) {
+        notAttempted++;
+      } else if (userAnswer === question.correctAnswer) {
         correct++;
+      } else {
+        incorrect++;
       }
     });
+
     return {
       correct,
+      incorrect,
+      notAttempted,
       total: totalQuestions,
       percentage: Math.round((correct / totalQuestions) * 100),
     };
@@ -247,15 +293,8 @@ export default function QuizFlow() {
               style={[
                 styles.optionButton,
                 selectedAnswer === index && styles.selectedOption,
-                showCorrectAnswer &&
-                  index === currentQuestion.correctAnswer &&
-                  styles.correctOption,
-                showCorrectAnswer &&
-                  selectedAnswer === index &&
-                  selectedAnswer !== currentQuestion.correctAnswer &&
-                  styles.incorrectOption,
               ]}
-              onPress={() => !showCorrectAnswer && handleAnswerSelect(index)}
+              onPress={() => handleAnswerSelect(index)}
             >
               <Text
                 style={[
@@ -269,7 +308,7 @@ export default function QuizFlow() {
           ))}
         </View>
 
-        {/* Next Button - Now in scrollable area */}
+        {/* Next Button */}
         <View style={{ marginTop: 30, marginBottom: 20 }}>
           <TouchableOpacity
             style={[
@@ -358,48 +397,102 @@ export default function QuizFlow() {
     </ScrollView>
   );
 
-  const renderCircle = (
-    label: string,
-    value: string | number,
-    ref: React.RefObject<any>,
-    color: string
-  ) => (
-    <View style={{ alignItems: "center", margin: 10 }}>
-      <AnimatedCircularProgress
-        ref={ref}
-        size={100}
-        width={10}
-        fill={0}
-        tintColor={color}
-        backgroundColor="#E0E0E0"
-        duration={1000}
-      >
-        {() => (
-          <Text style={{ fontSize: 18, fontWeight: "bold" }}>{value}</Text>
-        )}
-      </AnimatedCircularProgress>
-      <Text style={{ marginTop: 5, fontWeight: "600" }}>{label}</Text>
-    </View>
+ // Feedback Screen UI Redesign (Simplified like image)
+
+const renderFeedbackScreen = () => {
+  const reviewQuestion = QUIZ_DATA[reviewQuestionIndex];
+  const userAnswer = userAnswers[reviewQuestion.id];
+  const isCorrect = userAnswer === reviewQuestion.correctAnswer;
+
+  return (
+    <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
+      <View style={flatFeedbackStyles.container}>
+        {/* Header Row */}
+        <View style={flatFeedbackStyles.headerRow}>
+          <Text style={flatFeedbackStyles.timerText}>00:25</Text>
+          <Text style={isCorrect ? flatFeedbackStyles.correct : flatFeedbackStyles.incorrect}>
+            {isCorrect ? "CORRECT" : "INCORRECT"}
+          </Text>
+        </View>
+
+        <Text style={flatFeedbackStyles.questionNumber}>QUESTION {reviewQuestionIndex + 1}</Text>
+        <Text style={flatFeedbackStyles.questionText}>{reviewQuestion.question}</Text>
+
+        {reviewQuestion.options.map((opt, idx) => {
+          const selected = userAnswer === idx;
+          const correct = reviewQuestion.correctAnswer === idx;
+          let style = flatFeedbackStyles.optionButton;
+
+          if (correct) style = flatFeedbackStyles.correctOption;
+          else if (selected && !correct) style = flatFeedbackStyles.incorrectOption;
+
+          return (
+            <View key={idx} style={style}>
+              <Text
+                style={
+                  correct
+                    ? flatFeedbackStyles.optionTextCorrect
+                    : selected
+                    ? flatFeedbackStyles.optionTextIncorrect
+                    : flatFeedbackStyles.optionText
+                }
+              >
+                {opt}
+              </Text>
+            </View>
+          );
+        })}
+
+        <View style={flatFeedbackStyles.sliderRow}>
+          <Text style={flatFeedbackStyles.sliderLabel}>QUALITY</Text>
+          <View style={flatFeedbackStyles.sliderTrack}>
+            <View style={[flatFeedbackStyles.sliderFill, { width: '60%' }]} />
+          </View>
+          <Text style={flatFeedbackStyles.sliderValue}>{reviewQuestion.popularity}</Text>
+        </View>
+
+        <View style={flatFeedbackStyles.sliderRow}>
+          <Text style={flatFeedbackStyles.sliderLabel}>DIFFICULTY</Text>
+          <View style={flatFeedbackStyles.sliderTrack}>
+            <View style={[flatFeedbackStyles.sliderFill, { width: '50%' }]} />
+          </View>
+          <Text style={flatFeedbackStyles.sliderValue}>{reviewQuestion.difficulty}</Text>
+        </View>
+
+        <View style={flatFeedbackStyles.dotsRow}>
+          {QUIZ_DATA.map((_, idx) => {
+            const ans = userAnswers[QUIZ_DATA[idx].id];
+            let bg = "#BDBDBD";
+            if (ans === QUIZ_DATA[idx].correctAnswer) bg = "#4CAF50";
+            else if (ans !== null && ans !== undefined) bg = "#F44336";
+
+            return (
+              <TouchableOpacity
+                key={idx}
+                style={[flatFeedbackStyles.dot, { backgroundColor: bg }]}
+                onPress={() => setReviewQuestionIndex(idx)}
+              />
+            );
+          })}
+        </View>
+
+        <TouchableOpacity
+          style={flatFeedbackStyles.feedbackButton}
+          onPress={() => setCurrentScreen("summary")}
+        >
+          <Text style={flatFeedbackStyles.feedbackButtonText}>BACK TO SUMMARY</Text>
+        </TouchableOpacity>
+
+        <Text style={flatFeedbackStyles.footer}>BOARDBULLET</Text>
+      </View>
+    </ScrollView>
   );
+};
 
-  useEffect(() => {
-    if (currentScreen === "summary") {
-      const score = calculateScore();
-      const incorrect = score.total - score.correct;
-      const points = score.correct * 10;
-      const rank = score.correct >= 2 ? "Expert" : "Beginner";
 
-      completedAnim.current?.animate(score.correct * (100 / score.total));
-      incorrectAnim.current?.animate(incorrect * (100 / score.total));
-      pointsAnim.current?.animate(points % 100);
-      rankAnim.current?.animate(rank === "Expert" ? 100 : 50);
-    }
-  }, [currentScreen]);
 
   const renderSummaryScreen = () => {
     const score = calculateScore();
-    const incorrect = score.total - score.correct;
-    const points = score.correct * 10;
     const rank = "25th";
 
     const renderCircle = (
@@ -432,46 +525,29 @@ export default function QuizFlow() {
       );
     };
 
-    const renderReviewDot = (index: number, isCorrect: boolean | null) => {
+    const renderReviewDot = (index: number) => {
+      const question = QUIZ_DATA[index];
+      const userAnswer = userAnswers[question.id];
       let backgroundColor = "#E5E5E5"; // Gray for unanswered
-      if (isCorrect === true) backgroundColor = "#4CAF50"; // Green for correct
-      if (isCorrect === false) backgroundColor = "#F44336"; // Red for incorrect
+
+      if (userAnswer === null || userAnswer === undefined) {
+        backgroundColor = "#E5E5E5"; // Gray for not attempted
+      } else if (userAnswer === question.correctAnswer) {
+        backgroundColor = "#4CAF50"; // Green for correct
+      } else {
+        backgroundColor = "#F44336"; // Red for incorrect
+      }
 
       return (
-        <View
+        <TouchableOpacity
           key={index}
           style={[summaryStyles.reviewDot, { backgroundColor }]}
+          onPress={() => handleQuestionReview(index)}
         >
           <Text style={summaryStyles.reviewDotText}>{index + 1}</Text>
-        </View>
+        </TouchableOpacity>
       );
     };
-
-    // Question answers pattern from image
-    const questionAnswers = [
-      // Row 1: 1-10
-      true,
-      false,
-      true,
-      true,
-      false,
-      false,
-      null,
-      true,
-      false,
-      true,
-      // Row 2: 11-20
-      null,
-      false,
-      true,
-      true,
-      null,
-      false,
-      false,
-      true,
-      true,
-      true,
-    ];
 
     return (
       <ScrollView
@@ -479,16 +555,21 @@ export default function QuizFlow() {
         showsVerticalScrollIndicator={false}
         style={summaryStyles.scrollContainer}
       >
-        {/* Header with Arrow */}
+        {/* Header */}
         <View style={summaryStyles.header}>
           <Text style={summaryStyles.headerTitle}>QUIZ SUMMARY</Text>
         </View>
 
-        {/* Circles Grid - Exactly like image */}
+        {/* Circles Grid */}
         <View style={summaryStyles.circlesGrid}>
           {/* Top Row */}
           <View style={summaryStyles.circlesRow}>
-            {renderCircle("RAW\nSCORE", "10/20", completedAnim, "#FFB84D")}
+            {renderCircle(
+              "RAW\nSCORE",
+              `${score.correct}/${score.total}`,
+              completedAnim,
+              "#FFB84D"
+            )}
             {renderCircle("QUIZ\nBB POINTS", "92", pointsAnim, "#4A90E2")}
           </View>
 
@@ -497,7 +578,7 @@ export default function QuizFlow() {
             {renderCircle("OVERALL\nRANK", rank, rankAnim, "#4CAF50")}
             {renderCircle(
               "INCORRECT\nQUESTION",
-              "07",
+              score.incorrect.toString().padStart(2, "0"),
               incorrectAnim,
               "#F44336"
             )}
@@ -507,14 +588,15 @@ export default function QuizFlow() {
         {/* Review Quiz Section */}
         <View style={summaryStyles.reviewSection}>
           <Text style={summaryStyles.reviewTitle}>REVIEW QUIZ</Text>
+          <Text style={summaryStyles.reviewSubtitle}>
+            Correct: {score.correct} | Incorrect: {score.incorrect} | Not
+            Attempted: {score.notAttempted}
+          </Text>
 
-          {/* Question Dots Grid */}
+          {/* Question Dots Grid - Click any to see feedback */}
           <View style={summaryStyles.dotsContainer}>
-            {/* Row 1: Questions 1-10 */}
             <View style={summaryStyles.dotsRow}>
-              {questionAnswers
-                .slice(0)
-                .map((isCorrect, i) => renderReviewDot(i, isCorrect))}
+              {QUIZ_DATA.map((_, index) => renderReviewDot(index))}
             </View>
           </View>
         </View>
@@ -529,98 +611,175 @@ export default function QuizFlow() {
       </ScrollView>
     );
   };
-
-  const renderResultsScreen = () => {
-    const currentAnswer = userAnswers[currentQuestion.id];
-    const isCorrect = currentAnswer === currentQuestion.correctAnswer;
-
-    return (
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, padding: 20 }}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.resultsContainer}>
-          <View style={styles.resultHeader}>
-            <Text style={styles.questionCounter}>
-              QUESTION {currentQuestionIndex + 1}
-            </Text>
-            <Text
-              style={[
-                styles.resultStatus,
-                isCorrect ? styles.correct : styles.incorrect,
-              ]}
-            >
-              {isCorrect ? "CORRECT" : "INCORRECT"}
-            </Text>
-          </View>
-
-          <Text style={styles.questionText}>{currentQuestion.question}</Text>
-
-          <View style={styles.optionsContainer}>
-            {currentQuestion.options.map((option, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.resultOption,
-                  index === currentQuestion.correctAnswer &&
-                    styles.correctResultOption,
-                  currentAnswer === index &&
-                    currentAnswer !== currentQuestion.correctAnswer &&
-                    styles.incorrectResultOption,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.resultOptionText,
-                    index === currentQuestion.correctAnswer &&
-                      styles.correctResultText,
-                  ]}
-                >
-                  {option}
-                </Text>
-                {index === currentQuestion.correctAnswer && (
-                  <Ionicons name="checkmark-circle" size={20} color="#4CAF50" />
-                )}
-                {currentAnswer === index &&
-                  currentAnswer !== currentQuestion.correctAnswer && (
-                    <Ionicons name="close-circle" size={20} color="#F44336" />
-                  )}
-              </View>
-            ))}
-          </View>
-
-          <View style={styles.navigationButtons}>
-            {currentQuestionIndex > 0 && (
-              <TouchableOpacity
-                style={styles.navButton}
-                onPress={() => setCurrentQuestionIndex((prev) => prev - 1)}
-              >
-                <Ionicons name="chevron-back" size={20} color="#3257a8" />
-                <Text style={styles.navButtonText}>PREVIOUS</Text>
-              </TouchableOpacity>
-            )}
-
-            {currentQuestionIndex < totalQuestions - 1 ? (
-              <TouchableOpacity
-                style={styles.navButton}
-                onPress={() => setCurrentQuestionIndex((prev) => prev + 1)}
-              >
-                <Text style={styles.navButtonText}>NEXT</Text>
-                <Ionicons name="chevron-forward" size={20} color="#3257a8" />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                style={styles.finishButton}
-                onPress={handleBackToHome}
-              >
-                <Text style={styles.finishButtonText}>FINISH REVIEW</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        </View>
-      </ScrollView>
-    );
-  };
+  const flatFeedbackStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  timerText: {
+    fontSize: 16,
+    color: '#999',
+  },
+  correct: {
+    color: '#4CAF50',
+    fontWeight: 'bold',
+  },
+  incorrect: {
+    color: '#F44336',
+    fontWeight: 'bold',
+  },
+  questionNumber: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 8,
+    color: '#333',
+  },
+  questionText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#000',
+  },
+  optionButton: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 12,
+    padding: 10,
+    marginBottom: 10,
+  },
+  correctOption: {
+    backgroundColor: '#e6f4ea',
+    borderRadius: 12,
+    padding: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#4CAF50',
+  },
+  incorrectOption: {
+    backgroundColor: '#fbeaea',
+    borderRadius: 12,
+    padding: 10,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#F44336',
+  },
+  optionText: {
+    fontSize: 14,
+    color: '#000',
+  },
+  optionTextCorrect: {
+    fontSize: 14,
+    color: '#4CAF50',
+    fontWeight: 'bold',
+  },
+  optionTextIncorrect: {
+    fontSize: 14,
+    color: '#F44336',
+    fontWeight: 'bold',
+  },
+  sliderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  sliderLabel: {
+    width: 80,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#666',
+  },
+  sliderTrack: {
+    flex: 1,
+    height: 6,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 3,
+    marginHorizontal: 8,
+  },
+  sliderFill: {
+    height: 6,
+    backgroundColor: '#33c37e',
+    borderRadius: 3,
+  },
+  sliderValue: {
+    fontSize: 12,
+    color: '#666',
+  },
+  dotsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 20,
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  dot: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    margin: 4,
+  },
+  feedbackButton: {
+    backgroundColor: '#33c37e',
+    padding: 12,
+    borderRadius: 20,
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  feedbackButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  footer: {
+    marginTop: 30,
+    textAlign: 'center',
+    color: '#bbb',
+    fontSize: 12,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  checkboxOption: {
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    marginVertical: 6,
+    backgroundColor: '#f9f9f9',
+  },
+  checkedOption: {
+    borderColor: '#33c37e',
+    backgroundColor: '#e1f8ec',
+  },
+  modalButton: {
+    backgroundColor: '#33c37e',
+    padding: 12,
+    borderRadius: 16,
+    marginTop: 16,
+    alignItems: 'center',
+  },
+});
 
   // Summary Styles
   const summaryStyles = StyleSheet.create({
@@ -693,10 +852,10 @@ export default function QuizFlow() {
       alignItems: "center",
     },
     dotsRow: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'center',
-      gap: 12
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      gap: 12,
     },
     reviewDot: {
       width: 32,
@@ -724,6 +883,10 @@ export default function QuizFlow() {
     },
   });
 
+  function renderResultsScreen(): React.ReactNode {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Home Section - Fixed at top */}
@@ -740,6 +903,7 @@ export default function QuizFlow() {
       {currentScreen === "timer" && renderTimerScreen()}
       {currentScreen === "question" && renderQuestionScreen()}
       {currentScreen === "summary" && renderSummaryScreen()}
+      {currentScreen === "feedback" && renderFeedbackScreen()}
       {currentScreen === "results" && renderResultsScreen()}
 
       {/* <BottomNavigation onNavPress={handleNavPress} /> */}
