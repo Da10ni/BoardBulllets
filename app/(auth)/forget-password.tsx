@@ -69,8 +69,8 @@ const ForgotPasswordScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerContainer}>
-          <Text style={styles.headerTitleBold}>BOARD</Text>
-          <Text style={styles.headerTitleNormal}>BULLETS</Text>
+          <Text style={styles.headerTitleBold}>B4 </Text>
+          <Text style={styles.headerTitleNormal}>AI</Text>
         </View>
         <View style={styles.subtitleContainer}>
           <Text style={styles.headerSubtitleBold}>Learn</Text>
@@ -116,7 +116,7 @@ const ForgotPasswordScreen = () => {
           </TouchableOpacity>
 
           <View style={styles.copyright}>
-            <Text style={styles.statement}>COPYRIGHT (C) 2017 B4AI,INC.</Text>
+            <Text style={styles.statement}>COPYRIGHT (C) 2017 B4 AI,INC.</Text>
             <Text style={styles.policy}>PRIVACY POLICY AND TERMS OF USE</Text>
           </View>
         </View>
@@ -152,17 +152,17 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    left: 90,
+    left: 105,
   },
   headerTitleBold: {
     color: "white",
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "bold", // BOARD bold
     letterSpacing: 1,
   },
   headerTitleNormal: {
     color: "white",
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: "200", // BULLETS normal weight
     letterSpacing: 1,
   },
@@ -184,9 +184,8 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     alignItems: "center",
-    marginTop: 100,
-    right: 5,
-    zIndex: 1,
+    marginTop: 80, // Back to original position
+    right: 20,
   },
   iconCircle: {
     width: 80,
@@ -200,14 +199,14 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     paddingHorizontal: 30,
-    paddingTop: 20,
+    paddingTop: 60, // Back to 60
     paddingBottom: 30,
   },
   title: {
     fontSize: 24,
     fontWeight: "normal", // Weight kam kiya
     color: "white",
-    marginBottom: 10,
+    marginBottom: 30, // Back to normal
     textAlign: "center",
   },
   subtitle: {
@@ -223,6 +222,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 25,
     marginBottom: 30,
+    marginTop: 50, // Added margin to push email input down
     paddingHorizontal: 20,
   },
   inputIcon: {
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 140,
+    marginTop: 150, // Reduced from 140 to 80 to balance the layout
   },
   statement: {
     color: "#ebeae8",

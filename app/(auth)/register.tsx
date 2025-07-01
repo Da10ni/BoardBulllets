@@ -73,8 +73,8 @@ const SignupScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>
-          <Text style={styles.headerTitleBold}>BOARD</Text>
-          <Text style={styles.headerTitleNormal}>BULLETS</Text>
+          <Text style={styles.headerTitleBold}>B4</Text>
+          <Text style={styles.headerTitleNormal}> AI</Text>
         </Text>
         <Text style={styles.headerSubtitle}>
           <Text style={styles.headerSubtitleBold}>Learn</Text>
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
     letterSpacing: 1,
-    left: 90,
+    left: 100,
   },
   headerTitleBold: {
     fontWeight: "800",
@@ -303,6 +303,7 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
+    right:10
   },
   scrollContainer: {
     flex: 1,

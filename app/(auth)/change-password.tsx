@@ -68,8 +68,14 @@ const ResetPasswordScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>B4AI</Text>
-        <Text style={styles.headerSubtitle}>Learn & Earn</Text>
+        <Text style={styles.headerTitle}>
+          <Text style={styles.b4}>B4 </Text>
+          <Text style={styles.ai}>AI</Text>
+        </Text>
+        <Text style={styles.headerSubtitle}>
+          <Text style={styles.learn}>Learn</Text>
+          <Text style={styles.earn}> & Earn</Text>
+        </Text>
       </View>
 
       {/* Icon Container */}
@@ -85,14 +91,12 @@ const ResetPasswordScreen = () => {
       >
         {/* Form */}
         <View style={styles.formContainer}>
-          <Text style={styles.title}>RESET PASSWORD</Text>
-          <Text style={styles.subtitle}>
-            CREATE A NEW PASSWORD FOR YOUR B4AI ACCOUNT.
-          </Text>
-
-          <View style={styles.inputContainer}>
+          <Text style={styles.title}>CHANGE PASSWORD</Text>
+          
+          {/* Added margin top to push new password input down */}
+          <View style={[styles.inputContainer, { marginTop: 70 }]}>
             <Ionicons
-              name="lock-closed-outline"
+              name="person-outline"
               size={20}
               color="rgba(255, 255, 255, 0.7)"
               style={styles.inputIcon}
@@ -128,7 +132,7 @@ const ResetPasswordScreen = () => {
             style={styles.resetButton}
             onPress={handleResetPassword}
           >
-            <Text style={styles.resetButtonText}>RESET PASSWORD</Text>
+            <Text style={styles.resetButtonText}>SUBMIT</Text>
           </TouchableOpacity>
 
           <View style={styles.copyright}>
@@ -164,13 +168,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 20,
     zIndex: 1,
+    
   },
   headerTitle: {
     color: "white",
     fontSize: 20,
-    fontWeight: "bold",
     letterSpacing: 1,
-    left: 90,
+    left: 100,
+  },
+  b4: {
+    fontWeight: "bold",
+  },
+  ai: {
+    fontWeight: "normal",
   },
   headerSubtitle: {
     color: "white",
@@ -178,11 +188,18 @@ const styles = StyleSheet.create({
     marginTop: 5,
     left: 120,
   },
+  learn: {
+    fontWeight: "bold",
+  },
+  earn: {
+    fontWeight: "300",
+  },
   iconContainer: {
     alignItems: "center",
     marginTop: 100,
     right: 5,
     zIndex: 1,
+    marginRight: 20
   },
   iconCircle: {
     width: 80,
@@ -197,7 +214,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     paddingHorizontal: 30,
-    paddingTop: 20,
+    paddingTop: 40,
     paddingBottom: 30,
   },
   title: {
@@ -221,6 +238,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginBottom: 15,
     paddingHorizontal: 20,
+    
   },
   inputIcon: {
     marginRight: 10,
@@ -231,6 +249,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 14,
     fontWeight: "500",
+    
   },
   resetButton: {
     backgroundColor: "white",
@@ -250,7 +269,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 70,
+    marginTop: 100,
   },
   statement: {
     color: "#ebeae8",

@@ -80,8 +80,8 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
         {item.isLogo ? (
           <View style={styles.mainLogoContainer}>
             <Text style={styles.logoText}>
-              <Text style={styles.logoTextBold}>BOARD</Text>
-              <Text style={styles.logoTextNormal}>BULLETS</Text>
+              <Text style={styles.logoTextBold}>B4 </Text>
+              <Text style={styles.logoTextNormal}>AI</Text>
             </Text>
           </View>
         ) : (
@@ -108,7 +108,7 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
         <View style={styles.header}>
           <Text style={styles.headerText}>
             <Text style={styles.headerTextBold}>Learn</Text>
-            <Text style={styles.headerTextNormal}> & Earn!</Text>
+            <Text style={styles.headerTextNormal}> & Earn </Text>
           </Text>
         </View>
         <View style={styles.topLogoContainer}></View>
@@ -147,14 +147,14 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
           {/* LOGIN / SIGN UP Navigation */}
           <View style={styles.authButtonsContainer}>
             <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-              <Text style={styles.loginText}>Log In</Text>
+              <Text style={styles.loginText}>LOG IN</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.signupButton}
               onPress={handleSignup}
             >
-              <Text style={styles.signupText}>Sign Up</Text>
+              <Text style={styles.signupText}>SIGN UP</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -270,11 +270,11 @@ const styles = StyleSheet.create({
   },
   logoText: {
     color: "white",
-    fontSize: 32,
-    letterSpacing: 4,
+    fontSize: 38,
+    letterSpacing: 2,
     textAlign: "center",
     width: "100%",
-    lineHeight: 38,
+    lineHeight: 44,
   },
   logoTextBold: {
     fontWeight: "800",
@@ -352,15 +352,23 @@ const styles = StyleSheet.create({
   loginButton: {
     paddingHorizontal: 30,
     paddingVertical: 12,
-    backgroundColor: "transparent",
+    backgroundColor: "white",
     borderRadius: 25,
     borderWidth: 1.5,
     borderColor: "white",
     flex: 1,
     marginRight: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 4,
   },
   loginText: {
-    color: "white",
+    color: "#4A90E2",
     fontSize: 12,
     fontWeight: "bold",
     letterSpacing: 1,
