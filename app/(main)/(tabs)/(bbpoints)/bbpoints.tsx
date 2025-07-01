@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import React from "react";
 import {
   SafeAreaView,
@@ -16,6 +17,7 @@ const BBPointsScreen = () => {
 
   const handleSubscribe = () => {
     console.log("Subscribe pressed");
+    router.push("/(main)/(tabs)/(pricing)/pricing");
     // Add subscription logic here
   };
 
@@ -80,10 +82,16 @@ const BBPointsScreen = () => {
             {/* Last Quiz Points */}
             <View style={styles.lastQuizSection}>
               <View style={styles.lastQuizLine} />
-              <Text style={styles.lastQuizNumber}>15</Text>
-              <Text style={styles.lastQuizLabel}>
-                BB POINTS EARNED LAST QUIZ
+              <View style={styles.pointsRow}>
+                <Text style={styles.lastQuizNumber}>15</Text>
+                <View style={styles.pointStatLabel}>
+                <Text style={styles.boldText}>BB</Text>
+              <Text  style={{ fontSize: 12 }}>
+              POINTS EARNED LAST QUIZ
               </Text>
+              </View>
+              </View>
+              
             </View>
 
             {/* Bottom Row - Three Average Circles */}
@@ -249,11 +257,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 40,
-    paddingHorizontal: 10,
   },
   lastQuizLine: {
     width: 3,
-    height: 20,
+    height: 30,
     backgroundColor: "#FF6B6B",
     marginRight: 10,
   },
@@ -268,6 +275,21 @@ const styles = StyleSheet.create({
     color: "#666",
     letterSpacing: 0.5,
     flex: 1,
+  },
+  boldText: {
+    fontWeight: "bold",
+    fontSize: 12,
+  },
+  pointsRow: {
+    flexDirection: "column",
+  },
+   pointStatLabel: {
+    fontSize: 10,
+    color: "#666",
+    letterSpacing: 0.5,
+    flex: 1,
+    gap: 4,
+    flexDirection: "row",
   },
   bottomRow: {
     flexDirection: "row",

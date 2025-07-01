@@ -1,14 +1,13 @@
 import Icon from "@expo/vector-icons/FontAwesome";
 import { router } from "expo-router";
-import React from "react";
 import {
   SafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  ScrollView,
 } from "react-native";
 
 const BBExploreScreen = () => {
@@ -16,8 +15,8 @@ const BBExploreScreen = () => {
     console.log("Manage Subscription pressed");
   };
 
-  const handleAboutBoardBullets = () => {
-    console.log("About BoardBullets pressed");
+  const handleAboutB4AI = () => {
+    console.log("About B4AI pressed");
   };
 
   const handleSettings = () => {
@@ -32,8 +31,8 @@ const BBExploreScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
-      
-      <ScrollView 
+
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -55,12 +54,15 @@ const BBExploreScreen = () => {
 
           <TouchableOpacity
             style={styles.actionButton}
-            onPress={handleAboutBoardBullets}
+            onPress={handleAboutB4AI}
           >
-            <Text style={styles.buttonText}>ABOUT BOARDBULLETS</Text>
+            <Text style={styles.buttonText}>ABOUT B4AI</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.actionButton} onPress={handleSettings}>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={handleSettings}
+          >
             <Text style={styles.buttonText}>SETTINGS</Text>
           </TouchableOpacity>
         </View>
@@ -158,7 +160,6 @@ const styles = StyleSheet.create({
   graySection: {
     backgroundColor: "#C0C0C0",
     height: 200,
-    marginHorizontal: 20,
     marginBottom: 40,
   },
   buttonsContainer: {
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   actionButton: {
-    backgroundColor: "#5B8BC4",
+    backgroundColor: "#4864AC",
     borderRadius: 25,
     paddingVertical: 18,
     alignItems: "center",
@@ -193,13 +194,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   facebookIcon: {
-    backgroundColor: "#5B8BC4",
+    backgroundColor: "#4864AC",
   },
   twitterIcon: {
-    backgroundColor: "#5B8BC4",
+    backgroundColor: "#4864AC",
   },
   instagramIcon: {
-    backgroundColor: "#5B8BC4",
+    backgroundColor: "#4864AC",
   },
   spacer: {
     height: 50,

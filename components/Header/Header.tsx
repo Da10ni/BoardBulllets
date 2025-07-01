@@ -1,8 +1,8 @@
 // components/Header/Header.tsx
+import { DrawerActions, useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./Header.styles";
-import { DrawerActions, useNavigation } from "@react-navigation/native";
 
 const Header: React.FC = () => {
   const navigation = useNavigation();
@@ -17,18 +17,17 @@ const Header: React.FC = () => {
 
   return (
     <View>
-    <View style={styles.header}>
-      <TouchableOpacity onPress={handleMenuPress} style={styles.headerButton}>
-        <Text style={styles.menuIcon}>☰</Text>
-      </TouchableOpacity>
-      <Text style={styles.title}>BOARDBULLETS</Text>
-      <TouchableOpacity onPress={handleMorePress} style={styles.headerButton}>
-        <Text style={styles.moreIcon}>⋮</Text>
-      </TouchableOpacity>
-    
-    </View>
-      <View style={styles.statDivider} />
+      <View style={styles.header}>
+        <TouchableOpacity onPress={handleMenuPress} style={styles.headerButton}>
+          <Text style={styles.menuIcon}>☰</Text>
+        </TouchableOpacity>
+        <Text style={styles.title}>B4AI</Text>
+        <TouchableOpacity onPress={handleMorePress} style={styles.headerButton}>
+          <Text style={styles.moreIcon}>⋮</Text>
+        </TouchableOpacity>
       </View>
+      <View style={styles.statDivider} />
+    </View>
   );
 };
 

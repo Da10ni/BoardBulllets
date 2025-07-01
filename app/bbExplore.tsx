@@ -1,5 +1,4 @@
 import { router } from "expo-router";
-import React from "react";
 import {
   SafeAreaView,
   StatusBar,
@@ -15,8 +14,8 @@ const BBExploreScreen = () => {
     console.log("Manage Subscription pressed");
   };
 
-  const handleAboutBoardBullets = () => {
-    console.log("About BoardBullets pressed");
+  const handleAboutB4AI = () => {
+    console.log("About B4AI pressed");
   };
 
   const handleSettings = () => {
@@ -40,7 +39,7 @@ const BBExploreScreen = () => {
           <View style={styles.menuLine} />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
+        <Text style={styles.headerTitle}>B4AI</Text>
 
         <TouchableOpacity style={styles.moreButton}>
           <View style={styles.dot} />
@@ -64,11 +63,8 @@ const BBExploreScreen = () => {
           <Text style={styles.buttonText}>MANAGE SUBSCRIPTION</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={handleAboutBoardBullets}
-        >
-          <Text style={styles.buttonText}>ABOUT BOARDBULLETS</Text>
+        <TouchableOpacity style={styles.actionButton} onPress={handleAboutB4AI}>
+          <Text style={styles.buttonText}>ABOUT B4AI</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.actionButton} onPress={handleSettings}>

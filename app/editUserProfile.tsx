@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   ScrollView,
@@ -56,7 +56,7 @@ const EditProfileScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
+        <Text style={styles.headerTitle}>B4AI</Text>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>

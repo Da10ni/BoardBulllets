@@ -1,7 +1,7 @@
 // app/ForgotPassword.tsx
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -68,27 +68,38 @@ const ForgotPasswordScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
-        <Text style={styles.headerSubtitle}>Learn & Earn</Text>
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerTitleBold}>B4 </Text>
+          <Text style={styles.headerTitleNormal}>AI</Text>
+        </View>
+        <View style={styles.subtitleContainer}>
+          <Text style={styles.headerSubtitleBold}>Learn</Text>
+          <Text style={styles.headerSubtitleNormal}> & Earn</Text>
+        </View>
       </View>
 
       {/* Icon Container */}
       <View style={styles.iconContainer}>
         <View style={styles.iconCircle}>
-         <FontAwesome name="lock" size={50} color="#4864AC" />
+          <FontAwesome name="lock" size={50} color="#4864AC" />
         </View>
       </View>
 
-      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Form */}
         <View style={styles.formContainer}>
           <Text style={styles.title}>FORGOT PASSWORD</Text>
-          <Text style={styles.subtitle}>
-            ENTER YOUR EMAIL ADDRESS AND WE'LL SEND YOU A VERIFICATION CODE TO RESET YOUR PASSWORD.
-          </Text>
 
           <View style={styles.inputContainer}>
-            <Ionicons name="mail-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <Ionicons
+              name="mail-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.input}
               placeholder="EMAIL ADDRESS"
@@ -101,11 +112,11 @@ const ForgotPasswordScreen = () => {
           </View>
 
           <TouchableOpacity style={styles.sendButton} onPress={handleSendCode}>
-            <Text style={styles.sendButtonText}>SEND VERIFICATION CODE</Text>
+            <Text style={styles.sendButtonText}>SUBMIT</Text>
           </TouchableOpacity>
 
-           <View style={styles.copyright}>
-            <Text style={styles.statement}>COPYRIGHT (C) 2017 BOARDBULLETS,INC.</Text>
+          <View style={styles.copyright}>
+            <Text style={styles.statement}>COPYRIGHT (C) 2017 B4 AI,INC.</Text>
             <Text style={styles.policy}>PRIVACY POLICY AND TERMS OF USE</Text>
           </View>
         </View>
@@ -138,24 +149,43 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     zIndex: 1,
   },
-  headerTitle: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "bold",
-    letterSpacing: 1,
-    left: 90,
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    left: 105,
   },
-  headerSubtitle: {
+  headerTitleBold: {
+    color: "white",
+    fontSize: 25,
+    fontWeight: "bold", // BOARD bold
+    letterSpacing: 1,
+  },
+  headerTitleNormal: {
+    color: "white",
+    fontSize: 25,
+    fontWeight: "200", // BULLETS normal weight
+    letterSpacing: 1,
+  },
+  subtitleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    left: 120,
+    marginTop: 5,
+  },
+  headerSubtitleBold: {
     color: "white",
     fontSize: 16,
-    marginTop: 5,
-    left: 120,
+    fontWeight: "bold", // Learn bold
+  },
+  headerSubtitleNormal: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "200", // & Earn same weight as BULLETS
   },
   iconContainer: {
     alignItems: "center",
-    marginTop: 100,
-    right: 5,
-    zIndex: 1,
+    marginTop: 80, // Back to original position
+    right: 20,
   },
   iconCircle: {
     width: 80,
@@ -169,14 +199,14 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     paddingHorizontal: 30,
-    paddingTop: 20,
+    paddingTop: 60, // Back to 60
     paddingBottom: 30,
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: "normal", // Weight kam kiya
     color: "white",
-    marginBottom: 10,
+    marginBottom: 30, // Back to normal
     textAlign: "center",
   },
   subtitle: {
@@ -192,6 +222,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 25,
     marginBottom: 30,
+    marginTop: 50, // Added margin to push email input down
     paddingHorizontal: 20,
   },
   inputIcon: {
@@ -235,7 +266,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 140,
+    marginTop: 150, // Reduced from 140 to 80 to balance the layout
   },
   statement: {
     color: "#ebeae8",
@@ -244,7 +275,7 @@ const styles = StyleSheet.create({
   policy: {
     color: "#ebeae8",
     fontSize: 10,
-  }
+  },
 });
 
 export default ForgotPasswordScreen;

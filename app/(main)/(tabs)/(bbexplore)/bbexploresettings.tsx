@@ -1,14 +1,13 @@
 import { router } from "expo-router";
-import React from "react";
 import {
   Alert,
   SafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  ScrollView,
 } from "react-native";
 
 const SettingsScreen = () => {
@@ -44,14 +43,11 @@ const SettingsScreen = () => {
 
     
 
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Page Title */}
-        <Text style={styles.pageTitle}>SETTINGS</Text>
-
         {/* Gray Background Section */}
         <View style={styles.graySection} />
 
@@ -105,7 +101,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
-    paddingTop: 50,
+    paddingTop: 20,
     paddingBottom: 15,
     backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
@@ -114,30 +110,19 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#4A90E2",
+    color: "#999999",
     letterSpacing: 1,
-  },
-  pageTitle: {
-    fontSize: 16,
-    color: "#999",
-    textAlign: "center",
-    marginVertical: 20,
-    letterSpacing: 1,
-    fontWeight: "500",
   },
   graySection: {
     backgroundColor: "#C0C0C0",
     height: 200,
-    marginHorizontal: 20,
     marginBottom: 20,
   },
   userInfoSection: {
-    backgroundColor: "#5B8BC4",
-    paddingVertical: 20,
+    backgroundColor: "#4864AC",
+    paddingVertical: 22,
     paddingHorizontal: 20,
-    marginHorizontal: 20,
-    marginBottom: 30,
-    borderRadius: 8,
+    marginBottom: 20,
   },
   userName: {
     fontSize: 18,
@@ -153,11 +138,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   buttonsContainer: {
-    paddingHorizontal: 40,
-    marginBottom: 50,
+    paddingHorizontal: 50,
   },
   actionButton: {
-    backgroundColor: "#5B8BC4",
+    backgroundColor: "#4864AC",
     borderRadius: 25,
     paddingVertical: 18,
     alignItems: "center",
