@@ -77,7 +77,9 @@ const MyPerformanceScreen = () => {
                   <View
                     style={[styles.statLine, { backgroundColor: "#4CAF50" }]}
                   />
-                  <Text style={[styles.sideStatNumber, {color: "#4CAF50"}]}>1100</Text>
+                  <Text style={[styles.sideStatNumber, { color: "#4CAF50" }]}>
+                    1100
+                  </Text>
                   <Text style={styles.sideStatLabel}>
                     TOTAL QUESTIONS CORRECT
                   </Text>
@@ -86,7 +88,9 @@ const MyPerformanceScreen = () => {
                   <View
                     style={[styles.statLine, { backgroundColor: "#FF6B6B" }]}
                   />
-                  <Text style={[styles.sideStatNumber, {color: "#FF6B6B"}]}>900</Text>
+                  <Text style={[styles.sideStatNumber, { color: "#FF6B6B" }]}>
+                    900
+                  </Text>
                   <Text style={styles.sideStatLabel}>
                     TOTAL QUESTIONS INCORRECT
                   </Text>
@@ -100,16 +104,27 @@ const MyPerformanceScreen = () => {
                 <View
                   style={[styles.statLine, { backgroundColor: "#FF6B6B" }]}
                 />
-                <Text style={styles.percentageText}>15%</Text>
-                <Text style={styles.bottomStatLabel}>
-                  CUMULATIVE PERCENTAGE
-                </Text>
+                <View style={styles.bottomrow}>
+                  <Text style={styles.percentageText}>15%</Text>
+                  <View style={styles.bottomStatLabel}>
+                    <Text style={styles.boldText}>CUMULATIVE</Text>
+                    <Text style={{ fontSize: 12 }}>PERCENTAGE</Text>
+                  </View>
+                </View>
               </View>
               <View style={styles.bottomStat}>
-                <Text style={styles.pointsText}>15</Text>
-                <Text style={styles.bottomStatLabel}>
-                  BB POINTS EARNED LAST QUIZ
-                </Text>
+                <View
+                  style={[styles.statLine, { backgroundColor: "#FF6B6B" }]}
+                />
+                <View style={styles.bottomrow}>
+                  <Text style={styles.pointsText}>15</Text>
+                  <View style={styles.bottomStatLabel}>
+                    <Text style={styles.boldText}>BB</Text>
+                    <Text style={{ fontSize: 12 }}>
+                      POINTS EARNED LAST QUIZ
+                    </Text>
+                  </View>
+                </View>
               </View>
             </View>
 
@@ -136,8 +151,13 @@ const MyPerformanceScreen = () => {
           <View style={styles.questionSection}>
             <View style={styles.questionHeader}>
               <View style={[styles.statLine, { backgroundColor: "#FF6B6B" }]} />
-              <Text style={styles.questionNumber}>1500</Text>
-              <Text style={styles.questionTitle}>TOTAL UNUSED QUESTION</Text>
+              <View style={styles.bottomrow}>
+                <Text style={styles.questionNumber}>1500</Text>
+                <View style={styles.questionTitle}>
+                  <Text style={styles.boldText}>TOTAL</Text>
+                  <Text style={{ fontSize: 12 }}>UNUSED QUESTION</Text>
+                </View>
+              </View>
             </View>
 
             {/* Category Dropdown */}
@@ -175,8 +195,13 @@ const MyPerformanceScreen = () => {
             {/* Quiz Section */}
             <View style={styles.quizHeader}>
               <View style={[styles.statLine, { backgroundColor: "#FF6B6B" }]} />
-              <Text style={styles.questionNumber}>1500</Text>
-              <Text style={styles.questionTitle}>TOTAL QUIZZES</Text>
+              <View style={styles.bottomrow}>
+                <Text style={styles.questionNumber}>1500</Text>
+                <View style={styles.questionTitle}>
+                  <Text style={styles.boldText}>TOTAL</Text>
+                  <Text style={{ fontSize: 12 }}>QUIZZES</Text>
+                </View>
+              </View>
             </View>
 
             {/* Quiz Mode Dropdown */}
@@ -306,7 +331,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bottomStatsRow: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
     marginBottom: 30,
     paddingHorizontal: 10,
@@ -315,6 +340,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
+    marginTop: 10,
+  },
+  bottomrow: {
+    flexDirection: "column",
   },
   percentageText: {
     fontSize: 16,
@@ -326,14 +355,22 @@ const styles = StyleSheet.create({
   pointsText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#333",
+    color: "#FF6B6B",
     marginRight: 5,
+    marginLeft: 10,
   },
   bottomStatLabel: {
     fontSize: 10,
     color: "#666",
     letterSpacing: 0.5,
     flex: 1,
+    marginLeft: 12,
+    gap: 4,
+    flexDirection: "row",
+  },
+  boldText: {
+    fontWeight: "bold",
+    fontSize: 12,
   },
   timeStatsRow: {
     flexDirection: "row",
@@ -388,6 +425,9 @@ const styles = StyleSheet.create({
     color: "#666",
     letterSpacing: 0.5,
     flex: 1,
+    marginLeft: 4,
+    gap: 4,
+    flexDirection: "row",
   },
   dropdown: {
     flexDirection: "row",

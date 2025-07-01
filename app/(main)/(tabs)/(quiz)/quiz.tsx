@@ -79,6 +79,7 @@ export default function QuizFlow() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [reviewQuestionIndex, setReviewQuestionIndex] = useState(0); // For feedback screen
   const [modalVisible, setModalVisible] = useState(false);
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false); // New state for feedback modal
   const [feedbackOptions, setFeedbackOptions] = useState({
     spelling: false,
     grammar: false,
@@ -165,6 +166,25 @@ export default function QuizFlow() {
 
   const handleClose = () => {
     router.push("/(drawer)");
+  };
+  const handleFeedbackOptionToggle = (option: keyof typeof feedbackOptions) => {
+    setFeedbackOptions(prev => ({
+      ...prev,
+      [option]: !prev[option]
+    }));
+  };
+
+  const handleFeedbackSubmit = () => {
+    console.log('Feedback submitted:', feedbackOptions);
+    
+    setFeedbackOptions({
+      spelling: false,
+      grammar: false,
+      content: false,
+      other: false,
+    });
+    setFeedbackModalVisible(false);
+    setCurrentScreen("summary");
   };
 
   const calculateScore = () => {
@@ -384,20 +404,12 @@ export default function QuizFlow() {
               >
                 <Text style={{ color: "#3257a8" }}>Close</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => handleClose()}
-                style={{ marginTop: 20, alignSelf: "flex-end" }}
-              >
-                <Text style={{ color: "#3257a8" }}>Back To Home</Text>
-              </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
     </ScrollView>
   );
-
- // Feedback Screen UI Redesign (Simplified like image)
 
 const renderFeedbackScreen = () => {
   const reviewQuestion = QUIZ_DATA[reviewQuestionIndex];
@@ -478,13 +490,109 @@ const renderFeedbackScreen = () => {
 
         <TouchableOpacity
           style={flatFeedbackStyles.feedbackButton}
-          onPress={() => setCurrentScreen("summary")}
+          onPress={() => setFeedbackModalVisible(true)}
         >
-          <Text style={flatFeedbackStyles.feedbackButtonText}>BACK TO SUMMARY</Text>
+          <Text style={flatFeedbackStyles.feedbackButtonText}>FEEDBACK</Text>
         </TouchableOpacity>
 
         <Text style={flatFeedbackStyles.footer}>BOARDBULLET</Text>
       </View>
+
+      {/* Feedback Modal */}
+      <Modal
+        visible={feedbackModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setFeedbackModalVisible(false)}
+      >
+        <View style={flatFeedbackStyles.modalOverlay}>
+          <View style={flatFeedbackStyles.modalContent}>
+            <Text style={flatFeedbackStyles.modalTitle}>FEEDBACK</Text>
+            
+            <View style={flatFeedbackStyles.modal}>
+              <View style={flatFeedbackStyles.modalrow}>
+            <TouchableOpacity
+              style={[
+                flatFeedbackStyles.checkboxOption,
+                feedbackOptions.spelling && flatFeedbackStyles.checkedOption
+              ]}
+              onPress={() => handleFeedbackOptionToggle('spelling')}
+            >
+              <Text style={{
+                fontSize: 14,
+                color: feedbackOptions.spelling ? '#33c37e' : '#333',
+                fontWeight: feedbackOptions.spelling ? 'bold' : 'normal'
+              }}>
+                CHECK SPELLING
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                flatFeedbackStyles.checkboxOption,
+                feedbackOptions.grammar && flatFeedbackStyles.checkedOption
+              ]}
+              onPress={() => handleFeedbackOptionToggle('grammar')}
+            >
+              <Text style={{
+                fontSize: 14,
+                color: feedbackOptions.grammar ? '#fff' : '#333',
+                fontWeight: feedbackOptions.grammar ? 'bold' : 'normal'
+              }}>
+                CHECK GRAMMAR
+              </Text>
+            </TouchableOpacity>
+            </View>
+             <View style={flatFeedbackStyles.modalrow}>
+            <TouchableOpacity
+              style={[
+                flatFeedbackStyles.checkboxOption,
+                feedbackOptions.content && flatFeedbackStyles.checkedOption
+              ]}
+              onPress={() => handleFeedbackOptionToggle('content')}
+            >
+              <Text style={{
+                fontSize: 14,
+                color: feedbackOptions.content ? '#33c37e' : '#333',
+                fontWeight: feedbackOptions.content ? 'bold' : 'normal'
+              }}>
+                CONTENT REVIEW
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                flatFeedbackStyles.checkboxOption,
+                feedbackOptions.other && flatFeedbackStyles.checkedOption
+              ]}
+              onPress={() => handleFeedbackOptionToggle('other')}
+            >
+              <Text style={{
+                fontSize: 14,
+                color: feedbackOptions.other ? '#33c37e' : '#333',
+                fontWeight: feedbackOptions.other ? 'bold' : 'normal'
+              }}>
+                OTHER
+              </Text>
+            </TouchableOpacity>
+            </View>
+            </View>
+
+            <TouchableOpacity
+              style={flatFeedbackStyles.modalButton}
+              onPress={handleFeedbackSubmit}
+            >
+              <Text style={{
+                color: '#fff',
+                fontSize: 14,
+                fontWeight: 'bold'
+              }}>
+                SUBMIT
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 };
@@ -588,10 +696,6 @@ const renderFeedbackScreen = () => {
         {/* Review Quiz Section */}
         <View style={summaryStyles.reviewSection}>
           <Text style={summaryStyles.reviewTitle}>REVIEW QUIZ</Text>
-          <Text style={summaryStyles.reviewSubtitle}>
-            Correct: {score.correct} | Incorrect: {score.incorrect} | Not
-            Attempted: {score.notAttempted}
-          </Text>
 
           {/* Question Dots Grid - Click any to see feedback */}
           <View style={summaryStyles.dotsContainer}>
@@ -600,14 +704,6 @@ const renderFeedbackScreen = () => {
             </View>
           </View>
         </View>
-
-        {/* Back to Home Button */}
-        <TouchableOpacity
-          onPress={handleBackToHome}
-          style={summaryStyles.backButton}
-        >
-          <Text style={summaryStyles.backButtonText}>Back to Home</Text>
-        </TouchableOpacity>
       </ScrollView>
     );
   };
@@ -724,7 +820,7 @@ const renderFeedbackScreen = () => {
     margin: 4,
   },
   feedbackButton: {
-    backgroundColor: '#33c37e',
+    backgroundColor: '#4864AC',
     padding: 12,
     borderRadius: 20,
     marginTop: 20,
@@ -769,16 +865,23 @@ const renderFeedbackScreen = () => {
     backgroundColor: '#f9f9f9',
   },
   checkedOption: {
-    borderColor: '#33c37e',
-    backgroundColor: '#e1f8ec',
+    borderColor: '#4864AC',
+    backgroundColor: '#4864AC',
   },
   modalButton: {
-    backgroundColor: '#33c37e',
+    backgroundColor: '#4864AC',
     padding: 12,
     borderRadius: 16,
     marginTop: 16,
     alignItems: 'center',
   },
+  modal:{
+    flexDirection: "column"
+  },
+  modalrow: {
+    flexDirection: 'row',
+    justifyContent: "space-between"
+  }
 });
 
   // Summary Styles
@@ -870,16 +973,6 @@ const renderFeedbackScreen = () => {
       fontSize: 11,
       fontWeight: "600",
       color: "#fff",
-    },
-    backButton: {
-      marginTop: 20,
-      paddingVertical: 15,
-      paddingHorizontal: 30,
-    },
-    backButtonText: {
-      color: "#4A90E2",
-      fontSize: 14,
-      fontWeight: "500",
     },
   });
 
