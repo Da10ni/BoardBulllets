@@ -231,8 +231,8 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     alignItems: "center",
-    marginTop: 80,
-    right: 20,
+    marginTop: "22%",
+    right: "3%",
   },
   iconCircle: {
     width: 90,

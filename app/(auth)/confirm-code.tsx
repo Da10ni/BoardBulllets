@@ -563,9 +563,8 @@ const styles = StyleSheet.create({
   iconContainer: {
     alignItems: "flex-end",
     marginTop: 100,
-    paddingRight: 30,
     zIndex: 1,
-    right: 150
+    right: "42%"
   },
   iconCircle: {
     width: 80,

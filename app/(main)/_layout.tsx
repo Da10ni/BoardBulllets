@@ -90,6 +90,7 @@ const headerStyles = StyleSheet.create({
     fontWeight: "bold",
     color: "#4864AC",
     letterSpacing: 0.5,
+    marginRight: 14,
     flex: 1,
     textAlign: "center",
   },

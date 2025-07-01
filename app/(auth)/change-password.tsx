@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     marginTop: 100,
     right: 5,
     zIndex: 1,
-    marginRight: 20
+    marginRight: 10,
   },
   iconCircle: {
     width: 80,
