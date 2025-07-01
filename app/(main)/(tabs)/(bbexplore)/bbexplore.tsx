@@ -158,7 +158,6 @@ const styles = StyleSheet.create({
   graySection: {
     backgroundColor: "#C0C0C0",
     height: 200,
-    marginHorizontal: 20,
     marginBottom: 40,
   },
   buttonsContainer: {
@@ -166,7 +165,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   actionButton: {
-    backgroundColor: "#5B8BC4",
+    backgroundColor: "#4864AC",
     borderRadius: 25,
     paddingVertical: 18,
     alignItems: "center",
@@ -193,13 +192,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   facebookIcon: {
-    backgroundColor: "#5B8BC4",
+    backgroundColor: "#4864AC",
   },
   twitterIcon: {
-    backgroundColor: "#5B8BC4",
+    backgroundColor: "#4864AC",
   },
   instagramIcon: {
-    backgroundColor: "#5B8BC4",
+    backgroundColor: "#4864AC",
   },
   spacer: {
     height: 50,
