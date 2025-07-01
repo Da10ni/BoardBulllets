@@ -42,10 +42,7 @@ const SettingsScreen = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
-      </View>
+    
 
       <ScrollView 
         style={styles.scrollView}

@@ -2,6 +2,7 @@ import Header from "@/components/Header/Header";
 import { styles } from "@/components/QuizMe/QuizFlow.styles";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import FeedbackPopup from "./feedback";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
@@ -77,6 +78,7 @@ export default function QuizFlow() {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
   const [reviewQuestionIndex, setReviewQuestionIndex] = useState(0); // For feedback screen
   const [modalVisible, setModalVisible] = useState(false);
   const [feedbackOptions, setFeedbackOptions] = useState({
@@ -118,6 +120,15 @@ export default function QuizFlow() {
     setCurrentQuestionIndex(0);
     setUserAnswers({});
   };
+  const handleFeedbackClick = () => {
+    setFeedbackModalVisible(true);
+  };
+  const handleFeedbackSubmit = (feedbackData) => {
+    console.log('Feedback Data:', feedbackData);
+    // Yahan tumhara API call hoga feedback submit karne ke liye
+    // API call example:
+    // submitFeedbackToAPI(feedbackData);
+  };  
 
   const handleAnswerSelect = (answerIndex: number) => {
     setSelectedAnswer(answerIndex);
@@ -477,11 +488,11 @@ const renderFeedbackScreen = () => {
         </View>
 
         <TouchableOpacity
-          style={flatFeedbackStyles.feedbackButton}
-          onPress={() => setCurrentScreen("summary")}
-        >
-          <Text style={flatFeedbackStyles.feedbackButtonText}>BACK TO SUMMARY</Text>
-        </TouchableOpacity>
+  style={flatFeedbackStyles.feedbackButton}
+  onPress={handleFeedbackClick} // Change this line
+>
+  <Text style={flatFeedbackStyles.feedbackButtonText}>FEEDBACK</Text>
+</TouchableOpacity>
 
         <Text style={flatFeedbackStyles.footer}>BOARDBULLET</Text>
       </View>
@@ -889,24 +900,30 @@ const renderFeedbackScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Home Section - Fixed at top */}
-      <View style={styles.homeSection}>
-        <Text style={styles.homeLabel}>
-          {currentScreen === "timer" && "QUIZ ME"}
-          {currentScreen === "question" && "QUIZ IN PROGRESS"}
-          {currentScreen === "summary" && "QUIZ COMPLETE"}
-          {currentScreen === "results" && "QUIZ REVIEW"}
-        </Text>
-      </View>
+    {/* Home Section - Fixed at top */}
+    <View style={styles.homeSection}>
+      <Text style={styles.homeLabel}>
+        {currentScreen === "timer" && "QUIZ ME"}
+        {currentScreen === "question" && "QUIZ IN PROGRESS"}
+        {currentScreen === "summary" && "QUIZ COMPLETE"}
+        {currentScreen === "results" && "QUIZ REVIEW"}
+      </Text>
+    </View>
 
-      {/* Scrollable Content Based on Screen */}
-      {currentScreen === "timer" && renderTimerScreen()}
-      {currentScreen === "question" && renderQuestionScreen()}
-      {currentScreen === "summary" && renderSummaryScreen()}
-      {currentScreen === "feedback" && renderFeedbackScreen()}
-      {currentScreen === "results" && renderResultsScreen()}
+    {/* Scrollable Content Based on Screen */}
+    {currentScreen === "timer" && renderTimerScreen()}
+    {currentScreen === "question" && renderQuestionScreen()}
+    {currentScreen === "summary" && renderSummaryScreen()}
+    {currentScreen === "feedback" && renderFeedbackScreen()}
+    {currentScreen === "results" && renderResultsScreen()}
 
-      {/* <BottomNavigation onNavPress={handleNavPress} /> */}
-    </SafeAreaView>
+    {/* ADD THIS COMPONENT */}
+    <FeedbackPopup
+      visible={feedbackModalVisible}
+      onClose={() => setFeedbackModalVisible(false)}
+      onSubmit={handleFeedbackSubmit}
+    />
+
+  </SafeAreaView>
   );
 }
