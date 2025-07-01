@@ -15,9 +15,9 @@ import {
 const ReviewScreen = () => {
   const navigation = useNavigation();
   const [selectedRating, setSelectedRating] = useState(0);
-  const [feedback, setFeedback] = useState("");
+  const [isButtonPressed, setIsButtonPressed] = useState(false);
 
-  const handleStarPress = (rating: number): void => {
+  const handleStarPress = (rating) => {
     setSelectedRating(rating);
   };
 
@@ -27,9 +27,7 @@ const ReviewScreen = () => {
       return;
     }
 
-    // Here you can send the review to your backend
     console.log("Rating:", selectedRating);
-    console.log("Feedback:", feedback);
 
     Alert.alert("Thank You!", "Your feedback has been submitted successfully", [
       {
@@ -50,8 +48,8 @@ const ReviewScreen = () => {
         >
           <Ionicons
             name={i <= selectedRating ? "star" : "star-outline"}
-            size={40}
-            color={i <= selectedRating ? "#FFD700" : "#E0E0E0"}
+            size={35}
+            color={i <= selectedRating ? "#155DA1" : "#E0E0E0"}
           />
         </TouchableOpacity>
       );
@@ -76,26 +74,37 @@ const ReviewScreen = () => {
       {/* Main Content */}
       <View style={styles.content}>
         <View style={styles.feedbackCard}>
-          <Text style={styles.questionText}>HOW WAS YOUR B4AI EXPERIENCE?</Text>
+          {/* Title */}
+          <Text style={styles.cardTitle}>YOUR FEEDBACK</Text>
+
+          {/* Question */}
+          <Text style={styles.questionText}>
+            HOW WAS YOUR BOARDBULLETS EXPERIENCE?
+          </Text>
 
           {/* Star Rating */}
           <View style={styles.starsContainer}>{renderStars()}</View>
 
-          {/* Feedback Input */}
-          <TextInput
-            style={styles.feedbackInput}
-            placeholder="GIVE FEEDBACK, SUGGEST IMPROVEMENT OR SHARE IDEAS"
-            placeholderTextColor="#999"
-            multiline
-            numberOfLines={4}
-            value={feedback}
-            onChangeText={setFeedback}
-            textAlignVertical="top"
-          />
+          {/* Recommendation Text */}
+          <Text style={styles.recommendText}>
+            VERY HELPFUL, WOULD RECOMMEND TO PEERS
+          </Text>
 
           {/* Submit Button */}
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitText}>SUBMIT</Text>
+          <TouchableOpacity 
+            style={[
+              styles.submitButton,
+              isButtonPressed && styles.submitButtonPressed
+            ]}
+            onPress={handleSubmit}
+            onPressIn={() => setIsButtonPressed(true)}
+            onPressOut={() => setIsButtonPressed(false)}
+            activeOpacity={0.8}
+          >
+            <Text style={[
+              styles.submitText,
+              isButtonPressed && styles.submitTextPressed
+            ]}>SUBMIT</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -106,7 +115,7 @@ const ReviewScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: "#F0F4FF", // Light blue background
   },
   header: {
     flexDirection: "row",
@@ -133,70 +142,90 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     justifyContent: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
   },
   feedbackCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 15,
-    padding: 30,
+    borderRadius: 20,
+    padding: 0, // Remove padding
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 3,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: "#E8F0FE",
+    overflow: "hidden", // Important for full width
   },
-  questionText: {
+  cardTitle: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#333",
+    marginBottom: 15,
+    marginTop: 25,
+    letterSpacing: 1,
+  },
+  questionText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#555",
     textAlign: "center",
-    marginBottom: 30,
+    marginBottom: 25,
     letterSpacing: 0.5,
+    lineHeight: 20,
+    paddingHorizontal: 25,
   },
   starsContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    marginBottom: 30,
+    alignItems: "center",
+    marginBottom: 25,
+    backgroundColor: "#F8FAFE",
+    paddingVertical: 15,
+    paddingHorizontal: 0, // Remove side padding
+    borderRadius: 0, // Remove border radius for full width
+    borderWidth: 0, // Remove border
+    width: "100%",
   },
   starButton: {
     marginHorizontal: 5,
-    padding: 5,
+    padding: 8,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  feedbackInput: {
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
-    borderRadius: 8,
-    padding: 15,
-    fontSize: 14,
-    color: "#333",
-    backgroundColor: "#F9F9F9",
-    marginBottom: 30,
-    minHeight: 100,
+  recommendText: {
+    fontSize: 12,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 25,
+    letterSpacing: 0.5,
+    fontWeight: "500",
+    paddingHorizontal: 25,
   },
   submitButton: {
-    backgroundColor: "#4864AC",
-    paddingHorizontal: 40,
+    backgroundColor: "#FFFFFF",
     paddingVertical: 15,
-    borderRadius: 25,
-    shadowColor: "#4864AC",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
+    borderTopWidth: 2,
+    borderTopColor: "#155DA1",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   submitText: {
-    color: "#FFFFFF",
-    fontSize: 16,
+    color: "#155DA1",
+    fontSize: 14,
     fontWeight: "bold",
-    letterSpacing: 1,
+    letterSpacing: 1.5,
+  },
+  submitButtonPressed: {
+    backgroundColor: "#F0F4FF",
+  },
+  submitTextPressed: {
+    color: "#f0eded",
   },
 });
 
