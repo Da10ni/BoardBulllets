@@ -36,7 +36,7 @@ export default function TabsLayout() {
             <IconSymbol 
               size={28} 
               name="house.fill" 
-              color={focused ? "#4864AC" : "#B0B0B0"} // Using the same colors
+              color={focused ? "#4864AC" : "#4864AC"} // Using the same colors
             />
           ),
         }}
@@ -49,7 +49,7 @@ export default function TabsLayout() {
             <FontAwesome 
               size={28} 
               name="user-o" 
-              color={focused ? "#4864AC" : "#B0B0B0"} // Using the same colors
+              color={focused ? "#4864AC" : "#4864AC"} // Using the same colors
             />
           ),
         }}
@@ -62,7 +62,7 @@ export default function TabsLayout() {
             <AntDesign 
               name="shoppingcart" 
               size={28} 
-              color={focused ? "#4864AC" : "#B0B0B0"} // Using the same colors
+              color={focused ? "#4864AC" : "#4864AC"} // Using the same colors
             />
           ),
         }}

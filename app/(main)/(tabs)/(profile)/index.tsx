@@ -64,7 +64,7 @@ const ProfileScreen = () => {
                 style={styles.editButton}
                 onPress={() => router.push("/editProfile")}
               >
-                <EvilIcons name="pencil" size={40} style={styles.editIcon}/>
+                <EvilIcons name="pencil" size={22} style={styles.editIcon}/>
               </TouchableOpacity>
             </View>
           </View>
@@ -177,12 +177,11 @@ const styles = StyleSheet.create({
   editButton: {
     position: "absolute",
     right: 5,
-    //top: 15,
-   // width: 30,
-    //height: 30,
-    transform: [{ skewY: "-180deg" }],
-   // backgroundColor: "#999",
-    borderRadius: 15,
+    top: 15,
+    width: 40,
+    height: 40,
+    backgroundColor: "#E5E5E5",
+    borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
@@ -197,8 +196,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   editIcon: {
-    color: "#000",
-    //marginTop:5,
+    color: "#666",
   },
   nameSection: {
     flex: 1,
@@ -207,7 +205,7 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#333",
+    color: "#4864AC",
     marginBottom: 5,
     letterSpacing: 0.5,
   },
