@@ -1,3 +1,5 @@
+import { useAuth } from "@/utils/axiosInstance";
+import React, { useState } from "react";
 import {
   Alert,
   SafeAreaView,
@@ -28,7 +30,7 @@ const SettingsScreen = () => {
     console.log("Change Password pressed");
   };
 
-  const handleLogOut = () => {
+  const handleLogOut = async () => {
     Alert.alert("Log Out", "Are you sure you want to log out?", [
       { text: "Cancel", style: "cancel" },
       { text: "Log Out", onPress: () => console.log("User logged out") },

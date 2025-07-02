@@ -315,9 +315,10 @@
 
 // app/Verification.tsx
 import AlertPopup from "@/components/Alert/Alert";
+import { useAuth } from "@/utils/axiosInstance";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -329,6 +330,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
 
 const VerificationScreen = () => {
@@ -337,9 +339,11 @@ const VerificationScreen = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [lastRouteName, setLastRouteName] = useState("");
   const navigation = useNavigation();
-  
-  // Add useRef for inputs
-  const inputs = useRef<Array<TextInput | null>>([]);
+  const [loading, setLoading] = useState(false);
+  const { verifyEmail, resendCode } = useAuth();
+
+  // Fix: Add useRef for inputs array
+  const inputs = useRef<(TextInput | null)[]>([]);
 
   useEffect(() => {
     // Get the last route in the stack
@@ -351,8 +355,11 @@ const VerificationScreen = () => {
     }
   }, []);
 
-  // Add missing handleCodeChange function
+  // Fix: Add missing function to handle code input changes
   const handleCodeChange = (text: string, index: number) => {
+    // Only allow numeric input
+    if (text && !/^\d$/.test(text)) return;
+
     const newCode = [...code];
     newCode[index] = text;
     setCode(newCode);
@@ -363,40 +370,84 @@ const VerificationScreen = () => {
     }
   };
 
-  // Add missing handleKeyPress function
+  // Fix: Add missing function to handle key press
   const handleKeyPress = (key: string, index: number) => {
-    if (key === 'Backspace' && !code[index] && index > 0) {
-      inputs.current[index - 1]?.focus();
+    if (key === "Backspace") {
+      const newCode = [...code];
+      if (newCode[index]) {
+        // Clear current input
+        newCode[index] = "";
+        setCode(newCode);
+      } else if (index > 0) {
+        // Move to previous input and clear it
+        newCode[index - 1] = "";
+        setCode(newCode);
+        inputs.current[index - 1]?.focus();
+      }
     }
   };
 
-  const handleVerifyCode = () => {
-    const verificationCode = code.join(''); // Join array to make string
-    
-    if (!verificationCode) {
-      Alert.alert("Error", "Please enter the verification code.");
-      return;
+  // Fix: Create verificationCode from code array
+  const verificationCode = code.join("");
+
+  const handleVerifyCode = async () => {
+    setLoading(true);
+    try {
+      if (!verificationCode) {
+        Alert.alert("Error", "Please enter the verification code.");
+        return;
+      }
+      if (verificationCode.length < 4) {
+        Alert.alert("Error", "Please enter the complete verification code.");
+        return;
+      }
+
+      console.log(verificationCode);
+
+      const res = await verifyEmail({ email, verificationCode });
+
+      if (res?.success) {
+        Alert.alert(
+          "Code Verified",
+          "Your code has been verified successfully.",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                lastRouteName === "register"
+                  ? router.push("/login")
+                  : router.push("/change-password");
+              },
+            },
+          ]
+        );
+      } else {
+        Alert.alert(
+          "Code Not Verified",
+
+          `Your code has not been verified .`
+        );
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+    } finally {
+      setLoading(false);
     }
-    if (verificationCode.length < 4) {
-      Alert.alert("Error", "Please enter the complete verification code.");
-      return;
-    }
-    console.log(lastRouteName);
-    
-    // Here you would typically verify the code
-    Alert.alert("Code Verified", "Your code has been verified successfully.", [
-      {
-        text: "OK",
-        onPress: () => {
-          lastRouteName === "register"
-            ? router.push("/login")
-            : router.push("/change-password");
-        },
-      },
-    ]);
+    // Here you would typically verify the code with backend
   };
 
-  const handleResendCode = () => {
+  const handleResendCode = async () => {
+    // Clear current code
+    setCode(["", "", "", ""]);
+
+    const res = await resendCode({ email });
+
+    if (res?.success) {
+      Alert.alert("Code Was Send On Your Email", `${res.message}`);
+    }
+
     setShowAlert(true);
   };
 
@@ -450,6 +501,13 @@ const VerificationScreen = () => {
         <View style={styles.formContainer}>
           <Text style={styles.title}>CONFIRM CODE</Text>
 
+          {/* Display email if available */}
+          {email && (
+            <Text style={styles.emailText}>
+              Verification code sent to: {email}
+            </Text>
+          )}
+
           {/* Code Input Boxes */}
           <View style={styles.codeInputContainer}>
             {code.map((digit, index) => (
@@ -470,6 +528,7 @@ const VerificationScreen = () => {
                   keyboardType="number-pad"
                   maxLength={1}
                   selectTextOnFocus
+                  autoFocus={index === 0} // Auto focus first input
                 />
                 <View
                   style={[
@@ -484,10 +543,20 @@ const VerificationScreen = () => {
           {/* Submit Button */}
           <View style={styles.submitButtonContainer}>
             <TouchableOpacity
-              style={styles.submitButton}
+              style={[
+                styles.submitButton,
+                verificationCode.length === 4
+                  ? styles.submitButtonActive
+                  : styles.submitButtonInactive,
+              ]}
               onPress={handleVerifyCode}
+              disabled={verificationCode.length !== 4}
             >
-              <Text style={styles.submitButtonText}>SUBMIT</Text>
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={styles.submitButtonText}>SUBMIT</Text>
+              )}
             </TouchableOpacity>
           </View>
 
@@ -496,13 +565,21 @@ const VerificationScreen = () => {
             style={styles.resendButton}
             onPress={handleResendCode}
           >
-            <Text style={styles.resendButtonText}>RESEND</Text>
+            <Text style={styles.resendButtonText}>RESEND CODE</Text>
+          </TouchableOpacity>
+
+          {/* Back to Login Button */}
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={handleBackToLogin}
+          >
+            <Text style={styles.backButtonText}>Back to Login</Text>
           </TouchableOpacity>
 
           {/* Copyright Footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>
-              COPYRIGHT (C) 2017 B4AI, INC.{"\n"}
+              COPYRIGHT (C) 2017 BOARDBULLETS, INC.{"\n"}
               PRIVACY POLICY | TERMS
             </Text>
           </View>
@@ -587,9 +664,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     color: "white",
-    marginBottom: 40,
+    marginBottom: 20,
     textAlign: "center",
     letterSpacing: 1,
+  },
+  emailText: {
+    color: "rgba(255, 255, 255, 0.8)",
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 30,
+    paddingHorizontal: 20,
   },
   codeInputContainer: {
     flexDirection: "row",
@@ -628,15 +712,20 @@ const styles = StyleSheet.create({
   },
   submitButtonContainer: {
     position: "relative",
-    marginBottom: 30,
+    marginBottom: 20,
   },
   submitButton: {
-    backgroundColor: "white",
     borderRadius: 25,
     paddingVertical: 15,
     paddingHorizontal: 50,
     alignItems: "center",
     minWidth: 200,
+  },
+  submitButtonActive: {
+    backgroundColor: "white",
+  },
+  submitButtonInactive: {
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
   },
   submitButtonText: {
     color: "#4864AC",
@@ -645,7 +734,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   resendButton: {
-    marginBottom: 50,
+    marginBottom: 20,
     paddingVertical: 10,
   },
   resendButtonText: {
@@ -654,9 +743,18 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     letterSpacing: 0.5,
   },
+  backButton: {
+    marginBottom: 30,
+    paddingVertical: 10,
+  },
+  backButtonText: {
+    color: "rgba(255, 255, 255, 0.6)",
+    fontSize: 12,
+    textAlign: "center",
+  },
   footer: {
     alignItems: "center",
-    marginTop: 125,
+    marginTop: 40,
   },
   footerText: {
     color: "rgba(255, 255, 255, 0.6)",

@@ -1,8 +1,9 @@
 // app/SplashScreen.tsx
 import { FontAwesome6, Ionicons, MaterialIcons, SimpleLineIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   StatusBar,
@@ -92,6 +93,24 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
     onComplete?.();
     router.push("/register");
   };
+
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem("userToken");
+        if (!token) {
+          router.push("/login");
+        }else if(token){
+          router.push("/(main)/(tabs)/(home)");
+        }
+      } catch (error) {
+        console.error("Error checking token:", error);
+        router.push("/login");
+      }
+    };
+  
+    checkToken();
+  }, []);
 
   const renderCarouselItem = ({ item }: { item: SplashData }) => (
     <View style={styles.carouselItemContainer}>
