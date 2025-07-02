@@ -1,4 +1,4 @@
 // app/(drawer)/home.tsx
-import HomeScreen from "@/components/Home/Home";
+import HomeScreen from "@/app/(main)/(tabs)/(home)";
 
 export default HomeScreen;
