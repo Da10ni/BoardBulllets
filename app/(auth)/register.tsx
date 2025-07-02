@@ -14,6 +14,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
 import { useAuth } from "@/utils/axiosInstance";
 
@@ -25,38 +26,48 @@ const SignupScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [selectedOption1, setSelectedOption1] = useState("");
   const [selectedOption2, setSelectedOption2] = useState("");
+  const [loading, setLoading] = useState<Boolean>(false);
   const [showAlert, setShowAlert] = useState(false);
   const { register } = useAuth();
 
   const handleSignup = async () => {
-    if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      Alert.alert("Error", "Please fill in all fields.");
-      return;
-    }
+    setLoading(true);
+    try {
+      if (!firstName || !lastName || !email || !password || !confirmPassword) {
+        Alert.alert("Error", "Please fill in all fields.");
+        return;
+      }
 
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match.");
-      return;
-    }
+      if (password !== confirmPassword) {
+        Alert.alert("Error", "Passwords do not match.");
+        return;
+      }
 
-    if (password.length < 6) {
-      Alert.alert("Error", "Password must be at least 6 characters long.");
-      return;
-    }
+      if (password.length < 6) {
+        Alert.alert("Error", "Password must be at least 6 characters long.");
+        return;
+      }
 
-    const signupdata = {
-      firstName,
-      lastName,
-      email,
-      password,
-      confirmPassword,
-    };
+      const signupdata = {
+        firstName,
+        lastName,
+        email,
+        password,
+        confirmPassword,
+      };
 
-    // Add your signup logic here
-    const data = await register(signupdata);
+      // Add your signup logic here
+      const data = await register(signupdata);
 
-    if (data?.success) {
-      setShowAlert(true);
+      if (data?.success) {
+        setShowAlert(true);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        Alert.alert(error?.message);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,10 +89,12 @@ const SignupScreen = () => {
         alertVisible={showAlert}
         setAlertVisible={setShowAlert}
         alertTitle="A Verification Code has been sent to the given email"
-        onSuccess={() => router.push({
-          pathname: "/confirm-code",
-          params: { email: email }
-        })}
+        onSuccess={() =>
+          router.push({
+            pathname: "/confirm-code",
+            params: { email: email },
+          })
+        }
       />
 
       {/* Diagonal White Background */}
@@ -223,7 +236,11 @@ const SignupScreen = () => {
               style={styles.signupButton}
               onPress={handleSignup}
             >
-              <Text style={styles.signupButtonText}>SIGN UP</Text>
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={styles.signupButtonText}>SIGN UP</Text>
+              )}
             </TouchableOpacity>
           </View>
 

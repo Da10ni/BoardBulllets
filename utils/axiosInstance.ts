@@ -68,13 +68,10 @@ interface VerificationResponse extends ApiResponse {
 interface AuthResponse extends ApiResponse {
   success: boolean;
   message: string;
+  token: string;
 }
 
-
-
 const BASE_URL: string = `${process.env.EXPO_PUBLIC_API_URL}`;
-
-console.log(BASE_URL)
 
 // ✅ Create Axios instance with React Native specific config
 const api: AxiosInstance = axios.create({
@@ -99,16 +96,9 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Log request for debugging
-    console.log(`🚀 ${config.method?.toUpperCase()} ${config.url}`, {
-      baseURL: config.baseURL,
-      data: config.data,
-    });
-
     return config;
   },
   (error: AxiosError) => {
-    console.error("❌ Request Error:", error);
     return Promise.reject(error);
   }
 );
@@ -117,29 +107,12 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response: AxiosResponse) => {
     // Log successful response
-    console.log(
-      `✅ ${response.config.method?.toUpperCase()} ${response.config.url}`,
-      {
-        status: response.status,
-        data: response.data,
-      }
-    );
-
     return response;
   },
   (error: AxiosError) => {
     // Enhanced error handling for React Native
     if (error.response) {
       const { status, data } = error.response;
-
-      console.error(
-        `❌ ${error.config?.method?.toUpperCase()} ${error.config?.url}`,
-        {
-          status,
-          message: (data as any)?.message || "Unknown error",
-          data: data,
-        }
-      );
 
       // Handle specific status codes
       switch (status) {
@@ -266,15 +239,12 @@ export const handleApiError = (error: AxiosError): string => {
   }
 };
 
-
 // Usage example for your auth flow
 export const useAuth = () => {
   const handleRegister = async (userData: RegisterData) => {
     try {
-
       const response = await authAPI.register(userData);
       if (response.data.success) {
-        console.log("Registration successful:", response.data.message);
         return {
           success: true,
           message: response.data.message,
@@ -284,7 +254,6 @@ export const useAuth = () => {
       }
     } catch (error) {
       const errorMessage = handleApiError(error as AxiosError);
-      console.error("Registration failed:", errorMessage);
       return { success: false, message: errorMessage };
     }
   };
@@ -293,7 +262,6 @@ export const useAuth = () => {
     try {
       const response = await authAPI.verifyEmail(verifyData);
       if (response.data.success) {
-        console.log("Email verified successfully:", response.data.message);
         return {
           success: true,
           message: response.data.message,
@@ -303,7 +271,6 @@ export const useAuth = () => {
       }
     } catch (error) {
       const errorMessage = handleApiError(error as AxiosError);
-      console.error("Email verification failed:", errorMessage);
       return { success: false, message: errorMessage };
     }
   };
@@ -312,12 +279,10 @@ export const useAuth = () => {
     try {
       const response = await authAPI.resendCode(resendData);
       if (response.data.success) {
-        console.log("Code resent successfully:", response.data.message);
         return { success: true, message: response.data.message };
       }
     } catch (error) {
       const errorMessage = handleApiError(error as AxiosError);
-      console.error("Resend code failed:", errorMessage);
       return { success: false, message: errorMessage };
     }
   };
@@ -326,12 +291,14 @@ export const useAuth = () => {
     try {
       const response = await authAPI.login(credentials);
       if (response.data.success) {
-        console.log("Login successful:", response.data.message);
-        return { success: true, message: response.data.message };
+        return {
+          success: true,
+          message: response.data.message,
+          token: response.data.token,
+        };
       }
     } catch (error) {
       const errorMessage = handleApiError(error as AxiosError);
-      console.error("Login failed:", errorMessage);
       return { success: false, message: errorMessage };
     }
   };
@@ -344,7 +311,6 @@ export const useAuth = () => {
       }
     } catch (error) {
       const errorMessage = handleApiError(error as AxiosError);
-      console.error("Get profile failed:", errorMessage);
       return { success: false, message: errorMessage };
     }
   };
@@ -360,7 +326,6 @@ export const useAuth = () => {
       }
     } catch (error) {
       const errorMessage = handleApiError(error as AxiosError);
-      console.error("Logout failed:", errorMessage);
       return { success: false, message: errorMessage };
     }
   };

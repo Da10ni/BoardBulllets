@@ -14,24 +14,43 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [showAlert, setShowAlert] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState<Boolean>(false);
+  const [loading, setLoading] = useState<Boolean>(false);
   const { login } = useAuth();
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert("Error", "Please fill in all fields.");
-      return;
-    }
+    setLoading(true);
+    try {
+      if (!email || !password) {
+        setLoading(false);
+        Alert.alert("Error", "Please fill in all fields.");
+        return;
+      }
 
-    const res = await login({ email, password });
-    if (res?.success) {
-      setShowAlert(true);
+      const res = await login({
+        email,
+        password,
+      });
+      if (res?.success) {
+        setLoading(false);
+        await AsyncStorage.setItem("userToken", JSON.stringify(res?.token));
+        setShowAlert(true);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -144,7 +163,11 @@ const LoginScreen = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>LOG IN</Text>
+            {loading ? (
+              <ActivityIndicator />
+            ) : (
+              <Text style={styles.loginButtonText}>LOG IN</Text>
+            )}
           </TouchableOpacity>
 
           <View style={styles.buttons}>

@@ -15,6 +15,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
 
 const VerificationScreen = () => {
@@ -23,6 +24,7 @@ const VerificationScreen = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [lastRouteName, setLastRouteName] = useState("");
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
   const { verifyEmail, resendCode } = useAuth();
 
   // Fix: Add useRef for inputs array
@@ -74,42 +76,50 @@ const VerificationScreen = () => {
   const verificationCode = code.join("");
 
   const handleVerifyCode = async () => {
-    if (!verificationCode) {
-      Alert.alert("Error", "Please enter the verification code.");
-      return;
-    }
-    if (verificationCode.length < 4) {
-      Alert.alert("Error", "Please enter the complete verification code.");
-      return;
-    }
+    setLoading(true);
+    try {
+      if (!verificationCode) {
+        Alert.alert("Error", "Please enter the verification code.");
+        return;
+      }
+      if (verificationCode.length < 4) {
+        Alert.alert("Error", "Please enter the complete verification code.");
+        return;
+      }
 
-    console.log(verificationCode);
+      console.log(verificationCode);
 
-    const res = await verifyEmail({ email, verificationCode });
+      const res = await verifyEmail({ email, verificationCode });
 
-    if (res?.success) {
-      Alert.alert(
-        "Code Verified",
-        "Your code has been verified successfully.",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              lastRouteName === "register"
-                ? router.push("/login")
-                : router.push("/change-password");
+      if (res?.success) {
+        Alert.alert(
+          "Code Verified",
+          "Your code has been verified successfully.",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                lastRouteName === "register"
+                  ? router.push("/login")
+                  : router.push("/change-password");
+              },
             },
-          },
-        ]
-      );
-    } else {
-      Alert.alert(
-        "Code Not Verified",
+          ]
+        );
+      } else {
+        Alert.alert(
+          "Code Not Verified",
 
-        `Your code has not been verified .`
-      );
+          `Your code has not been verified .`
+        );
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+    } finally {
+      setLoading(false);
     }
-
     // Here you would typically verify the code with backend
   };
 
@@ -221,7 +231,11 @@ const VerificationScreen = () => {
               onPress={handleVerifyCode}
               disabled={verificationCode.length !== 4}
             >
-              <Text style={styles.submitButtonText}>SUBMIT</Text>
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={styles.submitButtonText}>SUBMIT</Text>
+              )}
             </TouchableOpacity>
           </View>
 
