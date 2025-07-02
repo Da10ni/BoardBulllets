@@ -1,30 +1,33 @@
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Tabs } from "expo-router";
+import { useEffect, useState } from "react";
 import { Platform } from "react-native";
 
 export default function TabsLayout() {
+  
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         // GLOBAL COLOR SETTINGS
-        tabBarActiveTintColor: "#4864AC",        // Active tab color (currently blue)
-        tabBarInactiveTintColor: "#B0B0B0",     // Inactive tab color (light gray)
-        
+        tabBarActiveTintColor: "#4864AC", // Active tab color (currently blue)
+        tabBarInactiveTintColor: "#B0B0B0", // Inactive tab color (light gray)
+
         // OPTIONAL: Additional styling
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: "600",
         },
         tabBarStyle: {
-          position: Platform.OS === 'ios' ? "absolute" : undefined,
-          backgroundColor: "#FFFFFF",           // Tab bar background
-          borderTopColor: "#E5E7EB",           // Top border color
+          position: Platform.OS === "ios" ? "absolute" : undefined,
+          backgroundColor: "#FFFFFF", // Tab bar background
+          borderTopColor: "#E5E7EB", // Top border color
           borderTopWidth: 1,
           paddingTop: 5,
-          paddingBottom: Platform.OS === 'ios' ? 25 : 10,
-          height: Platform.OS === 'ios' ? 85 : 65,
+          paddingBottom: Platform.OS === "ios" ? 25 : 10,
+          height: Platform.OS === "ios" ? 85 : 65,
         },
       }}
     >
@@ -33,9 +36,9 @@ export default function TabsLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color, focused }) => (
-            <IconSymbol 
-              size={28} 
-              name="house.fill" 
+            <IconSymbol
+              size={28}
+              name="house.fill"
               color={focused ? "#4864AC" : "#B0B0B0"} // Using the same colors
             />
           ),
@@ -46,9 +49,9 @@ export default function TabsLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color, focused }) => (
-            <FontAwesome 
-              size={28} 
-              name="user-o" 
+            <FontAwesome
+              size={28}
+              name="user-o"
               color={focused ? "#4864AC" : "#B0B0B0"} // Using the same colors
             />
           ),
@@ -59,9 +62,9 @@ export default function TabsLayout() {
         options={{
           title: "Pricing",
           tabBarIcon: ({ color, focused }) => (
-            <AntDesign 
-              name="shoppingcart" 
-              size={28} 
+            <AntDesign
+              name="shoppingcart"
+              size={28}
               color={focused ? "#4864AC" : "#B0B0B0"} // Using the same colors
             />
           ),

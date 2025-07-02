@@ -1,7 +1,9 @@
+import { useAuth } from "@/utils/axiosInstance";
 import { EvilIcons } from "@expo/vector-icons";
 import Icon from "@expo/vector-icons/FontAwesome";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   ScrollView,
@@ -13,6 +15,67 @@ import {
 } from "react-native";
 
 const ProfileScreen = () => {
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userData, setUserData] = useState<any>(null);
+  const { getProfile } = useAuth();
+
+  // ✅ Get User ID from Token
+  const getUserId = async (): Promise<string | null> => {
+    try {
+      const token = await AsyncStorage.getItem("userToken");
+
+      if (!token) {
+        console.log("No token found");
+        return null;
+      }
+
+      // Token decode karo
+      const payload = token.split(".")[1];
+      const decodedPayload = atob(payload);
+      const tokenData = JSON.parse(decodedPayload);
+
+      console.log("✅ User ID from token:", tokenData.userId);
+      return tokenData.userId;
+    } catch (error) {
+      console.log("❌ Error getting user ID:", error);
+      return null;
+    }
+  };
+
+  // ✅ Get User Profile Data
+  const getUserData = async (id: string) => {
+    try {
+      console.log("🔍 Fetching profile for ID:", id);
+      
+      const res = await getProfile(id);
+      console.log("✅ Profile data received:", res);
+      
+      if (res?.success && res?.user) {
+        setUserData(res.user);
+        console.log("✅ User data set:", res.user);
+      } else {
+        console.log("❌ Failed to get profile:", res);
+      }
+    } catch (error) {
+      console.log("❌ Error fetching profile:", error);
+    }
+  };
+
+  // ✅ Initial Load
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const id = await getUserId();
+      setUserId(id);
+    };
+    fetchUserId();
+  }, []);
+
+  useEffect(() => {
+    if (userId) {
+      getUserData(userId);
+    }
+  }, [userId]);
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#FFFFFF" barStyle="dark-content" />
@@ -30,17 +93,24 @@ const ProfileScreen = () => {
             <View style={styles.profileImageContainer}>
               <Image
                 source={{
-                  uri: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+                  uri: userData?.profile?.profilePic || 
+                       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
                 }}
                 style={styles.profileImage}
               />
-              
             </View>
 
             {/* Name and Student Info */}
             <View style={styles.nameSection}>
-              <Text style={styles.userName}>JOHN DOE</Text>
-              <Text style={styles.userRole}>STUDENT</Text>
+              <Text style={styles.userName}>
+                {userData?.profile?.firstName && userData?.profile?.lastName 
+                  ? `${userData.profile.firstName.toUpperCase()} ${userData.profile.lastName.toUpperCase()}`
+                  : "JOHN DOE"
+                }
+              </Text>
+              <Text style={styles.userRole}>
+                {userData?.role?.toUpperCase() || "STUDENT"}
+              </Text>
 
               {/* Social Media Icons */}
               <View style={styles.socialIcons}>
@@ -64,7 +134,7 @@ const ProfileScreen = () => {
                 style={styles.editButton}
                 onPress={() => router.push("/editProfile")}
               >
-                <EvilIcons name="pencil" size={40} style={styles.editIcon}/>
+                <EvilIcons name="pencil" size={40} style={styles.editIcon} />
               </TouchableOpacity>
             </View>
           </View>
@@ -76,11 +146,15 @@ const ProfileScreen = () => {
           <View style={styles.detailRow}>
             <View style={styles.detailColumn}>
               <Text style={styles.fieldLabel}>FIRST NAME</Text>
-              <Text style={styles.fieldValue}>JOHN</Text>
+              <Text style={styles.fieldValue}>
+                {userData?.profile?.firstName?.toUpperCase() || "JOHN"}
+              </Text>
             </View>
             <View style={styles.detailColumn}>
               <Text style={styles.fieldLabel}>LAST NAME</Text>
-              <Text style={styles.fieldValue}>DOE</Text>
+              <Text style={styles.fieldValue}>
+                {userData?.profile?.lastName?.toUpperCase() || "DOE"}
+              </Text>
             </View>
           </View>
 
@@ -88,7 +162,9 @@ const ProfileScreen = () => {
           <View style={styles.detailRow}>
             <View style={styles.detailColumn}>
               <Text style={styles.fieldLabel}>EDUCATIONAL STATUS</Text>
-              <Text style={styles.fieldValue}>STUDENT</Text>
+              <Text style={styles.fieldValue}>
+                {userData?.role?.toUpperCase() || "STUDENT"}
+              </Text>
             </View>
             <View style={styles.detailColumn}>
               <Text style={styles.fieldLabel}>SPECIALTY</Text>
@@ -114,11 +190,18 @@ const ProfileScreen = () => {
           <View style={styles.detailRow}>
             <View style={styles.detailColumn}>
               <Text style={styles.fieldLabel}>DATE OF BIRTH</Text>
-              <Text style={styles.fieldValue}>02-27-1993</Text>
+              <Text style={styles.fieldValue}>
+                {userData?.profile?.DOB 
+                  ? new Date(userData.profile.DOB).toLocaleDateString()
+                  : "02-27-1993"
+                }
+              </Text>
             </View>
             <View style={styles.detailColumn}>
               <Text style={styles.fieldLabel}>GENDER</Text>
-              <Text style={styles.fieldValue}>MALE</Text>
+              <Text style={styles.fieldValue}>
+                {userData?.profile?.gender?.toUpperCase() || "MALE"}
+              </Text>
             </View>
           </View>
 
@@ -137,6 +220,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
+  },
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#4864AC",
+  },
+  errorText: {
+    fontSize: 16,
+    color: "#FF6B6B",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  retryButton: {
+    backgroundColor: "#4864AC",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  retryButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   header: {
     alignItems: "center",
@@ -177,11 +286,7 @@ const styles = StyleSheet.create({
   editButton: {
     position: "absolute",
     right: 5,
-    //top: 15,
-   // width: 30,
-    //height: 30,
     transform: [{ skewY: "-180deg" }],
-   // backgroundColor: "#999",
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
@@ -198,7 +303,6 @@ const styles = StyleSheet.create({
   },
   editIcon: {
     color: "#000",
-    //marginTop:5,
   },
   nameSection: {
     flex: 1,

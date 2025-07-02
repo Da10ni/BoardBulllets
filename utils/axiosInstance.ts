@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios, {
   AxiosInstance,
   AxiosRequestConfig,
@@ -71,6 +72,49 @@ interface AuthResponse extends ApiResponse {
   token: string;
 }
 
+// Quiz related types
+interface QuizQuestion {
+  _id: string;
+  userId: string;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  category?: string;
+  subCategory?: string;
+  createdAt: string;
+}
+
+interface AddQuestionData {
+  userId: string;
+  question: string;
+}
+
+interface AddCategoryData {
+  category: string;
+  subCategory: string;
+}
+
+interface AddQuestionResponse extends ApiResponse {
+  data?: {
+    questionId: string;
+    question: string;
+    options: string[];
+    correctAnswer: number;
+  };
+}
+
+interface GetQuestionsResponse extends ApiResponse {
+  count?: number;
+  data?: QuizQuestion[];
+}
+
+interface GetCategoriesResponse extends ApiResponse {
+  data?: {
+    categories: string[];
+    subCategories: string[];
+  };
+}
+
 const BASE_URL: string = `${process.env.EXPO_PUBLIC_API_URL}`;
 
 // ✅ Create Axios instance with React Native specific config
@@ -88,12 +132,15 @@ const api: AxiosInstance = axios.create({
 
 // Request interceptor - runs before every request
 api.interceptors.request.use(
-  (config: any) => {
+  async (config: any) => {
     // Add auth token if available (better than cookies for React Native)
-    const token = null; // Get from AsyncStorage or SecureStore
+    const token = await AsyncStorage.getItem("userToken");
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log("✅ Authorization header set");
+    } else {
+      console.log("❌ No token in AsyncStorage");
     }
 
     return config;
@@ -188,12 +235,79 @@ export const authAPI = {
 
   // Get user profile by ID (matching your backend route)
   getProfile: (
-    userId: string
+    userId: string | null
   ): Promise<AxiosResponse<ApiResponse<{ user: User }>>> =>
     api.get(`/auth/profile/${userId}`),
 
   // Logout
   logout: (): Promise<AxiosResponse<ApiResponse>> => api.post("/auth/logout"),
+  updateProfile: (
+    profileData: FormData | any
+  ): Promise<AxiosResponse<ApiResponse<{ user: User }>>> =>
+    api.put("/auth/update-profile", profileData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }),
+};
+
+// Quiz API methods
+export const quizAPI = {
+  // Add new question with AI-generated options
+  addQuestion: (
+    questionData: AddQuestionData
+  ): Promise<AxiosResponse<AddQuestionResponse>> =>
+    api.post("/quiz/add-question", questionData),
+
+  // Add category to existing question
+  addCategory: (
+    questionId: string,
+    categoryData: AddCategoryData
+  ): Promise<AxiosResponse<ApiResponse<QuizQuestion>>> =>
+    api.patch(`/quiz/add-category/${questionId}`, categoryData),
+
+  // Get all questions for a user
+  getUserQuestions: (
+    userId: string
+  ): Promise<AxiosResponse<GetQuestionsResponse>> =>
+    api.get(`/quiz/user/${userId}`),
+
+  // Get single question by ID
+  getQuestionById: (
+    questionId: string
+  ): Promise<AxiosResponse<ApiResponse<QuizQuestion>>> =>
+    api.get(`/quiz/question/${questionId}`),
+
+  // Get questions by category
+  getQuestionsByCategory: (
+    userId: string,
+    category: string
+  ): Promise<AxiosResponse<GetQuestionsResponse>> =>
+    api.get(`/quiz/user/${userId}/category/${category}`),
+
+  // Get random quiz questions (without correct answers)
+  getRandomQuiz: (
+    userId: string,
+    limit: number = 10
+  ): Promise<AxiosResponse<GetQuestionsResponse>> =>
+    api.get(`/quiz/random?userId=${userId}&limit=${limit}`),
+
+  // Get all categories for a user
+  getCategories: (
+    userId: string
+  ): Promise<AxiosResponse<GetCategoriesResponse>> =>
+    api.get(`/quiz/categories/${userId}`),
+
+  // Delete a question
+  deleteQuestion: (questionId: string): Promise<AxiosResponse<ApiResponse>> =>
+    api.delete(`/quiz/question/${questionId}`),
+
+  // Update a question
+  updateQuestion: (
+    questionId: string,
+    updateData: Partial<QuizQuestion>
+  ): Promise<AxiosResponse<ApiResponse<QuizQuestion>>> =>
+    api.put(`/quiz/question/${questionId}`, updateData),
 };
 
 // Generic API methods with types
@@ -290,7 +404,10 @@ export const useAuth = () => {
   const handleLogin = async (credentials: LoginCredentials) => {
     try {
       const response = await authAPI.login(credentials);
-      if (response.data.success) {
+      if (response.data.success && response.data.token) {
+        await AsyncStorage.setItem("userToken", response.data.token);
+        console.log("✅ Token stored after login");
+        
         return {
           success: true,
           message: response.data.message,
@@ -303,11 +420,27 @@ export const useAuth = () => {
     }
   };
 
-  const handleGetProfile = async (userId: string) => {
+  const handleGetProfile = async (userId: string | null) => {
     try {
       const response = await authAPI.getProfile(userId);
       if (response.data.success) {
         return { success: true, user: response.data.data?.user };
+      }
+    } catch (error) {
+      const errorMessage = handleApiError(error as AxiosError);
+      return { success: false, message: errorMessage };
+    }
+  };
+
+  const handleUpdateProfile = async (profileData: any) => {
+    try {
+      const response = await authAPI.updateProfile(profileData);
+      if (response.data.success) {
+        return {
+          success: true,
+          message: response.data.message,
+          user: response.data.data?.user,
+        };
       }
     } catch (error) {
       const errorMessage = handleApiError(error as AxiosError);
@@ -335,8 +468,179 @@ export const useAuth = () => {
     verifyEmail: handleVerifyEmail,
     resendCode: handleResendCode,
     login: handleLogin,
+    updateProfile: handleUpdateProfile,
     getProfile: handleGetProfile,
     logout: handleLogout,
+  };
+};
+
+// Quiz hook for easy usage
+export const useQuiz = () => {
+  const handleAddQuestion = async (questionData: AddQuestionData) => {
+    try {
+      const response = await quizAPI.addQuestion(questionData);
+      if (response.data.success) {
+        return {
+          success: true,
+          message: response.data.message,
+          data: response.data.data,
+        };
+      }
+    } catch (error) {
+      const errorMessage = handleApiError(error as AxiosError);
+      return { success: false, message: errorMessage };
+    }
+  };
+
+  const handleAddCategory = async (
+    questionId: string,
+    categoryData: AddCategoryData
+  ) => {
+    try {
+      const response = await quizAPI.addCategory(questionId, categoryData);
+      if (response.data.success) {
+        return {
+          success: true,
+          message: response.data.message,
+          data: response.data.data,
+        };
+      }
+    } catch (error) {
+      const errorMessage = handleApiError(error as AxiosError);
+      return { success: false, message: errorMessage };
+    }
+  };
+
+  const handleGetUserQuestions = async (userId: string) => {
+    try {
+      const response = await quizAPI.getUserQuestions(userId);
+      if (response.data.success) {
+        return {
+          success: true,
+          message: response.data.message,
+          count: response.data.count,
+          data: response.data.data,
+        };
+      }
+    } catch (error) {
+      const errorMessage = handleApiError(error as AxiosError);
+      return { success: false, message: errorMessage };
+    }
+  };
+
+  const handleGetQuestionById = async (questionId: string) => {
+    try {
+      const response = await quizAPI.getQuestionById(questionId);
+      if (response.data.success) {
+        return {
+          success: true,
+          message: response.data.message,
+          data: response.data.data,
+        };
+      }
+    } catch (error) {
+      const errorMessage = handleApiError(error as AxiosError);
+      return { success: false, message: errorMessage };
+    }
+  };
+
+  const handleGetQuestionsByCategory = async (
+    userId: string,
+    category: string
+  ) => {
+    try {
+      const response = await quizAPI.getQuestionsByCategory(userId, category);
+      if (response.data.success) {
+        return {
+          success: true,
+          message: response.data.message,
+          count: response.data.count,
+          data: response.data.data,
+        };
+      }
+    } catch (error) {
+      const errorMessage = handleApiError(error as AxiosError);
+      return { success: false, message: errorMessage };
+    }
+  };
+
+  const handleGetRandomQuiz = async (userId: string, limit: number = 10) => {
+    try {
+      const response = await quizAPI.getRandomQuiz(userId, limit);
+      if (response.data.success) {
+        return {
+          success: true,
+          message: response.data.message,
+          count: response.data.count,
+          data: response.data.data,
+        };
+      }
+    } catch (error) {
+      const errorMessage = handleApiError(error as AxiosError);
+      return { success: false, message: errorMessage };
+    }
+  };
+
+  const handleGetCategories = async (userId: string) => {
+    try {
+      const response = await quizAPI.getCategories(userId);
+      if (response.data.success) {
+        return {
+          success: true,
+          message: response.data.message,
+          data: response.data.data,
+        };
+      }
+    } catch (error) {
+      const errorMessage = handleApiError(error as AxiosError);
+      return { success: false, message: errorMessage };
+    }
+  };
+
+  const handleDeleteQuestion = async (questionId: string) => {
+    try {
+      const response = await quizAPI.deleteQuestion(questionId);
+      if (response.data.success) {
+        return {
+          success: true,
+          message: response.data.message,
+        };
+      }
+    } catch (error) {
+      const errorMessage = handleApiError(error as AxiosError);
+      return { success: false, message: errorMessage };
+    }
+  };
+
+  const handleUpdateQuestion = async (
+    questionId: string,
+    updateData: Partial<QuizQuestion>
+  ) => {
+    try {
+      const response = await quizAPI.updateQuestion(questionId, updateData);
+      if (response.data.success) {
+        return {
+          success: true,
+          message: response.data.message,
+          data: response.data.data,
+        };
+      }
+    } catch (error) {
+      const errorMessage = handleApiError(error as AxiosError);
+      return { success: false, message: errorMessage };
+    }
+  };
+
+  return {
+    addQuestion: handleAddQuestion,
+    addCategory: handleAddCategory,
+    getUserQuestions: handleGetUserQuestions,
+    getQuestionById: handleGetQuestionById,
+    getQuestionsByCategory: handleGetQuestionsByCategory,
+    getRandomQuiz: handleGetRandomQuiz,
+    getCategories: handleGetCategories,
+    deleteQuestion: handleDeleteQuestion,
+    updateQuestion: handleUpdateQuestion,
   };
 };
 
@@ -351,6 +655,12 @@ export type {
   RegisterResponse,
   VerificationResponse,
   AuthResponse,
+  QuizQuestion,
+  AddQuestionData,
+  AddCategoryData,
+  AddQuestionResponse,
+  GetQuestionsResponse,
+  GetCategoriesResponse,
   AxiosError,
   AxiosResponse,
 };
