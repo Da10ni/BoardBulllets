@@ -1,4 +1,5 @@
 import AlertPopup from "@/components/Alert/Alert";
+import { useAuth } from "@/utils/axiosInstance";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -20,14 +21,18 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const { login } = useAuth();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
-    console.log("Remember Me:", rememberMe);
-    setShowAlert(true);
+
+    const res = await login({ email, password });
+    if (res?.success) {
+      setShowAlert(true);
+    }
   };
 
   const handleForgotPassword = () => {
@@ -121,13 +126,15 @@ const LoginScreen = () => {
               secureTextEntry
             />
           </View>
-           <TouchableOpacity 
-            style={styles.rememberMeContainer} 
+          <TouchableOpacity
+            style={styles.rememberMeContainer}
             onPress={toggleRememberMe}
             activeOpacity={0.7}
           >
             <View style={styles.checkboxContainer}>
-              <View style={[styles.checkbox, rememberMe && styles.checkboxChecked]}>
+              <View
+                style={[styles.checkbox, rememberMe && styles.checkboxChecked]}
+              >
                 {rememberMe && (
                   <Ionicons name="checkmark" size={12} color="#4864AC" />
                 )}
@@ -144,17 +151,15 @@ const LoginScreen = () => {
             <TouchableOpacity onPress={handleSignup}>
               <Text style={styles.signupLink}>CREATE AN ACCOUNT</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleForgotPassword}
-            >
+            <TouchableOpacity onPress={handleForgotPassword}>
               <Text style={styles.forgotPasswordText}>FORGOT PASSWORD ? </Text>
             </TouchableOpacity>
           </View>
 
-
-
           <View style={styles.copyright}>
-            <Text style={styles.statement}>COPYRIGHT (C) 2017 BOARDBULLETS,INC.</Text>
+            <Text style={styles.statement}>
+              COPYRIGHT (C) 2017 BOARDBULLETS,INC.
+            </Text>
             <Text style={styles.policy}>PRIVACY POLICY AND TERMS OF USE</Text>
           </View>
 
@@ -285,17 +290,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   signupLink: {
-     color: "rgba(255, 255, 255, 0.8)",
+    color: "rgba(255, 255, 255, 0.8)",
     fontSize: 12,
-    fontWeight: "500"
+    fontWeight: "500",
   },
   buttons: {
-    flex:1,
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 20,
   },
-    rememberMeContainer: {
+  rememberMeContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 15,
@@ -339,8 +344,7 @@ const styles = StyleSheet.create({
   policy: {
     color: "#ebeae8",
     fontSize: 10,
-  }
-
+  },
 });
 
 export default LoginScreen;

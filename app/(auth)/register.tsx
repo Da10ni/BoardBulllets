@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useAuth } from "@/utils/axiosInstance";
 
 const SignupScreen = () => {
   const [firstName, setFirstName] = useState("");
@@ -25,8 +26,9 @@ const SignupScreen = () => {
   const [selectedOption1, setSelectedOption1] = useState("");
   const [selectedOption2, setSelectedOption2] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+  const { register } = useAuth();
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
@@ -41,9 +43,21 @@ const SignupScreen = () => {
       Alert.alert("Error", "Password must be at least 6 characters long.");
       return;
     }
-    setShowAlert(true);
+
+    const signupdata = {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+    };
 
     // Add your signup logic here
+    const data = await register(signupdata);
+
+    if (data?.success) {
+      setShowAlert(true);
+    }
   };
 
   const handleLogin = () => {
@@ -64,12 +78,15 @@ const SignupScreen = () => {
         alertVisible={showAlert}
         setAlertVisible={setShowAlert}
         alertTitle="A Verification Code has been sent to the given email"
-        onSuccess={() => router.push("/confirm-code")}
+        onSuccess={() => router.push({
+          pathname: "/confirm-code",
+          params: { email: email }
+        })}
       />
-      
+
       {/* Diagonal White Background */}
       <View style={styles.whiteBackground} />
-      
+
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>BOARDBULLETS</Text>
@@ -83,16 +100,22 @@ const SignupScreen = () => {
         </View>
       </View>
 
-      <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Form */}
         <View style={styles.formContainer}>
           <Text style={styles.title}>SIGN UP</Text>
-          <Text style={styles.subtitle}>
-            TO CREATE A BOARDBULLETS ACCOUNT
-          </Text>
+          <Text style={styles.subtitle}>TO CREATE A BOARDBULLETS ACCOUNT</Text>
 
           <View style={styles.inputContainer}>
-            <Ionicons name="person-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <Ionicons
+              name="person-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.input}
               placeholder="FIRST NAME"
@@ -103,7 +126,12 @@ const SignupScreen = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Ionicons name="person-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <Ionicons
+              name="person-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.input}
               placeholder="LAST NAME"
@@ -114,7 +142,12 @@ const SignupScreen = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Ionicons name="mail-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <Ionicons
+              name="mail-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.input}
               placeholder="EMAIL"
@@ -127,7 +160,12 @@ const SignupScreen = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Ionicons name="lock-closed-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <Ionicons
+              name="lock-closed-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.input}
               placeholder="PASSWORD"
@@ -139,7 +177,12 @@ const SignupScreen = () => {
           </View>
 
           <View style={styles.inputContainer}>
-            <Ionicons name="lock-closed-outline" size={20} color="rgba(255, 255, 255, 0.7)" style={styles.inputIcon} />
+            <Ionicons
+              name="lock-closed-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
             <TextInput
               style={styles.input}
               placeholder="CONFIRM PASSWORD"
@@ -155,7 +198,11 @@ const SignupScreen = () => {
             <Text style={styles.dropdownText}>
               {selectedOption1 || "CHOOSE ONE"}
             </Text>
-            <Ionicons name="chevron-down" size={20} color="rgba(255, 255, 255, 0.7)" />
+            <Ionicons
+              name="chevron-down"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+            />
           </TouchableOpacity>
 
           {/* Dropdown 2 */}
@@ -163,12 +210,19 @@ const SignupScreen = () => {
             <Text style={styles.dropdownText}>
               {selectedOption2 || "CHOOSE ONE"}
             </Text>
-            <Ionicons name="chevron-down" size={20} color="rgba(255, 255, 255, 0.7)" />
+            <Ionicons
+              name="chevron-down"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+            />
           </TouchableOpacity>
 
           {/* Submit Button Container */}
           <View style={styles.submitButtonContainer}>
-            <TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
+            <TouchableOpacity
+              style={styles.signupButton}
+              onPress={handleSignup}
+            >
               <Text style={styles.signupButtonText}>SIGN UP</Text>
             </TouchableOpacity>
           </View>
@@ -176,8 +230,9 @@ const SignupScreen = () => {
           {/* Terms Text */}
           <View style={styles.termsContainer}>
             <Text style={styles.termsText}>
-              BY TAPPING SIGN UP, YOU AGREE TO OUR{'\n'}
-              <Text style={styles.linkText}>PRIVACY POLICY</Text> & <Text style={styles.linkText}>TERMS OF USE</Text>.
+              BY TAPPING SIGN UP, YOU AGREE TO OUR{"\n"}
+              <Text style={styles.linkText}>PRIVACY POLICY</Text> &{" "}
+              <Text style={styles.linkText}>TERMS OF USE</Text>.
             </Text>
           </View>
 

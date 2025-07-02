@@ -1,3 +1,4 @@
+import { useAuth } from "@/utils/axiosInstance";
 import React from "react";
 import {
   Alert,
@@ -10,6 +11,7 @@ import {
 } from "react-native";
 
 const SettingsScreen = () => {
+  const { logout } = useAuth();
   const handleDeleteAccount = () => {
     Alert.alert(
       "Delete Account",
@@ -29,11 +31,15 @@ const SettingsScreen = () => {
     console.log("Change Password pressed");
   };
 
-  const handleLogOut = () => {
-    Alert.alert("Log Out", "Are you sure you want to log out?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Log Out", onPress: () => console.log("User logged out") },
-    ]);
+  const handleLogOut = async () => {
+    const res = await logout();
+
+    if (res?.success) {
+      Alert.alert("Log Out", "Are you sure you want to log out?", [
+        { text: "Cancel", style: "cancel" },
+        { text: "Log Out", onPress: () => console.log("User logged out") },
+      ]);
+    }
   };
 
   return (
