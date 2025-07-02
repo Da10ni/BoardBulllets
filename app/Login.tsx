@@ -53,7 +53,7 @@ const LoginScreen = () => {
         <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
           <Text style={styles.backButtonText}>â†</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>B4AI</Text>
+        <Text style={styles.headerTitle}>B4 AI</Text>
       </View>
 
       {/* Logo */}

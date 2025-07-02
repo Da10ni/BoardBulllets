@@ -1,4 +1,4 @@
-// app/ForgotPassword.tsx
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    // app/ForgotPassword.tsx
 import { router } from "expo-router";
 import { useState } from "react";
 import {
@@ -11,7 +11,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
+} from "react-native"
 
 const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState("");
