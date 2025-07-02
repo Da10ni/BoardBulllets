@@ -80,7 +80,6 @@ export default function QuizFlow() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [reviewQuestionIndex, setReviewQuestionIndex] = useState(0); // For feedback screen
   const [modalVisible, setModalVisible] = useState(false);
-  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false); // New state for feedback modal
   const [feedbackOptions, setFeedbackOptions] = useState({
     spelling: false,
     grammar: false,
@@ -122,7 +121,7 @@ export default function QuizFlow() {
   };
   const handleFeedbackClick = () => {
     setFeedbackModalVisible(true);
-  }; 
+  };
 
   const handleAnswerSelect = (answerIndex: number) => {
     setSelectedAnswer(answerIndex);
