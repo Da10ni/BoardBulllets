@@ -1,4 +1,6 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Entypo, Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -50,7 +52,7 @@ const MyPerformanceScreen = () => {
               <View style={styles.circularContainer}>
                 <CircularProgress
                   size={120}
-                  width={8}
+                  width={20}
                   fill={55}
                   tintColor="#4CAF50"
                   backgroundColor="#FF6B6B"
@@ -77,7 +79,9 @@ const MyPerformanceScreen = () => {
                   <View
                     style={[styles.statLine, { backgroundColor: "#4CAF50" }]}
                   />
-                  <Text style={styles.sideStatNumber}>1100</Text>
+                  <Text style={[styles.sideStatNumber, { color: "#4CAF50" }]}>
+                    1100
+                  </Text>
                   <Text style={styles.sideStatLabel}>
                     TOTAL QUESTIONS CORRECT
                   </Text>
@@ -86,7 +90,9 @@ const MyPerformanceScreen = () => {
                   <View
                     style={[styles.statLine, { backgroundColor: "#FF6B6B" }]}
                   />
-                  <Text style={styles.sideStatNumber}>900</Text>
+                  <Text style={[styles.sideStatNumber, { color: "#FF6B6B" }]}>
+                    900
+                  </Text>
                   <Text style={styles.sideStatLabel}>
                     TOTAL QUESTIONS INCORRECT
                   </Text>
@@ -100,16 +106,27 @@ const MyPerformanceScreen = () => {
                 <View
                   style={[styles.statLine, { backgroundColor: "#FF6B6B" }]}
                 />
-                <Text style={styles.percentageText}>15%</Text>
-                <Text style={styles.bottomStatLabel}>
-                  CUMULATIVE PERCENTAGE
-                </Text>
+                <View style={styles.bottomrow}>
+                  <Text style={styles.percentageText}>15%</Text>
+                  <View style={styles.bottomStatLabel}>
+                    <Text style={styles.boldText}>CUMULATIVE</Text>
+                    <Text style={{ fontSize: 12 }}>PERCENTAGE</Text>
+                  </View>
+                </View>
               </View>
               <View style={styles.bottomStat}>
-                <Text style={styles.pointsText}>15</Text>
-                <Text style={styles.bottomStatLabel}>
-                  BB POINTS EARNED LAST QUIZ
-                </Text>
+                <View
+                  style={[styles.statLine, { backgroundColor: "#FF6B6B" }]}
+                />
+                <View style={styles.bottomrow}>
+                  <Text style={styles.pointsText}>15</Text>
+                  <View style={styles.bottomStatLabel}>
+                    <Text style={styles.boldText}>BB</Text>
+                    <Text style={{ fontSize: 12 }}>
+                      POINTS EARNED LAST QUIZ
+                    </Text>
+                  </View>
+                </View>
               </View>
             </View>
 
@@ -136,94 +153,152 @@ const MyPerformanceScreen = () => {
           <View style={styles.questionSection}>
             <View style={styles.questionHeader}>
               <View style={[styles.statLine, { backgroundColor: "#FF6B6B" }]} />
-              <Text style={styles.questionNumber}>1500</Text>
-              <Text style={styles.questionTitle}>TOTAL UNUSED QUESTION</Text>
+              <View style={styles.bottomrow}>
+                <Text style={styles.questionNumber}>1500</Text>
+                <View style={styles.questionTitle}>
+                  <Text style={styles.boldText}>TOTAL</Text>
+                  <Text style={{ fontSize: 12 }}>UNUSED QUESTION</Text>
+                </View>
+              </View>
             </View>
 
             {/* Category Dropdown */}
-            <TouchableOpacity
-              style={styles.dropdown}
-              onPress={handleCategoryPress}
-            >
-              <Text style={styles.dropdownText}>CATEGORY</Text>
-              <Ionicons name="chevron-down" size={16} color="#666" />
-            </TouchableOpacity>
+            <View style={styles.dropdownpart}>
+              <TouchableOpacity
+                style={styles.dropdown}
+                onPress={handleCategoryPress}
+              >
+                <Text style={styles.dropdownText}>CATEGORY</Text>
+                <Ionicons
+                  name="triangle-outline"
+                  size={12}
+                  color="#4864AC"
+                  style={{ marginTop: 2, transform: [{ rotate: "180deg" }] }}
+                />
+              </TouchableOpacity>
 
-            <View style={styles.percentageRow}>
-              <Text style={styles.percentageLabel}>PERCENTAGE</Text>
-              <Text style={styles.percentageValue}>65%</Text>
-              <Text style={styles.overallLabel}>OVERALL(I)</Text>
-              <Text style={styles.overallValue}>45%</Text>
+              <View style={styles.percentageRow}>
+                <Text style={styles.percentageLabel}>PERCENTAGE</Text>
+                <Text style={styles.percentageValue}>65%</Text>
+                <Text style={styles.overallLabel}>OVERALL(I)</Text>
+                <Text style={styles.overallValue}>45%</Text>
+              </View>
             </View>
 
             {/* Timed Dropdown */}
-            <TouchableOpacity
-              style={styles.dropdown}
-              onPress={handleTimedPress}
-            >
-              <Text style={styles.dropdownText}>TIMED</Text>
-              <Ionicons name="chevron-down" size={16} color="#666" />
-            </TouchableOpacity>
+            <View style={styles.dropdownpart}>
+              <TouchableOpacity
+                style={styles.dropdown}
+                onPress={handleTimedPress}
+              >
+                <Text style={styles.dropdownText}>TIMED</Text>
+                <Ionicons
+                  name="triangle-outline"
+                  size={12}
+                  color="#4864AC"
+                  style={{ marginTop: 2, transform: [{ rotate: "180deg" }] }}
+                />
+              </TouchableOpacity>
 
-            <View style={styles.percentageRow}>
-              <Text style={styles.percentageLabel}>PERCENTAGE</Text>
-              <Text style={styles.percentageValue}>60%</Text>
-              <Text style={styles.overallLabel}>OVERALL(I)</Text>
-              <Text style={styles.overallValue}>60%</Text>
+              <View style={styles.percentageRow}>
+                <Text style={styles.percentageLabel}>PERCENTAGE</Text>
+                <Text style={styles.percentageValue}>60%</Text>
+                <Text style={styles.overallLabel}>OVERALL(I)</Text>
+                <Text style={styles.overallValue}>60%</Text>
+              </View>
             </View>
 
             {/* Quiz Section */}
             <View style={styles.quizHeader}>
               <View style={[styles.statLine, { backgroundColor: "#FF6B6B" }]} />
-              <Text style={styles.questionNumber}>1500</Text>
-              <Text style={styles.questionTitle}>TOTAL QUIZZES</Text>
+              <View style={styles.bottomrow}>
+                <Text style={styles.questionNumber}>1500</Text>
+                <View style={styles.questionTitle}>
+                  <Text style={styles.boldText}>TOTAL</Text>
+                  <Text style={{ fontSize: 12 }}>QUIZZES</Text>
+                </View>
+              </View>
             </View>
 
             {/* Quiz Mode Dropdown */}
-            <TouchableOpacity
-              style={styles.dropdown}
-              onPress={handleQuizModePress}
-            >
-              <Text style={styles.dropdownText}>QUIZ MODE</Text>
-              <Ionicons name="chevron-down" size={16} color="#666" />
-            </TouchableOpacity>
+            <View style={styles.dropdownpart}>
+              <TouchableOpacity
+                style={styles.dropdown}
+                onPress={handleQuizModePress}
+              >
+                <Text style={styles.dropdownText}>QUIZ MODE</Text>
+                <Ionicons
+                  name="triangle-outline"
+                  size={12}
+                  color="#4864AC"
+                  style={{ marginTop: 2, transform: [{ rotate: "180deg" }] }}
+                />
+              </TouchableOpacity>
 
-            <View style={styles.percentageRowSingle}>
-              <Text style={styles.percentageLabel}>PERCENTAGE</Text>
-              <Text style={styles.percentageValue}>65%</Text>
+              <View
+                style={[
+                  styles.percentageRowSingle,
+                  {
+                    gap: 10,
+                  },
+                ]}
+              >
+                <Text style={styles.percentageLabel}>PERCENTAGE</Text>
+                <Text style={styles.percentageValue}>65%</Text>
+              </View>
             </View>
 
             {/* Timed Quiz */}
-            <TouchableOpacity
-              style={styles.dropdown}
-              onPress={handleTimedPress}
-            >
-              <Text style={styles.dropdownText}>TIMED</Text>
-              <Ionicons name="chevron-down" size={16} color="#666" />
-            </TouchableOpacity>
+            <View style={styles.dropdownpart}>
+              <TouchableOpacity
+                style={styles.dropdown}
+                onPress={handleTimedPress}
+              >
+                <Text style={styles.dropdownText}>TIMED</Text>
+                <Ionicons
+                  name="triangle-outline"
+                  size={12}
+                  color="#4864AC"
+                  style={{ marginTop: 2, transform: [{ rotate: "180deg" }] }}
+                />
+              </TouchableOpacity>
 
-            <View style={styles.percentageRowSingle}>
-              <Text style={styles.percentageLabel}>PERCENTAGE</Text>
-              <Text style={styles.percentageValue}>60%</Text>
+              <View
+                style={[
+                  styles.percentageRowSingle,
+                  {
+                    gap: 10,
+                  },
+                ]}
+              >
+                <Text style={styles.percentageLabel}>PERCENTAGE</Text>
+                <Text style={styles.percentageValue}>60%</Text>
+              </View>
             </View>
 
             {/* Review Mode */}
-            <View style={styles.reviewSection}>
+            <View style={styles.quizHeader}>
               <View style={[styles.statLine, { backgroundColor: "#FF6B6B" }]} />
-              <Text style={styles.reviewNumber}>120</Text>
-              <Text style={styles.reviewUnit}>min</Text>
-              <Text style={styles.reviewTitle}>TOTAL TIME IN REVIEW MODE</Text>
+              <View style={styles.bottomrow}>
+                <View style={styles.row}>
+                  <Text style={styles.questionNumber}>120</Text>
+                  <Text style={styles.reviewUnit}>min</Text>
+                </View>
+
+                <View style={styles.questionTitle}>
+                  <Text style={styles.boldText}>TOTAL</Text>
+                  <Text style={{ fontSize: 12 }}>TIME IN REVIEW MODE</Text>
+                </View>
+              </View>
             </View>
 
             {/* Subscribe Button */}
-            {isSubscribed && (
-              <TouchableOpacity
-                style={styles.subscribeButton}
-                onPress={() => router.push("/pricing")}
-              >
-                <Text style={styles.subscribeText}>SUBSCRIBE</Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              style={styles.subscribeButton}
+              onPress={() => router.push("/pricing")}
+            >
+              <Text style={styles.subscribeText}>SUBSCRIBE</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.spacer} />
@@ -290,13 +365,13 @@ const styles = StyleSheet.create({
   statLine: {
     width: 3,
     height: 20,
-    backgroundColor: "#4A90E2",
+    backgroundColor: "#4864AC",
     marginRight: 10,
   },
   sideStatNumber: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#4A90E2",
+    color: "#4864AC",
     marginRight: 5,
   },
   sideStatLabel: {
@@ -306,27 +381,32 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bottomStatsRow: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
     marginBottom: 30,
-    paddingHorizontal: 10,
   },
   bottomStat: {
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
+    marginTop: 10,
+  },
+  bottomrow: {
+    flexDirection: "column",
+  },
+  row: {
+    flexDirection: "row",
   },
   percentageText: {
     fontSize: 16,
     fontWeight: "600",
     color: "#FF6B6B",
-    marginLeft: 10,
     marginRight: 5,
   },
   pointsText: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#333",
+    color: "#FF6B6B",
     marginRight: 5,
   },
   bottomStatLabel: {
@@ -334,6 +414,12 @@ const styles = StyleSheet.create({
     color: "#666",
     letterSpacing: 0.5,
     flex: 1,
+    gap: 4,
+    flexDirection: "row",
+  },
+  boldText: {
+    fontWeight: "bold",
+    fontSize: 12,
   },
   timeStatsRow: {
     flexDirection: "row",
@@ -370,6 +456,7 @@ const styles = StyleSheet.create({
   },
   questionSection: {
     paddingHorizontal: 20,
+    flexDirection: "column",
   },
   questionHeader: {
     flexDirection: "row",
@@ -380,29 +467,36 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#FF6B6B",
-    marginRight: 5,
   },
   questionTitle: {
     fontSize: 12,
     color: "#666",
     letterSpacing: 0.5,
     flex: 1,
+    marginLeft: 4,
+    gap: 4,
+    flexDirection: "row",
+  },
+  dropdownpart: {
+    flexDirection: "row",
   },
   dropdown: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F8F9FA",
+    backgroundColor: "#FFFFFF",
+    width: "40%",
     borderRadius: 20,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingVertical: 12,
     marginBottom: 15,
     borderWidth: 1,
-    borderColor: "#E5E5E5",
+    gap: 5,
+    borderColor: "#4864AC",
   },
   dropdownText: {
     fontSize: 12,
-    color: "#666",
+    color: "#4864AC",
     fontWeight: "500",
     letterSpacing: 0.5,
   },
@@ -412,6 +506,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
     paddingHorizontal: 10,
+    gap: 10,
   },
   percentageRowSingle: {
     flexDirection: "row",
@@ -419,7 +514,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
     paddingHorizontal: 10,
-    width: "50%",
+    //width: "50%",
   },
   percentageLabel: {
     fontSize: 10,
@@ -429,7 +524,7 @@ const styles = StyleSheet.create({
   percentageValue: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#4A90E2",
+    color: "#4864AC",
   },
   overallLabel: {
     fontSize: 10,
@@ -439,7 +534,7 @@ const styles = StyleSheet.create({
   overallValue: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#4A90E2",
+    color: "#4864AC",
   },
   quizHeader: {
     flexDirection: "row",
@@ -462,6 +557,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#FF6B6B",
     marginRight: 5,
+    marginTop: 4,
   },
   reviewTitle: {
     fontSize: 12,
@@ -507,15 +603,18 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   subscribeButton: {
-    backgroundColor: "#4A90E2",
+    backgroundColor: "#4864AC",
     paddingVertical: 15,
     borderRadius: 25,
     alignItems: "center",
-    marginTop: 30,
     marginHorizontal: 20,
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: -90,
   },
   subscribeText: {
-    color: "#fff",
+    color: "#FFFFFF",
     fontSize: 14,
     fontWeight: "600",
     letterSpacing: 1,

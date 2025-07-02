@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import React from "react";
 import {
   SafeAreaView,
@@ -11,6 +12,12 @@ import {
 } from "react-native";
 
 const SubscriptionScreen = () => {
+
+  const handleSubscribe = () => {
+      console.log("Subscribe pressed");
+      router.push("/(main)/(tabs)/(home)");
+      // Add subscription logic here
+    };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -56,8 +63,9 @@ const SubscriptionScreen = () => {
               </View>
               <Text style={styles.radioLabel}>AUTO RENEW ON</Text>
             </View>
-            <TouchableOpacity style={styles.subscribeButton}>
-              <Text style={styles.subscribeText}>SUBSCRIBE</Text>
+            <TouchableOpacity style={styles.subscribeButton}  onPress={handleSubscribe}>
+              <Text style={styles.subscribeText}
+             >SUBSCRIBE</Text>
             </TouchableOpacity>
           </View>
 
@@ -73,7 +81,7 @@ const SubscriptionScreen = () => {
               </View>
               <Text style={styles.radioLabel}>AUTO RENEW ON</Text>
             </View>
-            <TouchableOpacity style={styles.subscribeButton}>
+            <TouchableOpacity style={styles.subscribeButton} onPress={handleSubscribe}>
               <Text style={styles.subscribeText}>SUBSCRIBE</Text>
             </TouchableOpacity>
           </View>
@@ -221,7 +229,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   restoreText: {
-    color: "#4A90E2",
+    color: "#4864AC",
     fontSize: 14,
     textAlign: "center",
     fontWeight: "500",

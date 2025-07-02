@@ -2,7 +2,7 @@
 import AlertPopup from "@/components/Alert/Alert";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -102,14 +102,20 @@ const SignupScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
-        <Text style={styles.headerSubtitle}>Learn & Earn</Text>
+        <Text style={styles.headerTitle}>
+          <Text style={styles.headerTitleBold}>B4</Text>
+          <Text style={styles.headerTitleNormal}> AI</Text>
+        </Text>
+        <Text style={styles.headerSubtitle}>
+          <Text style={styles.headerSubtitleBold}>Learn</Text>
+          <Text style={styles.headerSubtitleNormal}> & Earn</Text>
+        </Text>
       </View>
 
       {/* Icon Container */}
       <View style={styles.iconContainer}>
         <View style={styles.iconCircle}>
-          <Ionicons name="person-outline" size={40} color="#4864AC" />
+          <Ionicons name="person-outline" size={50} color="#4864AC" />
         </View>
       </View>
 
@@ -256,7 +262,7 @@ const SignupScreen = () => {
           {/* Copyright */}
           <View style={styles.copyrightContainer}>
             <Text style={styles.copyrightText}>
-              COPYRIGHT (C) 2017 BOARDBULLETS, INC.
+              COPYRIGHT (C) 2017 B4AI, INC.
             </Text>
           </View>
         </View>
@@ -292,9 +298,14 @@ const styles = StyleSheet.create({
   headerTitle: {
     color: "white",
     fontSize: 20,
-    fontWeight: "bold",
     letterSpacing: 1,
-    left: 90,
+    left: 100,
+  },
+  headerTitleBold: {
+    fontWeight: "800",
+  },
+  headerTitleNormal: {
+    fontWeight: "300",
   },
   headerSubtitle: {
     color: "white",
@@ -302,19 +313,25 @@ const styles = StyleSheet.create({
     marginTop: 5,
     left: 120,
   },
+  headerSubtitleBold: {
+    fontWeight: "bold",
+  },
+  headerSubtitleNormal: {
+    fontWeight: "300",
+  },
   iconContainer: {
     alignItems: "center",
-    marginTop: -55,
-    right: 117,
+    marginTop: "-15%",
+    right: "28%",
     zIndex: 1,
   },
   iconCircle: {
     width: 80,
     height: 80,
     borderRadius: 40,
-
     justifyContent: "center",
     alignItems: "center",
+    right:10
   },
   scrollContainer: {
     flex: 1,
@@ -327,10 +344,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
     color: "white",
     marginBottom: 5,
     textAlign: "center",
+  },
+  titleBold: {
+    fontWeight: "800",
+  },
+  titleNormal: {
+    fontWeight: "300",
   },
   subtitle: {
     fontSize: 12,
@@ -387,8 +409,13 @@ const styles = StyleSheet.create({
   signupButtonText: {
     color: "#4864AC",
     fontSize: 16,
-    fontWeight: "bold",
     letterSpacing: 1,
+  },
+  signupButtonTextBold: {
+    fontWeight: "800",
+  },
+  signupButtonTextNormal: {
+    fontWeight: "800",
   },
   termsContainer: {
     alignItems: "center",

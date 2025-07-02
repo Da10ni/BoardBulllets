@@ -1,20 +1,14 @@
 // app/(main)/_layout.tsx
+import Dropdown from "@/components/drowpdown/DropDown";
 import { drawerItems } from "@/constants/drawerOptions";
 import { Ionicons } from "@expo/vector-icons";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { router, usePathname } from "expo-router";
 import { Drawer } from "expo-router/drawer";
-import React, { useState } from "react";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useState } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import Dropdown from "@/components/drowpdown/DropDown";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Custom Header Component with Dropdown
 function CustomDrawerHeader({ title, more }) {
@@ -30,17 +24,17 @@ function CustomDrawerHeader({ title, more }) {
   };
 
   const handleDropdownOption = (option) => {
-    switch(option) {
-      case 'settings':
-        console.log('Settings pressed');
+    switch (option) {
+      case "settings":
+        console.log("Settings pressed");
         // router.push('/settings');
         break;
-      case 'review':
-        console.log('Submit Review pressed');
-        router.push('/review');
+      case "review":
+        console.log("Submit Review pressed");
+        router.push("/review");
         break;
-      case 'terms':
-        console.log('Terms & Conditions pressed');
+      case "terms":
+        console.log("Terms & Conditions pressed");
         // router.push('/terms');
         break;
     }
@@ -52,16 +46,19 @@ function CustomDrawerHeader({ title, more }) {
         <TouchableOpacity onPress={openDrawer} style={headerStyles.menuButton}>
           <Ionicons name="menu" size={24} color="#4864AC" />
         </TouchableOpacity>
-        
+
         <Text style={headerStyles.title}>{title}</Text>
-        
-        <TouchableOpacity onPress={handleMorePress} style={headerStyles.moreButton}>
+
+        <TouchableOpacity
+          onPress={handleMorePress}
+          style={headerStyles.moreButton}
+        >
           <Text style={headerStyles.moreIcon}>{more}</Text>
         </TouchableOpacity>
       </View>
-      
+
       {/* Dropdown Component */}
-      <Dropdown 
+      <Dropdown
         visible={showDropdown}
         onClose={() => setShowDropdown(false)}
         onOptionSelect={handleDropdownOption}
@@ -93,6 +90,7 @@ const headerStyles = StyleSheet.create({
     fontWeight: "bold",
     color: "#4864AC",
     letterSpacing: 0.5,
+    marginRight: 14,
     flex: 1,
     textAlign: "center",
   },
@@ -109,12 +107,8 @@ const headerStyles = StyleSheet.create({
 // Custom Drawer Content Component
 function CustomDrawerContent(props) {
   const currentPath = usePathname();
-  
-  interface NavigationProps {
-    route: string;
-  }
 
-  const handleNavigation = ({ route }: NavigationProps): void => {
+  const handleNavigation = (route: string): void => {
     router.navigate(route);
   };
 
@@ -166,7 +160,7 @@ function CustomDrawerContent(props) {
 
         {/* Bottom Branding */}
         <View style={drawerStyles.brandingSection}>
-          <Text style={drawerStyles.brandingText}>BOARDBULLETS</Text>
+          <Text style={drawerStyles.brandingText}>B4AI</Text>
         </View>
 
         {/* Side indicator dots */}
@@ -296,11 +290,11 @@ export default function RootLayout() {
           name="(tabs)"
           options={{
             drawerLabel: "Home",
-            title: "BoardBullets",
-            header: () => <CustomDrawerHeader title="BOARDBULLETS" more="⋮" />,
+            title: "B4AI",
+            header: () => <CustomDrawerHeader title="B4AI" more="⋮" />,
           }}
         />
-        
+
         {/* Review Screen */}
         <Drawer.Screen
           name="review"

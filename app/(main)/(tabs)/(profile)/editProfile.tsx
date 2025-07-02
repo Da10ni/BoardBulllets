@@ -72,7 +72,7 @@ const EditProfileScreen = () => {
             <TextInput
               style={styles.textInput}
               placeholder="INSTITUTION"
-              placeholderTextColor="#4A90E2"
+              placeholderTextColor="#4864AC"
               value={formData.institution}
               onChangeText={(value) => handleInputChange("institution", value)}
             />
@@ -83,7 +83,7 @@ const EditProfileScreen = () => {
             <TextInput
               style={styles.textInput}
               placeholder="COUNTRY RESIDENCE"
-              placeholderTextColor="#4A90E2"
+              placeholderTextColor="#4864AC"
               value={formData.countryResidence}
               onChangeText={(value) =>
                 handleInputChange("countryResidence", value)
@@ -96,7 +96,7 @@ const EditProfileScreen = () => {
             <TextInput
               style={styles.textInput}
               placeholder="DATE OF BIRTH"
-              placeholderTextColor="#4A90E2"
+              placeholderTextColor="#4864AC"
               value={formData.dateOfBirth}
               onChangeText={(value) => handleInputChange("dateOfBirth", value)}
             />
@@ -118,7 +118,7 @@ const EditProfileScreen = () => {
             <Icon
               name="keyboard-arrow-down"
               size={24}
-              color="#4A90E2"
+              color="#4864AC"
               style={[
                 styles.dropdownIcon,
                 showGenderPicker && styles.dropdownIconRotated,
@@ -146,7 +146,7 @@ const EditProfileScreen = () => {
             <TextInput
               style={styles.textInput}
               placeholder="DATE OF GRADUATION"
-              placeholderTextColor="#4A90E2"
+              placeholderTextColor="#4864AC"
               value={formData.dateOfGraduation}
               onChangeText={(value) =>
                 handleInputChange("dateOfGraduation", value)
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#4A90E2",
+    color: "#4864AC",
     letterSpacing: 1,
   },
   content: {
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderWidth: 2,
-    borderColor: "#4A90E2",
+    borderColor: "#4864AC",
     borderRadius: 25,
     paddingHorizontal: 40,
     paddingVertical: 18,
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     borderWidth: 2,
-    borderColor: "#4A90E2",
+    borderColor: "#4864AC",
     borderRadius: 25,
     paddingHorizontal: 40,
     paddingVertical: 18,
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   placeholderText: {
-    color: "#4A90E2",
+    color: "#4864AC",
   },
   dropdownIcon: {
     position: "absolute",
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   updateButton: {
-    backgroundColor: "#4A90E2",
+    backgroundColor: "#4864AC",
     borderRadius: 25,
     paddingVertical: 18,
     alignItems: "center",

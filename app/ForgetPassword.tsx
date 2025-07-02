@@ -1,6 +1,6 @@
-// app/ForgotPassword.tsx
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    // app/ForgotPassword.tsx
 import { router } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -11,7 +11,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
+} from "react-native"
 
 const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState("");
@@ -66,7 +66,7 @@ const ForgotPasswordScreen = () => {
         <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
           <Text style={styles.backButtonText}>â†</Text>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
+        <Text style={styles.headerTitle}>B4AI</Text>
       </View>
 
       {/* Logo */}
@@ -98,10 +98,10 @@ const ForgotPasswordScreen = () => {
           <Text style={styles.sendButtonText}>Send Verification Code</Text>
         </TouchableOpacity>
 
-          <View style={styles.copyright}>
-                    <Text style={styles.statement}>COPYRIGHT (C) 2017 BOARDBULLETS,INC.</Text>
-                    <Text style={styles.policy}>PRIVACY POLICY AND TERMS OF USE</Text>
-                  </View>
+        <View style={styles.copyright}>
+          <Text style={styles.statement}>COPYRIGHT (C) 2017 B4AI,INC.</Text>
+          <Text style={styles.policy}>PRIVACY POLICY AND TERMS OF USE</Text>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );

@@ -43,7 +43,7 @@ const SettingsScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>BOARDBULLETS</Text>
+        <Text style={styles.headerTitle}>B4AI</Text>
       </View>
 
       {/* Page Title */}

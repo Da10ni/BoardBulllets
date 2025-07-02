@@ -28,7 +28,7 @@ export default function RootLayout() {
           <Stack.Screen name="(main)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
-        <StatusBar style="auto" />
+       {/* <StatusBar style="auto" />*/}
         {/* </ThemeProvider> */}
       </SafeAreaView>
     </SafeAreaProvider>
