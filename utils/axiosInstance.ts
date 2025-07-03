@@ -44,6 +44,10 @@ interface User {
   role: "admin" | "student";
   isVerified: boolean;
   profile: {
+    speciality: string;
+    DOG: string;
+    institute: string;
+    residence: string;
     profilePic?: string;
     firstName?: string;
     lastName?: string;
@@ -407,7 +411,7 @@ export const useAuth = () => {
       if (response.data.success && response.data.token) {
         await AsyncStorage.setItem("userToken", response.data.token);
         console.log("✅ Token stored after login");
-        
+
         return {
           success: true,
           message: response.data.message,
