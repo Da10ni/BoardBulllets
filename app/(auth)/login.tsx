@@ -46,7 +46,9 @@ const LoginScreen = () => {
         if (res.token) {
           await AsyncStorage.setItem("userToken", res?.token);
         }
-        setShowAlert(true);
+
+        // ✅ Immediately navigate to home
+        router.replace("/(main)/(tabs)/(home)");
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
