@@ -39,9 +39,13 @@ const LoginScreen = () => {
         email,
         password,
       });
+
+      console.log("check token in login", res?.token);
       if (res?.success) {
         setLoading(false);
-        await AsyncStorage.setItem("userToken", JSON.stringify(res?.token));
+        if (res.token) {
+          await AsyncStorage.setItem("userToken", res?.token);
+        }
         setShowAlert(true);
       }
     } catch (error: unknown) {
@@ -115,8 +119,8 @@ const LoginScreen = () => {
           <Text style={styles.subtitle}>
             PLEASE ENTER THE EMAIL ADDRESS ASSOCIATED WITH YOUR B4 AI ACCOUNT.
           </Text>
-         
-         <View style={[styles.inputContainer, { marginTop: 30 }]}></View>
+
+          <View style={[styles.inputContainer, { marginTop: 30 }]}></View>
           <View style={styles.inputContainer}>
             <Ionicons
               name="person-outline"
