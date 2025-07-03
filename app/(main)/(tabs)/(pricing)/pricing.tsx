@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons, MaterialIcons, SimpleLineIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -29,13 +29,13 @@ const SubscriptionScreen = () => {
         {/* Feature Icons Row */}
         <View style={styles.iconRow}>
           <View style={styles.iconItem}>
-            <Ionicons name="desktop-outline" size={32} color="#4864AC" />
+            <FontAwesome6 name="tablet-screen-button" size={28} color="#4864AC" />
           </View>
           <View style={styles.iconItem}>
-            <Ionicons name="bar-chart-outline" size={32} color="#4864AC" />
+            <MaterialIcons name="signal-cellular-alt" size={32} color="#4864AC" />
           </View>
           <View style={styles.iconItem}>
-            <Ionicons name="notifications-outline" size={32} color="#4864AC" />
+            <SimpleLineIcons name="badge" size={32} color="#4864AC" />
           </View>
           <View style={styles.iconItem}>
             <Ionicons name="trophy-outline" size={32} color="#4864AC" />
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     marginBottom: 30,
-    paddingHorizontal: 20,
+    paddingHorizontal: 60,
   },
   iconItem: {
     alignItems: "center",
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   upgradeTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#333",
+    color: "#4864AC",
     textAlign: "center",
     marginBottom: 15,
     letterSpacing: 0.5,
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   subscriptionCard: {
     backgroundColor: "#F8F9FA",
     borderRadius: 12,
-    padding: 20,
+    padding: ,
     marginBottom: 15,
     borderWidth: 1,
     borderColor: "#E5E5E5",
