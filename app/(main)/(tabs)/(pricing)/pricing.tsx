@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   subscriptionCard: {
     backgroundColor: "#F8F9FA",
     borderRadius: 12,
-    padding: ,
+    //padding: ,
     marginBottom: 15,
     borderWidth: 1,
     borderColor: "#E5E5E5",
