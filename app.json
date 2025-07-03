@@ -7,6 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "boardbulllets",
     "userInterfaceStyle": "automatic",
+    "assetBundlePatterns": ["**/*"],
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
