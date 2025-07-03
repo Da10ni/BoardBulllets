@@ -1,4 +1,5 @@
 import AlertPopup from "@/components/Alert/Alert";
+import { useAuth } from "@/utils/axiosInstance";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -13,21 +14,50 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [showAlert, setShowAlert] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState<Boolean>(false);
+  const [loading, setLoading] = useState<Boolean>(false);
+  const { login } = useAuth();
 
-  const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert("Error", "Please fill in all fields.");
-      return;
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      if (!email || !password) {
+        setLoading(false);
+        Alert.alert("Error", "Please fill in all fields.");
+        return;
+      }
+
+      const res = await login({
+        email,
+        password,
+      });
+
+      console.log("check token in login", res?.token);
+      if (res?.success) {
+        setLoading(false);
+        if (res.token) {
+          await AsyncStorage.setItem("userToken", res?.token);
+        }
+
+        // ✅ Immediately navigate to home
+        router.replace("/(main)/(tabs)/(home)");
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
-    console.log("Remember Me:", rememberMe);
-    setShowAlert(true);
   };
 
   const handleForgotPassword = () => {
@@ -91,8 +121,8 @@ const LoginScreen = () => {
           <Text style={styles.subtitle}>
             PLEASE ENTER THE EMAIL ADDRESS ASSOCIATED WITH YOUR B4 AI ACCOUNT.
           </Text>
-         
-         <View style={[styles.inputContainer, { marginTop: 30 }]}></View>
+
+          <View style={[styles.inputContainer, { marginTop: 30 }]}></View>
           <View style={styles.inputContainer}>
             <Ionicons
               name="person-outline"
@@ -145,7 +175,11 @@ const LoginScreen = () => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>LOG IN</Text>
+            {loading ? (
+              <ActivityIndicator />
+            ) : (
+              <Text style={styles.loginButtonText}>LOG IN</Text>
+            )}
           </TouchableOpacity>
 
           <View style={styles.buttons}>
@@ -153,12 +187,14 @@ const LoginScreen = () => {
               <Text style={styles.signupLink}>CREATE AN ACCOUNT</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleForgotPassword}>
-              <Text style={styles.forgotPasswordText}>FORGOT PASSWORD ?</Text>
+              <Text style={styles.forgotPasswordText}>FORGOT PASSWORD ? </Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.copyright}>
-            <Text style={styles.statement}>COPYRIGHT (C) 2017 B4 AI,INC.</Text>
+            <Text style={styles.statement}>
+              COPYRIGHT (C) 2017 BOARDBULLETS,INC.
+            </Text>
             <Text style={styles.policy}>PRIVACY POLICY AND TERMS OF USE</Text>
           </View>
         </View>
@@ -231,8 +267,8 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     alignItems: "center",
-    marginTop: 80,
-    right: 20,
+    marginTop: "22%",
+    right: "3%",
   },
   iconCircle: {
     width: 90,

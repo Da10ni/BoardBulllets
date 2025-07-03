@@ -2,7 +2,6 @@ import Header from "@/components/Header/Header";
 import { styles } from "@/components/QuizMe/QuizFlow.styles";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import FeedbackPopup from "./feedback";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
@@ -12,8 +11,10 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 
@@ -79,14 +80,14 @@ export default function QuizFlow() {
   const [quizStarted, setQuizStarted] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [reviewQuestionIndex, setReviewQuestionIndex] = useState(0); // For feedback screen
-  const [modalVisible, setModalVisible] = useState(false);
-  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false); // New state for feedback modal
-  const [feedbackOptions, setFeedbackOptions] = useState({
-    spelling: false,
-    grammar: false,
-    content: false,
-    other: false,
-  });
+  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
+  
+  // Feedback popup states
+  const [selectedFeedback, setSelectedFeedback] = useState('');
+  const [customFeedback, setCustomFeedback] = useState('');
+  const [additionalComments, setAdditionalComments] = useState('');
+  const [isPressed, setIsPressed] = useState(false);
+
   const timeOptions = [5, 10, 20];
   const currentQuestion = QUIZ_DATA[currentQuestionIndex];
   const totalQuestions = QUIZ_DATA.length;
@@ -95,6 +96,13 @@ export default function QuizFlow() {
   const incorrectAnim = useRef<any>(null);
   const pointsAnim = useRef<any>(null);
   const rankAnim = useRef<any>(null);
+
+  const feedbackOptions = [
+    { id: 'spelling', label: 'CHECK SPELLING' },
+    { id: 'grammar', label: 'CHECK GRAMMAR' },
+    { id: 'content', label: 'CONTENT REVIEW' },
+    { id: 'other', label: 'OTHER:' }
+  ];
 
   // Timer countdown effect
   useEffect(() => {
@@ -120,9 +128,6 @@ export default function QuizFlow() {
     setCurrentQuestionIndex(0);
     setUserAnswers({});
   };
-  const handleFeedbackClick = () => {
-    setFeedbackModalVisible(true);
-  }; 
 
   const handleAnswerSelect = (answerIndex: number) => {
     setSelectedAnswer(answerIndex);
@@ -159,7 +164,6 @@ export default function QuizFlow() {
     setCurrentScreen("summary");
   };
 
-  
   const handleBackToHome = () => {
     setCurrentScreen("timer");
     setCurrentQuestionIndex(0);
@@ -171,24 +175,45 @@ export default function QuizFlow() {
   const handleClose = () => {
     router.push("/(drawer)");
   };
-  const handleFeedbackOptionToggle = (option: keyof typeof feedbackOptions) => {
-    setFeedbackOptions(prev => ({
-      ...prev,
-      [option]: !prev[option]
-    }));
+
+  // Feedback popup handlers
+  const handleFeedbackSelect = (option: string) => {
+    setSelectedFeedback(option);
   };
 
   const handleFeedbackSubmit = () => {
-    console.log('Feedback submitted:', feedbackOptions);
+    if (!selectedFeedback) {
+      Alert.alert('Error', 'Please select a feedback option');
+      return;
+    }
     
-    setFeedbackOptions({
-      spelling: false,
-      grammar: false,
-      content: false,
-      other: false,
-    });
+    const feedbackData = {
+      type: selectedFeedback,
+      customText: selectedFeedback === 'other' ? customFeedback : '',
+      additionalComments: additionalComments
+    };
+    
+    console.log('Feedback submitted:', feedbackData);
+    
+    // Reset form
+    resetFeedbackForm();
+    
+    // Close modal
     setFeedbackModalVisible(false);
-    setCurrentScreen("summary");
+    
+    Alert.alert('Success', 'Feedback submitted successfully!');
+  };
+
+  const resetFeedbackForm = () => {
+    setSelectedFeedback('');
+    setCustomFeedback('');
+    setAdditionalComments('');
+    setIsPressed(false);
+  };
+
+  const handleFeedbackClose = () => {
+    resetFeedbackForm();
+    setFeedbackModalVisible(false);
   };
 
   const calculateScore = () => {
@@ -223,6 +248,101 @@ export default function QuizFlow() {
       .toString()
       .padStart(2, "0")}`;
   };
+
+  // Integrated FeedbackPopup Component
+  const renderFeedbackPopup = () => (
+    <Modal
+      visible={feedbackModalVisible}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={handleFeedbackClose}
+    >
+      <View style={feedbackPopupStyles.modalOverlay}>
+        <View style={feedbackPopupStyles.modalContent}>
+          
+          {/* Header */}
+          <View style={feedbackPopupStyles.header}>
+            <Text style={feedbackPopupStyles.headerText}>FEEDBACK</Text>
+          </View>
+
+          {/* Feedback Options Grid */}
+          <View style={feedbackPopupStyles.optionsGrid}>
+            {feedbackOptions.map((option) => (
+              <TouchableOpacity
+                key={option.id}
+                onPress={() => handleFeedbackSelect(option.id)}
+                style={[
+                  feedbackPopupStyles.optionButton,
+                  selectedFeedback === option.id && (
+                    option.id === 'other' ? feedbackPopupStyles.selectedOtherButton : feedbackPopupStyles.selectedButton
+                  )
+                ]}
+              >
+                <Text
+                  style={[
+                    feedbackPopupStyles.optionText,
+                    selectedFeedback === option.id && feedbackPopupStyles.selectedText
+                  ]}
+                >
+                  {option.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* Text Input Fields */}
+          <View style={feedbackPopupStyles.inputContainer}>
+            <TextInput
+              style={[
+                feedbackPopupStyles.textInput,
+                selectedFeedback !== 'other' && feedbackPopupStyles.disabledInput
+              ]}
+              placeholder="Enter feedback..."
+              placeholderTextColor="#999"
+              value={selectedFeedback === 'other' ? customFeedback : ''}
+              onChangeText={setCustomFeedback}
+              editable={selectedFeedback === 'other'}
+            />
+            
+            <TextInput
+              style={feedbackPopupStyles.textInput}
+              placeholder="Additional comments..."
+              placeholderTextColor="#999"
+              value={additionalComments}
+              onChangeText={setAdditionalComments}
+            />
+          </View>
+
+          {/* Action Buttons */}
+          <View style={feedbackPopupStyles.buttonContainer}>
+            <TouchableOpacity
+              onPress={handleFeedbackClose}
+              style={feedbackPopupStyles.cancelButton}
+            >
+              <Text style={feedbackPopupStyles.cancelText}>CANCEL</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={handleFeedbackSubmit}
+              onPressIn={() => setIsPressed(true)}
+              onPressOut={() => setIsPressed(false)}
+              style={[
+                feedbackPopupStyles.submitButton,
+                isPressed && feedbackPopupStyles.submitButtonPressed
+              ]}
+            >
+              <Text style={[
+                feedbackPopupStyles.submitText,
+                isPressed && feedbackPopupStyles.submitTextPressed
+              ]}>
+                SUBMIT
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
 
   const renderTimerScreen = () => (
     <ScrollView
@@ -415,193 +535,95 @@ export default function QuizFlow() {
     </ScrollView>
   );
 
-const renderFeedbackScreen = () => {
-  const reviewQuestion = QUIZ_DATA[reviewQuestionIndex];
-  const userAnswer = userAnswers[reviewQuestion.id];
-  const isCorrect = userAnswer === reviewQuestion.correctAnswer;
+  const renderFeedbackScreen = () => {
+    const reviewQuestion = QUIZ_DATA[reviewQuestionIndex];
+    const userAnswer = userAnswers[reviewQuestion.id];
+    const isCorrect = userAnswer === reviewQuestion.correctAnswer;
 
-  return (
-    <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
-      <View style={flatFeedbackStyles.container}>
-        {/* Header Row */}
-        <View style={flatFeedbackStyles.headerRow}>
-          <Text style={flatFeedbackStyles.timerText}>00:25</Text>
-          <Text style={isCorrect ? flatFeedbackStyles.correct : flatFeedbackStyles.incorrect}>
-            {isCorrect ? "CORRECT" : "INCORRECT"}
-          </Text>
-        </View>
-
-        <Text style={flatFeedbackStyles.questionNumber}>QUESTION {reviewQuestionIndex + 1}</Text>
-        <Text style={flatFeedbackStyles.questionText}>{reviewQuestion.question}</Text>
-
-        {reviewQuestion.options.map((opt, idx) => {
-          const selected = userAnswer === idx;
-          const correct = reviewQuestion.correctAnswer === idx;
-          let style = flatFeedbackStyles.optionButton;
-
-          if (correct) style = flatFeedbackStyles.correctOption;
-          else if (selected && !correct) style = flatFeedbackStyles.incorrectOption;
-
-          return (
-            <View key={idx} style={style}>
-              <Text
-                style={
-                  correct
-                    ? flatFeedbackStyles.optionTextCorrect
-                    : selected
-                    ? flatFeedbackStyles.optionTextIncorrect
-                    : flatFeedbackStyles.optionText
-                }
-              >
-                {opt}
-              </Text>
-            </View>
-          );
-        })}
-
-        <View style={flatFeedbackStyles.sliderRow}>
-          <Text style={flatFeedbackStyles.sliderLabel}>QUALITY</Text>
-          <View style={flatFeedbackStyles.sliderTrack}>
-            <View style={[flatFeedbackStyles.sliderFill, { width: '60%' }]} />
+    return (
+      <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
+        <View style={flatFeedbackStyles.container}>
+          {/* Header Row */}
+          <View style={flatFeedbackStyles.headerRow}>
+            <Text style={flatFeedbackStyles.timerText}>00:25</Text>
+            <Text style={isCorrect ? flatFeedbackStyles.correct : flatFeedbackStyles.incorrect}>
+              {isCorrect ? "CORRECT" : "INCORRECT"}
+            </Text>
           </View>
-          <Text style={flatFeedbackStyles.sliderValue}>{reviewQuestion.popularity}</Text>
-        </View>
 
-        <View style={flatFeedbackStyles.sliderRow}>
-          <Text style={flatFeedbackStyles.sliderLabel}>DIFFICULTY</Text>
-          <View style={flatFeedbackStyles.sliderTrack}>
-            <View style={[flatFeedbackStyles.sliderFill, { width: '50%' }]} />
-          </View>
-          <Text style={flatFeedbackStyles.sliderValue}>{reviewQuestion.difficulty}</Text>
-        </View>
+          <Text style={flatFeedbackStyles.questionNumber}>QUESTION {reviewQuestionIndex + 1}</Text>
+          <Text style={flatFeedbackStyles.questionText}>{reviewQuestion.question}</Text>
 
-        <View style={flatFeedbackStyles.dotsRow}>
-          {QUIZ_DATA.map((_, idx) => {
-            const ans = userAnswers[QUIZ_DATA[idx].id];
-            let bg = "#BDBDBD";
-            if (ans === QUIZ_DATA[idx].correctAnswer) bg = "#4CAF50";
-            else if (ans !== null && ans !== undefined) bg = "#F44336";
+          {reviewQuestion.options.map((opt, idx) => {
+            const selected = userAnswer === idx;
+            const correct = reviewQuestion.correctAnswer === idx;
+            let style = flatFeedbackStyles.optionButton;
+
+            if (correct) style = flatFeedbackStyles.correctOption;
+            else if (selected && !correct) style = flatFeedbackStyles.incorrectOption;
 
             return (
-              <TouchableOpacity
-                key={idx}
-                style={[flatFeedbackStyles.dot, { backgroundColor: bg }]}
-                onPress={() => setReviewQuestionIndex(idx)}
-              />
+              <View key={idx} style={style}>
+                <Text
+                  style={
+                    correct
+                      ? flatFeedbackStyles.optionTextCorrect
+                      : selected
+                      ? flatFeedbackStyles.optionTextIncorrect
+                      : flatFeedbackStyles.optionText
+                  }
+                >
+                  {opt}
+                </Text>
+              </View>
             );
           })}
-        </View>
 
-        <TouchableOpacity
-          style={flatFeedbackStyles.feedbackButton}
-          onPress={() => setFeedbackModalVisible(true)}
-        >
-          <Text style={flatFeedbackStyles.feedbackButtonText}>FEEDBACK</Text>
-        </TouchableOpacity>
-
-        <Text style={flatFeedbackStyles.footer}>BOARDBULLET</Text>
-      </View>
-
-      {/* Feedback Modal */}
-      <Modal
-        visible={feedbackModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setFeedbackModalVisible(false)}
-      >
-        <View style={flatFeedbackStyles.modalOverlay}>
-          <View style={flatFeedbackStyles.modalContent}>
-            <Text style={flatFeedbackStyles.modalTitle}>FEEDBACK</Text>
-            
-            <View style={flatFeedbackStyles.modal}>
-              <View style={flatFeedbackStyles.modalrow}>
-            <TouchableOpacity
-              style={[
-                flatFeedbackStyles.checkboxOption,
-                feedbackOptions.spelling && flatFeedbackStyles.checkedOption
-              ]}
-              onPress={() => handleFeedbackOptionToggle('spelling')}
-            >
-              <Text style={{
-                fontSize: 14,
-                color: feedbackOptions.spelling ? '#33c37e' : '#333',
-                fontWeight: feedbackOptions.spelling ? 'bold' : 'normal'
-              }}>
-                CHECK SPELLING
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                flatFeedbackStyles.checkboxOption,
-                feedbackOptions.grammar && flatFeedbackStyles.checkedOption
-              ]}
-              onPress={() => handleFeedbackOptionToggle('grammar')}
-            >
-              <Text style={{
-                fontSize: 14,
-                color: feedbackOptions.grammar ? '#fff' : '#333',
-                fontWeight: feedbackOptions.grammar ? 'bold' : 'normal'
-              }}>
-                CHECK GRAMMAR
-              </Text>
-            </TouchableOpacity>
+          <View style={flatFeedbackStyles.sliderRow}>
+            <Text style={flatFeedbackStyles.sliderLabel}>QUALITY</Text>
+            <View style={flatFeedbackStyles.sliderTrack}>
+              <View style={[flatFeedbackStyles.sliderFill, { width: '60%' }]} />
             </View>
-             <View style={flatFeedbackStyles.modalrow}>
-            <TouchableOpacity
-              style={[
-                flatFeedbackStyles.checkboxOption,
-                feedbackOptions.content && flatFeedbackStyles.checkedOption
-              ]}
-              onPress={() => handleFeedbackOptionToggle('content')}
-            >
-              <Text style={{
-                fontSize: 14,
-                color: feedbackOptions.content ? '#33c37e' : '#333',
-                fontWeight: feedbackOptions.content ? 'bold' : 'normal'
-              }}>
-                CONTENT REVIEW
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                flatFeedbackStyles.checkboxOption,
-                feedbackOptions.other && flatFeedbackStyles.checkedOption
-              ]}
-              onPress={() => handleFeedbackOptionToggle('other')}
-            >
-              <Text style={{
-                fontSize: 14,
-                color: feedbackOptions.other ? '#33c37e' : '#333',
-                fontWeight: feedbackOptions.other ? 'bold' : 'normal'
-              }}>
-                OTHER
-              </Text>
-            </TouchableOpacity>
-            </View>
-            </View>
-
-            <TouchableOpacity
-              style={flatFeedbackStyles.modalButton}
-              onPress={handleFeedbackSubmit}
-            >
-              <Text style={{
-                color: '#fff',
-                fontSize: 14,
-                fontWeight: 'bold'
-              }}>
-                SUBMIT
-              </Text>
-            </TouchableOpacity>
+            <Text style={flatFeedbackStyles.sliderValue}>{reviewQuestion.popularity}</Text>
           </View>
+
+          <View style={flatFeedbackStyles.sliderRow}>
+            <Text style={flatFeedbackStyles.sliderLabel}>DIFFICULTY</Text>
+            <View style={flatFeedbackStyles.sliderTrack}>
+              <View style={[flatFeedbackStyles.sliderFill, { width: '50%' }]} />
+            </View>
+            <Text style={flatFeedbackStyles.sliderValue}>{reviewQuestion.difficulty}</Text>
+          </View>
+
+          <View style={flatFeedbackStyles.dotsRow}>
+            {QUIZ_DATA.map((_, idx) => {
+              const ans = userAnswers[QUIZ_DATA[idx].id];
+              let bg = "#BDBDBD";
+              if (ans === QUIZ_DATA[idx].correctAnswer) bg = "#4CAF50";
+              else if (ans !== null && ans !== undefined) bg = "#F44336";
+
+              return (
+                <TouchableOpacity
+                  key={idx}
+                  style={[flatFeedbackStyles.dot, { backgroundColor: bg }]}
+                  onPress={() => setReviewQuestionIndex(idx)}
+                />
+              );
+            })}
+          </View>
+
+          <TouchableOpacity
+            style={flatFeedbackStyles.feedbackButton}
+            onPress={() => setFeedbackModalVisible(true)}
+          >
+            <Text style={flatFeedbackStyles.feedbackButtonText}>FEEDBACK</Text>
+          </TouchableOpacity>
+
+          <Text style={flatFeedbackStyles.footer}>BOARDBULLET</Text>
         </View>
-      </Modal>
-    </ScrollView>
-  );
-};
-
-
+      </ScrollView>
+    );
+  };
 
   const renderSummaryScreen = () => {
     const score = calculateScore();
@@ -711,182 +733,263 @@ const renderFeedbackScreen = () => {
       </ScrollView>
     );
   };
+
+  // StyleSheets
+  const feedbackPopupStyles = StyleSheet.create({
+    modalOverlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+    },
+    modalContent: {
+      backgroundColor: '#ffffff',
+      borderRadius: 24,
+      width: '100%',
+      maxWidth: 350,
+      paddingTop: 24,
+      paddingHorizontal: 24,
+      paddingBottom: 0,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 4,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 8,
+      position: 'relative',
+    },
+    header: {
+      alignItems: 'center',
+      marginBottom: 32,
+    },
+    headerText: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#333',
+      letterSpacing: 1.5,
+    },
+    optionsGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+      marginBottom: 24,
+    },
+    optionButton: {
+      backgroundColor: '#e5e5e5',
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 8,
+      width: '48%',
+      marginBottom: 12,
+      alignItems: 'center',
+    },
+    selectedButton: {
+      backgroundColor: '#9ca3af',
+    },
+    selectedOtherButton: {
+      backgroundColor: '#3b82f6',
+    },
+    optionText: {
+      fontSize: 12,
+      fontWeight: '600',
+      color: '#555',
+      textAlign: 'center',
+    },
+    selectedText: {
+      color: '#ffffff',
+    },
+    inputContainer: {
+      marginBottom: 24,
+    },
+    textInput: {
+      borderWidth: 1,
+      borderColor: '#d1d5db',
+      borderRadius: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 12,
+      marginBottom: 12,
+      fontSize: 14,
+      color: '#333',
+      backgroundColor: '#fff',
+    },
+    disabledInput: {
+      backgroundColor: '#f5f5f5',
+      color: '#999',
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    cancelButton: {
+      flex: 1,
+      paddingVertical: 16,
+      alignItems: 'center',
+      marginRight: 8,
+    },
+    cancelText: {
+      color: '#666',
+      fontSize: 14,
+      fontWeight: 'bold',
+      letterSpacing: 1,
+    },
+    submitButton: {
+      backgroundColor: '#ffffff',
+      borderTopWidth: 1,
+      borderTopColor: '#d1d5db',
+      flex: 1,
+      paddingVertical: 16,
+      alignItems: 'center',
+      borderBottomRightRadius: 24,
+      marginLeft: 8,
+    },
+    submitButtonPressed: {
+      backgroundColor: '#f3f4f6',
+    },
+    submitText: {
+      color: '#000000',
+      fontSize: 14,
+      fontWeight: 'bold',
+      letterSpacing: 1,
+    },
+    submitTextPressed: {
+      color: '#000000',
+    },
+  });
+
   const flatFeedbackStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 15,
-  },
-  timerText: {
-    fontSize: 16,
-    color: '#999',
-  },
-  correct: {
-    color: '#4CAF50',
-    fontWeight: 'bold',
-  },
-  incorrect: {
-    color: '#F44336',
-    fontWeight: 'bold',
-  },
-  questionNumber: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 8,
-    color: '#333',
-  },
-  questionText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#000',
-  },
-  optionButton: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 12,
-    padding: 10,
-    marginBottom: 10,
-  },
-  correctOption: {
-    backgroundColor: '#e6f4ea',
-    borderRadius: 12,
-    padding: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#4CAF50',
-  },
-  incorrectOption: {
-    backgroundColor: '#fbeaea',
-    borderRadius: 12,
-    padding: 10,
-    marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#F44336',
-  },
-  optionText: {
-    fontSize: 14,
-    color: '#000',
-  },
-  optionTextCorrect: {
-    fontSize: 14,
-    color: '#4CAF50',
-    fontWeight: 'bold',
-  },
-  optionTextIncorrect: {
-    fontSize: 14,
-    color: '#F44336',
-    fontWeight: 'bold',
-  },
-  sliderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  sliderLabel: {
-    width: 80,
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#666',
-  },
-  sliderTrack: {
-    flex: 1,
-    height: 6,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 3,
-    marginHorizontal: 8,
-  },
-  sliderFill: {
-    height: 6,
-    backgroundColor: '#33c37e',
-    borderRadius: 3,
-  },
-  sliderValue: {
-    fontSize: 12,
-    color: '#666',
-  },
-  dotsRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 20,
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  dot: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    margin: 4,
-  },
-  feedbackButton: {
-    backgroundColor: '#4864AC',
-    padding: 12,
-    borderRadius: 20,
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  feedbackButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
-  footer: {
-    marginTop: 30,
-    textAlign: 'center',
-    color: '#bbb',
-    fontSize: 12,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  modalContent: {
-    width: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  checkboxOption: {
-    padding: 12,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginVertical: 6,
-    backgroundColor: '#f9f9f9',
-  },
-  checkedOption: {
-    borderColor: '#4864AC',
-    backgroundColor: '#4864AC',
-  },
-  modalButton: {
-    backgroundColor: '#4864AC',
-    padding: 12,
-    borderRadius: 16,
-    marginTop: 16,
-    alignItems: 'center',
-  },
-  modal:{
-    flexDirection: "column"
-  },
-  modalrow: {
-    flexDirection: 'row',
-    justifyContent: "space-between"
-  }
-});
+    container: {
+      flex: 1,
+      padding: 20,
+      backgroundColor: '#fff',
+    },
+    headerRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      marginBottom: 15,
+    },
+    timerText: {
+      fontSize: 16,
+      color: '#999',
+    },
+    correct: {
+      color: '#4CAF50',
+      fontWeight: 'bold',
+    },
+    incorrect: {
+      color: '#F44336',
+      fontWeight: 'bold',
+    },
+    questionNumber: {
+      fontSize: 14,
+      fontWeight: '600',
+      marginBottom: 8,
+      color: '#333',
+    },
+    questionText: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      marginBottom: 20,
+      color: '#000',
+    },
+    optionButton: {
+      borderWidth: 1,
+      borderColor: '#ccc',
+      borderRadius: 12,
+      padding: 10,
+      marginBottom: 10,
+    },
+    correctOption: {
+      backgroundColor: '#e6f4ea',
+      borderRadius: 12,
+      padding: 10,
+      marginBottom: 10,
+      borderWidth: 1,
+      borderColor: '#4CAF50',
+    },
+    incorrectOption: {
+      backgroundColor: '#fbeaea',
+      borderRadius: 12,
+      padding: 10,
+      marginBottom: 10,
+      borderWidth: 1,
+      borderColor: '#F44336',
+    },
+    optionText: {
+      fontSize: 14,
+      color: '#000',
+    },
+    optionTextCorrect: {
+      fontSize: 14,
+      color: '#4CAF50',
+      fontWeight: 'bold',
+    },
+    optionTextIncorrect: {
+      fontSize: 14,
+      color: '#F44336',
+      fontWeight: 'bold',
+    },
+    sliderRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: 10,
+    },
+    sliderLabel: {
+      width: 80,
+      fontSize: 12,
+      fontWeight: 'bold',
+      color: '#666',
+    },
+    sliderTrack: {
+      flex: 1,
+      height: 6,
+      backgroundColor: '#e0e0e0',
+      borderRadius: 3,
+      marginHorizontal: 8,
+    },
+    sliderFill: {
+      height: 6,
+      backgroundColor: '#33c37e',
+      borderRadius: 3,
+    },
+    sliderValue: {
+      fontSize: 12,
+      color: '#666',
+    },
+    dotsRow: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginVertical: 20,
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    dot: {
+      width: 14,
+      height: 14,
+      borderRadius: 7,
+      margin: 4,
+    },
+    feedbackButton: {
+      backgroundColor: '#4864AC',
+      padding: 12,
+      borderRadius: 20,
+      marginTop: 20,
+      alignItems: 'center',
+    },
+    feedbackButtonText: {
+      color: '#fff',
+      fontWeight: 'bold',
+      fontSize: 14,
+    },
+    footer: {
+      marginTop: 30,
+      textAlign: 'center',
+      color: '#bbb',
+      fontSize: 12,
+    },
+  });
 
   // Summary Styles
   const summaryStyles = StyleSheet.create({
@@ -986,30 +1089,25 @@ const renderFeedbackScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-    {/* Home Section - Fixed at top */}
-    <View style={styles.homeSection}>
-      <Text style={styles.homeLabel}>
-        {currentScreen === "timer" && "QUIZ ME"}
-        {currentScreen === "question" && "QUIZ IN PROGRESS"}
-        {currentScreen === "summary" && "QUIZ COMPLETE"}
-        {currentScreen === "results" && "QUIZ REVIEW"}
-      </Text>
-    </View>
+      {/* Home Section - Fixed at top */}
+      <View style={styles.homeSection}>
+        <Text style={styles.homeLabel}>
+          {currentScreen === "timer" && "QUIZ ME"}
+          {currentScreen === "question" && "QUIZ IN PROGRESS"}
+          {currentScreen === "summary" && "QUIZ COMPLETE"}
+          {currentScreen === "results" && "QUIZ REVIEW"}
+        </Text>
+      </View>
 
-    {/* Scrollable Content Based on Screen */}
-    {currentScreen === "timer" && renderTimerScreen()}
-    {currentScreen === "question" && renderQuestionScreen()}
-    {currentScreen === "summary" && renderSummaryScreen()}
-    {currentScreen === "feedback" && renderFeedbackScreen()}
-    {currentScreen === "results" && renderResultsScreen()}
+      {/* Scrollable Content Based on Screen */}
+      {currentScreen === "timer" && renderTimerScreen()}
+      {currentScreen === "question" && renderQuestionScreen()}
+      {currentScreen === "summary" && renderSummaryScreen()}
+      {currentScreen === "feedback" && renderFeedbackScreen()}
+      {currentScreen === "results" && renderResultsScreen()}
 
-    {/* ADD THIS COMPONENT */}
-    <FeedbackPopup
-      visible={feedbackModalVisible}
-      onClose={() => setFeedbackModalVisible(false)}
-      onSubmit={handleFeedbackSubmit}
-    />
-
-  </SafeAreaView>
+      {/* Integrated Feedback Popup Component */}
+      {renderFeedbackPopup()}
+    </SafeAreaView>
   );
 }

@@ -1,4 +1,7 @@
+import { useAuth } from "@/utils/axiosInstance";
 import { router } from "expo-router";
+import React, { useState } from "react";
+import asyncStorage from "@react-native-async-storage/async-storage";
 import {
   Alert,
   SafeAreaView,
@@ -8,9 +11,12 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
 
 const SettingsScreen = () => {
+  const [loading, setLoading] = useState<Boolean>(false);
+  const { logout } = useAuth();
   const handleDeleteAccount = () => {
     Alert.alert(
       "Delete Account",
@@ -30,11 +36,25 @@ const SettingsScreen = () => {
     console.log("Change Password pressed");
   };
 
-  const handleLogOut = () => {
-    Alert.alert("Log Out", "Are you sure you want to log out?", [
-      { text: "Cancel", style: "cancel" },
-      { text: "Log Out", onPress: () => router.navigate("/(auth)/login") },
-    ]);
+  const handleLogOut = async () => {
+    setLoading(true);
+    try {
+      const res = await logout();
+
+      if (res?.success) {
+        await asyncStorage.removeItem("userToken");
+        Alert.alert("Log Out", "Are you sure you want to log out?", [
+          { text: "Cancel", style: "cancel" },
+          { text: "Log Out", onPress: () => router.push("/login") },
+        ]);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

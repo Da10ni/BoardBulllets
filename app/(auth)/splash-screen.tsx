@@ -1,8 +1,9 @@
 // app/SplashScreen.tsx
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons, MaterialIcons, SimpleLineIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dimensions,
   StatusBar,
@@ -14,21 +15,24 @@ import {
 import Carousel from "react-native-reanimated-carousel";
 
 export interface SplashScreenProps {
-  onComplete?: () => void; // Callback jab splash complete ho
+  onComplete?: () => void;
 }
 
 export interface SplashData {
   id: number;
-  icon?: string; // Optional icon path or URI
-  title: string; // Main heading text
-  subtitle: string; // Description or caption
-  isLogo?: boolean; // If true, show app logo
-  showAuthButtons?: boolean; // Show LOGIN/SIGNUP buttons?
+  icon?: string;
+  icon2?: string;
+  icon3?: string;
+  icon4?: string;
+  title: string;
+  subtitle: string | { normal: string; bold: string; bold2: string };
+  isLogo?: boolean;
+  showAuthButtons?: boolean;
 }
 
 const { width, height } = Dimensions.get("window");
 
-const splashData = [
+const splashData: SplashData[] = [
   {
     id: 0,
     isLogo: true,
@@ -37,27 +41,43 @@ const splashData = [
   },
   {
     id: 1,
-    icon: "desktop-outline",
-    title: "User Friendly Design",
-    subtitle: "Simplified interface for\neasy navigation",
+    icon4: "tablet-screen-button",
+    title: "USER FRIENDLY DESIGN",
+    subtitle: {
+      normal: "FOR OPTIMAL REVIEW OF HIGH-YEILD MATERIAL\n",
+      bold: "",
+      bold2:"USER FRIENDLY DESIGN\n",
+    },
   },
   {
     id: 2,
-    icon: "bar-chart-outline",
-    title: "Performance Goals",
-    subtitle: "Track your progress with\ndetailed analytics",
+    icon2: "signal-cellular-alt",
+    title: "PERFORMANCE GOALS",
+    subtitle: {
+      normal: "PERFORMANCE DATA &\nANALYTICS TO",
+      bold: " TRACK\nYOUR PROGRESS",
+      bold2:""
+    },
   },
   {
     id: 3,
     icon: "trophy-outline",
-    title: "Earn Big Points",
-    subtitle: "Compete with others and\nwin rewards",
+    title: "EARN BIG POINTS",
+    subtitle: {
+      bold:"",
+      normal: " FROM \n QUESTIONS SHARED ON \n A PEER-TO-PEER NETWORK \n",
+      bold2: "EARN BB POINTS",
+    },
   },
   {
     id: 4,
-    icon: "star-outline",
-    title: "Upgrade to Premium",
-    subtitle: "Unlock advanced features\nand premium content",
+    icon3: "badge",
+    title: "UPGRADE TO PREMIUM",
+    subtitle: {
+      bold2:"UPGRADE TO PREMIUM & ",
+      normal: "GET\nFULL-ACCESS TO ALL OUR\n FEATURES & MORE",
+      bold: "",
+    },
   },
 ];
 
@@ -65,44 +85,72 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleLogin = () => {
-    onComplete?.(); // Hide splash screen first
+    onComplete?.();
     router.push("/login");
   };
 
   const handleSignup = () => {
-    onComplete?.(); // Hide splash screen first
+    onComplete?.();
     router.push("/register");
   };
 
-  const renderCarouselItem = ({ item }: { item: any }) => {
-    return (
-      <View style={styles.carouselItemContainer}>
-        {item.isLogo ? (
-          <View style={styles.mainLogoContainer}>
-            <Text style={styles.logoText}>
-              <Text style={styles.logoTextBold}>B4 </Text>
-              <Text style={styles.logoTextNormal}>AI</Text>
-            </Text>
-          </View>
-        ) : (
-          <>
-            <View style={styles.iconContainer}>
-              <View style={styles.iconBackground}>
-                <Ionicons name={item.icon as any} size={50} color="white" />
-              </View>
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem("userToken");
+        if (!token) {
+          router.push("/login");
+        }else if(token){
+          router.push("/(main)/(tabs)/(home)");
+        }
+      } catch (error) {
+        console.error("Error checking token:", error);
+        router.push("/login");
+      }
+    };
+  
+    checkToken();
+  }, []);
+
+  const renderCarouselItem = ({ item }: { item: SplashData }) => (
+    <View style={styles.carouselItemContainer}>
+      {item.isLogo ? (
+        <View style={styles.mainLogoContainer}>
+          <Text style={styles.logoText}>
+            <Text style={styles.logoTextBold}>B4 </Text>
+            <Text style={styles.logoTextNormal}>AI</Text>
+          </Text>
+        </View>
+      ) : (
+        <>
+          <View style={styles.iconContainer}>
+            <View style={styles.iconBackground}>
+              {item.icon && <Ionicons name={item.icon as any} size={60} color="white" />}
+              {!item.icon && item.icon2 && (
+                <MaterialIcons name={item.icon2 as any} size={60} color="white" />
+              )}
+              {!item.icon && item.icon3 && (<SimpleLineIcons name={item.icon3 as any} size={60} color = "white"/>)}
+              {!item.icon && item.icon4 && (<FontAwesome6 name={item.icon4 as any} size={60} color = "white"/>)}
             </View>
-            <Text style={styles.title}>{item.title}</Text>
+          </View>
+          {/* <Text style={styles.title}>{item.title}</Text> */}
+          {typeof item.subtitle === "string" ? (
             <Text style={styles.subtitle}>{item.subtitle}</Text>
-          </>
-        )}
-      </View>
-    );
-  };
+          ) : (
+            <Text style={styles.subtitle}>
+               <Text style={styles.boldText}>{item.subtitle.bold2}</Text>
+              {item.subtitle.normal}
+              <Text style={styles.boldText}>{item.subtitle.bold}</Text>
+            </Text>
+          )}
+        </>
+      )}
+    </View>
+  );
 
   return (
     <View style={overlayStyles.overlay}>
       <StatusBar barStyle="light-content" backgroundColor="#4A90E2" />
-
       <LinearGradient colors={["#4864AC", "#357ABD"]} style={styles.gradient}>
         <View style={styles.whiteBackground} />
         <View style={styles.header}>
@@ -111,7 +159,6 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
             <Text style={styles.headerTextNormal}> & Earn </Text>
           </Text>
         </View>
-        <View style={styles.topLogoContainer}></View>
 
         <View style={styles.carouselContainer}>
           <Carousel
@@ -131,29 +178,19 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
 
         <View style={styles.bottomSection}>
           <View style={styles.dotsContainer}>
-            {splashData.map((_, dotIndex) => (
+            {splashData.map((_, i) => (
               <View
-                key={dotIndex}
-                style={[
-                  styles.dot,
-                  dotIndex === currentIndex
-                    ? styles.activeDot
-                    : styles.inactiveDot,
-                ]}
+                key={i}
+                style={[styles.dot, i === currentIndex ? styles.activeDot : styles.inactiveDot]}
               />
             ))}
           </View>
 
-          {/* LOGIN / SIGN UP Navigation */}
           <View style={styles.authButtonsContainer}>
             <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
               <Text style={styles.loginText}>LOG IN</Text>
             </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.signupButton}
-              onPress={handleSignup}
-            >
+            <TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
               <Text style={styles.signupText}>SIGN UP</Text>
             </TouchableOpacity>
           </View>
@@ -163,7 +200,6 @@ export default function SplashScreen({ onComplete }: SplashScreenProps) {
   );
 }
 
-// Overlay styles to make splash screen appear on top
 const overlayStyles = StyleSheet.create({
   overlay: {
     position: "absolute",
@@ -176,14 +212,7 @@ const overlayStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-  },
-  gradient: {
-    flex: 1,
-  },
-
-  // Fixed white background - never moves
+  gradient: { flex: 1 },
   whiteBackground: {
     position: "absolute",
     top: -230,
@@ -191,82 +220,39 @@ const styles = StyleSheet.create({
     width: 50,
     height: 530,
     backgroundColor: "white",
-    transform: [{ skewY: `-40deg` }, { translateY: 70 }, { translateX: -20 }],
-    transformOrigin: "top left",
+    transform: [{ skewY: "-40deg" }, { translateY: 70 }, { translateX: -20 }],
     borderRadius: 340,
   },
-
-  // Fixed header - never moves
   header: {
     position: "absolute",
     top: 10,
     left: 0,
     right: 0,
     alignItems: "center",
-    zIndex: 10,
-    width: "100%",
-    flex: 1,
     flexDirection: "row",
     justifyContent: "flex-end",
     paddingHorizontal: 20,
   },
-  headerText: {
-    color: "white",
-    fontSize: 16,
-    letterSpacing: 1,
-    textAlign: "right",
-  },
-  headerTextBold: {
-    fontWeight: "bold",
-  },
-  headerTextNormal: {
-    fontWeight: "200",
-  },
-
-  // Fixed top logo - never moves
-  topLogoContainer: {
-    position: "absolute",
-    top: 90,
-    left: 30,
-    zIndex: 20,
-  },
-  topLogoText: {
-    color: "#4864AC",
-    fontSize: 16,
-    fontWeight: "bold",
-    letterSpacing: 1.5,
-  },
-
-  // Carousel container - only this area moves
+  headerText: { color: "white", fontSize: 16, letterSpacing: 1 },
+  headerTextBold: { fontWeight: "bold" },
+  headerTextNormal: { fontWeight: "200" },
   carouselContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 190,
   },
-
-  // Individual carousel item
   carouselItemContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 40,
   },
-
-  // Logo screen styles
   mainLogoContainer: {
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
     height: "100%",
-  },
-  logoBackground: {
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.3)",
   },
   logoText: {
     color: "white",
@@ -276,23 +262,13 @@ const styles = StyleSheet.create({
     width: "100%",
     lineHeight: 44,
   },
-  logoTextBold: {
-    fontWeight: "800",
-  },
-  logoTextNormal: {
-    fontWeight: "300",
-  },
-
-  // Feature screen styles
-  iconContainer: {
-    marginBottom: 25,
-    alignItems: "center",
-  },
+  logoTextBold: { fontWeight: "800" },
+  logoTextNormal: { fontWeight: "300" },
+  iconContainer: { marginBottom: 25, alignItems: "center" },
   iconBackground: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -306,14 +282,16 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     color: "rgba(255, 255, 255, 0.9)",
-    fontSize: 12,
+    fontSize: 18,
     textAlign: "center",
-    lineHeight: 18,
-    letterSpacing: 0.3,
+    //lineHeight: 18,
+    letterSpacing: 0.8,
     fontWeight: "400",
   },
-
-  // Fixed bottom section - never moves
+  boldText: {
+    fontWeight: "bold",
+    color: "white",
+  },
   bottomSection: {
     position: "absolute",
     bottom: 40,
@@ -321,8 +299,6 @@ const styles = StyleSheet.create({
     right: 30,
     alignItems: "center",
   },
-
-  // Dots indicator
   dotsContainer: {
     flexDirection: "row",
     justifyContent: "center",
@@ -334,20 +310,12 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     marginHorizontal: 3,
   },
-  activeDot: {
-    backgroundColor: "white",
-  },
-  inactiveDot: {
-    backgroundColor: "rgba(255, 255, 255, 0.4)",
-  },
-
-  // Fixed auth buttons - never move
+  activeDot: { backgroundColor: "white" },
+  inactiveDot: { backgroundColor: "rgba(255, 255, 255, 0.4)" },
   authButtonsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
     width: "100%",
-    paddingHorizontal: 2,
   },
   loginButton: {
     paddingHorizontal: 30,
@@ -358,17 +326,9 @@ const styles = StyleSheet.create({
     borderColor: "white",
     flex: 1,
     marginRight: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 4,
   },
   loginText: {
-    color: "#4A90E2",
+    color: "#4864AC",
     fontSize: 12,
     fontWeight: "bold",
     letterSpacing: 1,
@@ -381,17 +341,9 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     flex: 1,
     marginLeft: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 4,
   },
   signupText: {
-    color: "#4A90E2",
+    color: "#4864AC",
     fontSize: 12,
     fontWeight: "bold",
     letterSpacing: 1,

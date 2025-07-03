@@ -1,8 +1,9 @@
 import { styles } from "@/components/Home/Home.styles";
 import { Feather, Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -20,6 +21,7 @@ interface QuestionStats {
   incorrect: number;
 }
 
+
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
   const [stats, setStats] = useState<QuestionStats>({
@@ -27,21 +29,37 @@ const HomeScreen: React.FC = () => {
     correct: 1300,
     incorrect: 1000,
   });
-
+  
   const correctPercentage =
-    stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+  stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
   const incorrectPercentage =
-    stats.total > 0 ? Math.round((stats.incorrect / stats.total) * 100) : 0;
-
+  stats.total > 0 ? Math.round((stats.incorrect / stats.total) * 100) : 0;
+  
   // Individual stat values
   const cumulativePercentage = 90;
   const subjectWisePercentage = 75;
   const recentGainsPercentage = 35;
-
+  
   const handleNavPress = (id: string) => {
     console.log(`Navigating to: ${id}`);
   };
-
+  
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem("userToken");
+        if (!token) {
+          router.push("/login");
+        }
+      } catch (error) {
+        console.error("Error checking token:", error);
+        router.push("/login");
+      }
+    };
+  
+    checkToken();
+  }, []);
+  
   const handleMenuPress = () => {
     navigation.dispatch(DrawerActions.openDrawer());
   };

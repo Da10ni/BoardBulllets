@@ -14,7 +14,9 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
+import { useAuth } from "@/utils/axiosInstance";
 
 const SignupScreen = () => {
   const [firstName, setFirstName] = useState("");
@@ -24,26 +26,49 @@ const SignupScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [selectedOption1, setSelectedOption1] = useState("");
   const [selectedOption2, setSelectedOption2] = useState("");
+  const [loading, setLoading] = useState<Boolean>(false);
   const [showAlert, setShowAlert] = useState(false);
+  const { register } = useAuth();
 
-  const handleSignup = () => {
-    if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      Alert.alert("Error", "Please fill in all fields.");
-      return;
+  const handleSignup = async () => {
+    setLoading(true);
+    try {
+      if (!firstName || !lastName || !email || !password || !confirmPassword) {
+        Alert.alert("Error", "Please fill in all fields.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        Alert.alert("Error", "Passwords do not match.");
+        return;
+      }
+
+      if (password.length < 6) {
+        Alert.alert("Error", "Password must be at least 6 characters long.");
+        return;
+      }
+
+      const signupdata = {
+        firstName,
+        lastName,
+        email,
+        password,
+        confirmPassword,
+      };
+
+      // Add your signup logic here
+      const data = await register(signupdata);
+
+      if (data?.success) {
+        setShowAlert(true);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        Alert.alert(error?.message);
+      }
+    } finally {
+      setLoading(false);
     }
-
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match.");
-      return;
-    }
-
-    if (password.length < 6) {
-      Alert.alert("Error", "Password must be at least 6 characters long.");
-      return;
-    }
-    setShowAlert(true);
-
-    // Add your signup logic here
   };
 
   const handleLogin = () => {
@@ -64,12 +89,17 @@ const SignupScreen = () => {
         alertVisible={showAlert}
         setAlertVisible={setShowAlert}
         alertTitle="A Verification Code has been sent to the given email"
-        onSuccess={() => router.push("/confirm-code")}
+        onSuccess={() =>
+          router.push({
+            pathname: "/confirm-code",
+            params: { email: email },
+          })
+        }
       />
-      
+
       {/* Diagonal White Background */}
       <View style={styles.whiteBackground} />
-      
+
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>
@@ -95,11 +125,8 @@ const SignupScreen = () => {
       >
         {/* Form */}
         <View style={styles.formContainer}>
-          <Text style={styles.title}>
-            <Text style={styles.titleBold}>SIGN</Text>
-            <Text style={styles.titleNormal}> UP</Text>
-          </Text>
-          <Text style={styles.subtitle}>TO CREATE A B4AI ACCOUNT</Text>
+          <Text style={styles.title}>SIGN UP</Text>
+          <Text style={styles.subtitle}>TO CREATE A BOARDBULLETS ACCOUNT</Text>
 
           <View style={styles.inputContainer}>
             <Ionicons
@@ -215,10 +242,11 @@ const SignupScreen = () => {
               style={styles.signupButton}
               onPress={handleSignup}
             >
-              <Text style={styles.signupButtonText}>
-                <Text style={styles.signupButtonTextBold}>SIGN</Text>
-                <Text style={styles.signupButtonTextNormal}> UP</Text>
-              </Text>
+              {loading ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={styles.signupButtonText}>SIGN UP</Text>
+              )}
             </TouchableOpacity>
           </View>
 
@@ -293,8 +321,8 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     alignItems: "center",
-    marginTop: -55,
-    right: 117,
+    marginTop: "-15%",
+    right: "28%",
     zIndex: 1,
   },
   iconCircle: {
