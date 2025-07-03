@@ -2,8 +2,8 @@ import { useAuth } from "@/utils/axiosInstance";
 import { EvilIcons } from "@expo/vector-icons";
 import Icon from "@expo/vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Image,
   ScrollView,
@@ -19,6 +19,29 @@ const ProfileScreen = () => {
   const [userData, setUserData] = useState<any>(null);
   const { getProfile } = useAuth();
 
+  // ✅ Date formatting function
+  const formatDate = (dateString: string): string => {
+    if (!dateString) return "NOT SET";
+
+    try {
+      const date = new Date(dateString);
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return dateString; // Return original if invalid
+      }
+
+      // Format as DD-MM-YYYY
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const year = date.getFullYear();
+
+      return `${day}-${month}-${year}`;
+    } catch (error) {
+      console.log("Date formatting error:", error);
+      return dateString; // Return original if error
+    }
+  };
+
   // ✅ Get User ID from Token
   const getUserId = async (): Promise<string | null> => {
     try {
@@ -33,8 +56,6 @@ const ProfileScreen = () => {
       const payload = token.split(".")[1];
       const decodedPayload = atob(payload);
       const tokenData = JSON.parse(decodedPayload);
-
-      console.log("✅ User ID from token:", tokenData.userId);
       return tokenData.userId;
     } catch (error) {
       console.log("❌ Error getting user ID:", error);
@@ -45,14 +66,10 @@ const ProfileScreen = () => {
   // ✅ Get User Profile Data
   const getUserData = async (id: string) => {
     try {
-      console.log("🔍 Fetching profile for ID:", id);
-      
       const res = await getProfile(id);
-      console.log("✅ Profile data received:", res);
-      
+
       if (res?.success && res?.user) {
         setUserData(res.user);
-        console.log("✅ User data set:", res.user);
       } else {
         console.log("❌ Failed to get profile:", res);
       }
@@ -61,7 +78,7 @@ const ProfileScreen = () => {
     }
   };
 
-  // ✅ Initial Load
+  // ✅ Initial Load - Get User ID
   useEffect(() => {
     const fetchUserId = async () => {
       const id = await getUserId();
@@ -70,11 +87,14 @@ const ProfileScreen = () => {
     fetchUserId();
   }, []);
 
-  useEffect(() => {
-    if (userId) {
-      getUserData(userId);
-    }
-  }, [userId]);
+  // ✅ Auto-refresh data when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      if (userId) {
+        getUserData(userId);
+      }
+    }, [userId])
+  );
 
   return (
     <View style={styles.container}>
@@ -93,8 +113,9 @@ const ProfileScreen = () => {
             <View style={styles.profileImageContainer}>
               <Image
                 source={{
-                  uri: userData?.profile?.profilePic || 
-                       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+                  uri:
+                    userData?.profile?.profilePic ||
+                    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
                 }}
                 style={styles.profileImage}
               />
@@ -103,10 +124,9 @@ const ProfileScreen = () => {
             {/* Name and Student Info */}
             <View style={styles.nameSection}>
               <Text style={styles.userName}>
-                {userData?.profile?.firstName && userData?.profile?.lastName 
+                {userData?.profile?.firstName && userData?.profile?.lastName
                   ? `${userData.profile.firstName.toUpperCase()} ${userData.profile.lastName.toUpperCase()}`
-                  : "JOHN DOE"
-                }
+                  : "JOHN DOE"}
               </Text>
               <Text style={styles.userRole}>
                 {userData?.role?.toUpperCase() || "STUDENT"}
@@ -132,7 +152,12 @@ const ProfileScreen = () => {
               </View>
               <TouchableOpacity
                 style={styles.editButton}
-                onPress={() => router.push("/editProfile")}
+                onPress={() =>
+                  router.push({
+                    pathname: "/editProfile",
+                    params: { userId: userData?._id },
+                  })
+                }
               >
                 <EvilIcons name="pencil" size={40} style={styles.editIcon} />
               </TouchableOpacity>
@@ -168,22 +193,28 @@ const ProfileScreen = () => {
             </View>
             <View style={styles.detailColumn}>
               <Text style={styles.fieldLabel}>SPECIALTY</Text>
-              <Text style={styles.fieldValue}>GENERAL SURGERY</Text>
+              <Text style={styles.fieldValue}>
+                {userData?.profile?.speciality?.toUpperCase() || "NOT SET"}
+              </Text>
             </View>
           </View>
 
-          {/* Institution */}
-          <View style={styles.fullWidthField}>
-            <Text style={styles.fieldLabel}>INSTITUTION</Text>
-            <Text style={styles.fieldValue}>
-              INTERNATIONAL AMERICAN UNIVERSITY
-            </Text>
-          </View>
+          <View style={styles.fullWidth}>
+            {/* Institution */}
+            <View style={styles.fullWidthField}>
+              <Text style={styles.fieldLabel}>INSTITUTION</Text>
+              <Text style={styles.fieldValue}>
+                {userData?.profile?.institute?.toUpperCase() || "NOT SET"}
+              </Text>
+            </View>
 
-          {/* Country of Residence */}
-          <View style={styles.fullWidthField}>
-            <Text style={styles.fieldLabel}>COUNTRY OF RESIDENCE</Text>
-            <Text style={styles.fieldValue}>USA</Text>
+            {/* Country of Residence */}
+            <View style={styles.fullWidthField}>
+              <Text style={styles.fieldLabel}>COUNTRY OF RESIDENCE</Text>
+              <Text style={styles.fieldValue}>
+                {userData?.profile?.residence?.toUpperCase() || "NOT SET"}
+              </Text>
+            </View>
           </View>
 
           {/* Date of Birth and Gender Row */}
@@ -191,10 +222,7 @@ const ProfileScreen = () => {
             <View style={styles.detailColumn}>
               <Text style={styles.fieldLabel}>DATE OF BIRTH</Text>
               <Text style={styles.fieldValue}>
-                {userData?.profile?.DOB 
-                  ? new Date(userData.profile.DOB).toLocaleDateString()
-                  : "02-27-1993"
-                }
+                {formatDate(userData?.profile?.DOB)}
               </Text>
             </View>
             <View style={styles.detailColumn}>
@@ -208,7 +236,9 @@ const ProfileScreen = () => {
           {/* Date of Graduation */}
           <View style={styles.fullWidthField}>
             <Text style={styles.fieldLabel}>DATE OF GRADUATION</Text>
-            <Text style={styles.fieldValue}>11-2014</Text>
+            <Text style={styles.fieldValue}>
+              {formatDate(userData?.profile?.DOG)}
+            </Text>
           </View>
         </View>
       </ScrollView>
@@ -285,7 +315,7 @@ const styles = StyleSheet.create({
   },
   editButton: {
     position: "absolute",
-    right: 5,
+    right: -20,
     transform: [{ skewY: "-180deg" }],
     borderRadius: 15,
     alignItems: "center",
@@ -309,7 +339,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   userName: {
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: "bold",
     color: "#333",
     marginBottom: 5,
@@ -354,6 +384,12 @@ const styles = StyleSheet.create({
   },
   detailColumn: {
     flex: 1,
+  },
+  fullWidth : {
+    width: '100%',
+    flex : 1,
+    flexDirection: "row",
+    justifyContent : "space-between"
   },
   fullWidthField: {
     marginBottom: 25,

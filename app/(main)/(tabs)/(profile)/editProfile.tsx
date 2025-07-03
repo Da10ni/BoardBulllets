@@ -1,5 +1,6 @@
 import Icon from "@expo/vector-icons/MaterialIcons";
-import React, { useState } from "react";
+import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Alert,
   ScrollView,
@@ -9,45 +10,315 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
+  Platform,
+  Image, // ✅ Added missing Image import
 } from "react-native";
+import { useAuth } from "@/utils/axiosInstance";
+import * as ImagePicker from "expo-image-picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const EditProfileScreen = () => {
-  const [formData, setFormData] = useState({
-    institution: "",
-    countryResidence: "",
-    dateOfBirth: "",
+  const [formData, setFormData] = useState<any>({
+    firstName: "",
+    lastName: "",
+    DOB: "",
     gender: "",
-    dateOfGraduation: "",
+    institute: "",
+    residence: "",
+    DOG: "", // Date of Graduation
+    speciality: "",
+    profilePic: "",
   });
 
+  const { userId } = useLocalSearchParams();
+  const { getProfile, updateProfile } = useAuth();
+
   const [showGenderPicker, setShowGenderPicker] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [profileImage, setProfileImage] = useState<any>(null);
+  const [userData, setUserData] = useState<any>(null);
 
-  const genderOptions = ["MALE", "FEMALE", "OTHER", "PREFER NOT TO SAY"];
+  // Date picker states
+  const [showDOBPicker, setShowDOBPicker] = useState(false);
+  const [showDOGPicker, setShowDOGPicker] = useState(false);
+  const [dobDate, setDobDate] = useState(new Date());
+  const [dogDate, setDogDate] = useState(new Date());
 
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({
+  const genderOptions = ["male", "female"];
+
+  // ✅ Date validation helper functions
+  const getCurrentYear = () => new Date().getFullYear();
+  const getLastYearDate = () => {
+    const lastYear = getCurrentYear() - 1;
+    return new Date(lastYear, 11, 31); // December 31st of last year
+  };
+
+  // ✅ Load existing user data with auto-refresh on focus
+  useFocusEffect(
+    useCallback(() => {
+      const loadUserData = async () => {
+        if (userId) {
+          try {
+            console.log("🔄 Refreshing user data on screen focus");
+            const res = await getProfile(userId as string);
+            if (res?.success && res?.user) {
+              const user = res.user;
+              setUserData(user);
+
+              // Pre-fill form with latest data
+              setFormData({
+                firstName: user.profile?.firstName || "",
+                lastName: user.profile?.lastName || "",
+                DOB: user.profile?.DOB || "",
+                gender: user.profile?.gender || "",
+                institute: user.profile?.institute || "",
+                residence: user.profile?.residence || "",
+                DOG: user.profile?.DOG || "",
+                speciality: user.profile?.speciality || "",
+                profilePic: user?.profile?.profilePic || "",
+              });
+
+              // Set dates for picker if available
+              if (user.profile?.DOB) {
+                setDobDate(new Date(user.profile.DOB));
+              }
+              if (user.profile?.DOG) {
+                setDogDate(new Date(user.profile.DOG));
+              }
+
+              console.log("✅ Form data refreshed with latest user data");
+            }
+          } catch (error) {
+            console.log("❌ Error loading user data:", error);
+          }
+        }
+      };
+
+      loadUserData();
+    }, [userId])
+  );
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
 
-  const handleGenderSelect = (gender) => {
+  const handleGenderSelect = (gender: string) => {
     handleInputChange("gender", gender);
     setShowGenderPicker(false);
   };
 
-  const handleUpdate = () => {
-    Alert.alert(
-      "Profile Updated",
-      "Your profile has been updated successfully!"
-    );
+  // ✅ Date picker handlers with validation
+  const formatDate = (date: Date): string => {
+    return date.toISOString().split("T")[0]; // Returns YYYY-MM-DD format
   };
 
-  const handleUpload = () => {
-    Alert.alert(
-      "Upload Photo",
-      "Photo upload functionality would be implemented here."
-    );
+  const onDOBChange = (event: any, selectedDate?: Date) => {
+    if (Platform.OS === "android") {
+      setShowDOBPicker(false);
+    }
+
+    if (selectedDate) {
+      const selectedYear = selectedDate.getFullYear();
+      const currentYear = getCurrentYear();
+      
+      // ✅ Validation: DOB cannot be current year or future
+      if (selectedYear >= currentYear) {
+        Alert.alert(
+          "Invalid Date", 
+          `Date of Birth cannot be from ${currentYear} or future years. Please select a date from ${currentYear - 1} or earlier.`
+        );
+        return;
+      }
+
+      setDobDate(selectedDate);
+      const formattedDate = formatDate(selectedDate);
+      handleInputChange("DOB", formattedDate);
+    }
+  };
+
+  const onDOGChange = (event: any, selectedDate?: Date) => {
+    if (Platform.OS === "android") {
+      setShowDOGPicker(false);
+    }
+
+    if (selectedDate) {
+      const selectedYear = selectedDate.getFullYear();
+      const currentYear = getCurrentYear();
+      
+      // ✅ Validation: DOG cannot be current year or future
+      if (selectedYear >= currentYear) {
+        Alert.alert(
+          "Invalid Date", 
+          `Date of Graduation cannot be from ${currentYear} or future years. Please select a date from ${currentYear - 1} or earlier.`
+        );
+        return;
+      }
+
+      setDogDate(selectedDate);
+      const formattedDate = formatDate(selectedDate);
+      handleInputChange("DOG", formattedDate);
+    }
+  };
+
+  const hideDOBPicker = () => {
+    setShowDOBPicker(false);
+  };
+
+  const hideDOGPicker = () => {
+    setShowDOGPicker(false);
+  };
+
+  // ✅ Image picker function
+  const handleUpload = async () => {
+    try {
+      // Request permission
+      const permissionResult =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (permissionResult.granted === false) {
+        Alert.alert(
+          "Permission",
+          "Permission to access camera roll is required!"
+        );
+        return;
+      }
+
+      // Launch image picker
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        setProfileImage(result.assets[0]);
+        console.log("Image selected:", result.assets[0]);
+      }
+    } catch (error) {
+      console.log("Image picker error:", error);
+      Alert.alert("Error", "Failed to pick image");
+    }
+  };
+
+  // ✅ Update profile function
+  const handleUpdate = async () => {
+    try {
+      // Basic validation
+      if (
+        !formData.firstName ||
+        !formData.lastName ||
+        !formData.DOB ||
+        !formData.gender
+      ) {
+        Alert.alert(
+          "Error",
+          "Please fill in all required fields (First Name, Last Name, Date of Birth, Gender)"
+        );
+        return;
+      }
+
+      // ✅ Additional date validation before submission
+      if (formData.DOB) {
+        const dobYear = new Date(formData.DOB).getFullYear();
+        const currentYear = getCurrentYear();
+        if (dobYear >= currentYear) {
+          Alert.alert("Error", "Date of Birth must be from previous years only.");
+          return;
+        }
+      }
+
+      if (formData.DOG) {
+        const dogYear = new Date(formData.DOG).getFullYear();
+        const currentYear = getCurrentYear();
+        if (dogYear >= currentYear) {
+          Alert.alert("Error", "Date of Graduation must be from previous years only.");
+          return;
+        }
+      }
+
+      setLoading(true);
+      console.log("🚀 Starting profile update...");
+
+      // Create FormData for multipart upload
+      const formDataToSend = new FormData();
+
+      // Add text fields
+      formDataToSend.append("firstName", formData.firstName);
+      formDataToSend.append("lastName", formData.lastName);
+      formDataToSend.append("DOB", formData.DOB);
+      formDataToSend.append("gender", formData.gender);
+
+      // Add optional fields if they exist
+      if (formData.institute)
+        formDataToSend.append("institute", formData.institute);
+      if (formData.residence)
+        formDataToSend.append("residence", formData.residence);
+      if (formData.DOG) formDataToSend.append("DOG", formData.DOG);
+      if (formData.speciality)
+        formDataToSend.append("speciality", formData.speciality);
+
+      console.log("📸 Profile image data:", profileImage);
+
+      // ✅ Add profile image with proper file structure for backend
+      if (profileImage) {
+        const fileExtension = profileImage.uri.split(".").pop() || "jpg";
+        const fileName = `profile_${Date.now()}.${fileExtension}`;
+
+        // This is the correct format for React Native FormData
+        formDataToSend.append("profilePic", {
+          uri: profileImage.uri,
+          type: `image/${fileExtension}`,
+          name: fileName,
+        } as any);
+
+        console.log("✅ Profile image added to FormData:", fileName);
+      }
+
+      // Debug FormData contents
+      console.log("📋 FormData contents:");
+      const formDataEntries = (formDataToSend as any)._parts;
+      if (formDataEntries) {
+        formDataEntries.forEach(([key, value]: [string, any]) => {
+          if (typeof value === "object" && value.uri) {
+            console.log(`${key}:`, {
+              uri: value.uri,
+              type: value.type,
+              name: value.name,
+            });
+          } else {
+            console.log(`${key}:`, value);
+          }
+        });
+      }
+
+      console.log("📤 Sending form data to API...");
+
+      // Call update API
+      const result = await updateProfile(formDataToSend);
+
+      console.log("📥 API Response:", result);
+
+      if (result?.success) {
+        Alert.alert("Success", "Profile updated successfully!", [
+          {
+            text: "OK",
+            onPress: () => router.back(), // Go back to profile screen
+          },
+        ]);
+      } else {
+        Alert.alert("Error", result?.message || "Failed to update profile");
+      }
+    } catch (error) {
+      console.log("❌ Update error:", error);
+      Alert.alert("Error", "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -58,49 +329,105 @@ const EditProfileScreen = () => {
         {/* Edit Profile Title */}
         <Text style={styles.pageTitle}>EDIT PROFILE</Text>
 
-        {/* Upload Photo Section */}
+        {/* ✅ FIXED: Upload Photo Section - Shows existing profile pic or new selection */}
         <View style={styles.uploadSection}>
           <TouchableOpacity style={styles.uploadButton} onPress={handleUpload}>
-            <Text style={styles.uploadText}>UPLOAD</Text>
+            {(formData.profilePic || profileImage) ? (
+              <Image
+                source={
+                  profileImage 
+                    ? { uri: profileImage.uri } 
+                    : { uri: formData.profilePic }
+                }
+                style={styles.profileImage}
+                resizeMode="cover"
+              />
+            ) : (
+              <>
+                <Icon name="camera-alt" size={24} color="#666" />
+                <Text style={styles.uploadText}>UPLOAD{"\n"}PHOTO</Text>
+              </>
+            )}
           </TouchableOpacity>
+
+          {(formData.profilePic || profileImage) && (
+            <View style={styles.imageInfoContainer}>
+              <Text style={styles.imageSelectedText}>
+                {profileImage ? "✓ New Photo Selected" : "✓ Current Profile Photo"}
+              </Text>
+              <TouchableOpacity onPress={() => setProfileImage(null)}>
+                <Text style={styles.removeImageText}>
+                  {profileImage ? "Remove New" : "Change Photo"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         {/* Form Fields */}
         <View style={styles.formContainer}>
-          {/* Institution */}
+          {/* First Name */}
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}
-              placeholder="INSTITUTION"
+              placeholder="FIRST NAME *"
               placeholderTextColor="#4864AC"
-              value={formData.institution}
-              onChangeText={(value) => handleInputChange("institution", value)}
+              value={formData.firstName}
+              onChangeText={(value) => handleInputChange("firstName", value)}
             />
           </View>
 
-          {/* Country Residence */}
+          {/* Last Name */}
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}
-              placeholder="COUNTRY RESIDENCE"
+              placeholder="LAST NAME *"
               placeholderTextColor="#4864AC"
-              value={formData.countryResidence}
-              onChangeText={(value) =>
-                handleInputChange("countryResidence", value)
-              }
+              value={formData.lastName}
+              onChangeText={(value) => handleInputChange("lastName", value)}
             />
           </View>
 
           {/* Date of Birth */}
           <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.textInput}
-              placeholder="DATE OF BIRTH"
-              placeholderTextColor="#4864AC"
-              value={formData.dateOfBirth}
-              onChangeText={(value) => handleInputChange("dateOfBirth", value)}
-            />
+            <TouchableOpacity
+              style={styles.datePickerButton}
+              onPress={() => setShowDOBPicker(true)}
+            >
+              <Text
+                style={[
+                  styles.datePickerText,
+                  !formData.DOB && styles.placeholderText,
+                ]}
+              >
+                {formData.DOB || "DATE OF BIRTH *"}
+              </Text>
+              <Icon name="calendar-today" size={20} color="#4864AC" />
+            </TouchableOpacity>
           </View>
+
+          {/* Date of Birth Picker - ✅ Updated with validation */}
+          {showDOBPicker && (
+            <DateTimePicker
+              value={dobDate}
+              mode="date"
+              display={Platform.OS === "ios" ? "spinner" : "default"}
+              onChange={onDOBChange}
+              maximumDate={getLastYearDate()} // ✅ Can only select up to last year
+              minimumDate={new Date(1900, 0, 1)} // Reasonable minimum date
+            />
+          )}
+
+          {Platform.OS === "ios" && showDOBPicker && (
+            <View style={styles.iosPickerContainer}>
+              <TouchableOpacity
+                style={styles.iosPickerButton}
+                onPress={hideDOBPicker}
+              >
+                <Text style={styles.iosPickerButtonText}>Done</Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
           {/* Gender Dropdown */}
           <TouchableOpacity
@@ -113,7 +440,7 @@ const EditProfileScreen = () => {
                 !formData.gender && styles.placeholderText,
               ]}
             >
-              {formData.gender || "GENDER"}
+              {formData.gender ? formData.gender.toUpperCase() : "GENDER *"}
             </Text>
             <Icon
               name="keyboard-arrow-down"
@@ -135,29 +462,104 @@ const EditProfileScreen = () => {
                   style={styles.optionItem}
                   onPress={() => handleGenderSelect(option)}
                 >
-                  <Text style={styles.optionText}>{option}</Text>
+                  <Text style={styles.optionText}>{option.toUpperCase()}</Text>
                 </TouchableOpacity>
               ))}
             </View>
           )}
 
-          {/* Date of Graduation */}
+          {/* Institute */}
           <View style={styles.inputContainer}>
             <TextInput
               style={styles.textInput}
-              placeholder="DATE OF GRADUATION"
+              placeholder="INSTITUTE"
               placeholderTextColor="#4864AC"
-              value={formData.dateOfGraduation}
-              onChangeText={(value) =>
-                handleInputChange("dateOfGraduation", value)
-              }
+              value={formData.institute}
+              onChangeText={(value) => handleInputChange("institute", value)}
+            />
+          </View>
+
+          {/* Country Residence */}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.textInput}
+              placeholder="COUNTRY RESIDENCE"
+              placeholderTextColor="#4864AC"
+              value={formData.residence}
+              onChangeText={(value) => handleInputChange("residence", value)}
+            />
+          </View>
+
+          {/* Date of Graduation */}
+          <View style={styles.inputContainer}>
+            <TouchableOpacity
+              style={styles.datePickerButton}
+              onPress={() => setShowDOGPicker(true)}
+            >
+              <Text
+                style={[
+                  styles.datePickerText,
+                  !formData.DOG && styles.placeholderText,
+                ]}
+              >
+                {formData.DOG || "DATE OF GRADUATION"}
+              </Text>
+              <Icon name="calendar-today" size={20} color="#4864AC" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Date of Graduation Picker - ✅ Updated with validation */}
+          {showDOGPicker && (
+            <DateTimePicker
+              value={dogDate}
+              mode="date"
+              display={Platform.OS === "ios" ? "spinner" : "default"}
+              onChange={onDOGChange}
+              maximumDate={getLastYearDate()} // ✅ Can only select up to last year
+              minimumDate={new Date(1950, 0, 1)}
+            />
+          )}
+
+          {Platform.OS === "ios" && showDOGPicker && (
+            <View style={styles.iosPickerContainer}>
+              <TouchableOpacity
+                style={styles.iosPickerButton}
+                onPress={hideDOGPicker}
+              >
+                <Text style={styles.iosPickerButtonText}>Done</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {/* Speciality */}
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.textInput}
+              placeholder="SPECIALITY"
+              placeholderTextColor="#4864AC"
+              value={formData.speciality}
+              onChangeText={(value) => handleInputChange("speciality", value)}
             />
           </View>
         </View>
 
+        {/* Required Fields Note - ✅ Updated with date restriction info */}
+        <Text style={styles.noteText}>
+          * Required fields{"\n"}
+          Note: Dates must be from previous years only
+        </Text>
+
         {/* Update Button */}
-        <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
-          <Text style={styles.updateButtonText}>UPDATE</Text>
+        <TouchableOpacity
+          style={[styles.updateButton, loading && styles.updateButtonDisabled]}
+          onPress={handleUpdate}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#FFFFFF" />
+          ) : (
+            <Text style={styles.updateButtonText}>UPDATE PROFILE</Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -168,22 +570,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-  },
-  header: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    paddingTop: 50,
-    paddingBottom: 15,
-    backgroundColor: "#FFFFFF",
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#4864AC",
-    letterSpacing: 1,
   },
   content: {
     flex: 1,
@@ -201,21 +587,51 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   uploadButton: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: "#D3D3D3",
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: "#F5F5F5",
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "#E0E0E0",
+    borderStyle: "dashed",
+    overflow: "hidden", // ✅ Important for circular image
+  },
+  // ✅ Profile image styling
+  profileImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 60,
   },
   uploadText: {
-    fontSize: 14,
+    fontSize: 10,
     color: "#666",
     fontWeight: "600",
     letterSpacing: 0.5,
+    textAlign: "center",
+    marginTop: 5,
+  },
+  // ✅ Image info container
+  imageInfoContainer: {
+    alignItems: "center",
+    marginTop: 10,
+  },
+  imageSelectedText: {
+    fontSize: 12,
+    color: "#28A745",
+    fontWeight: "500",
+    marginBottom: 5,
+  },
+  // ✅ Remove image button
+  removeImageText: {
+    fontSize: 11,
+    color: "#DC3545",
+    fontWeight: "500",
+    textDecorationLine: "underline",
   },
   formContainer: {
-    marginBottom: 40,
+    marginBottom: 20,
   },
   inputContainer: {
     marginBottom: 20,
@@ -293,6 +709,13 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     letterSpacing: 0.5,
   },
+  noteText: {
+    fontSize: 12,
+    color: "#999",
+    textAlign: "center",
+    marginBottom: 20,
+    fontStyle: "italic",
+  },
   updateButton: {
     backgroundColor: "#4864AC",
     borderRadius: 25,
@@ -301,11 +724,51 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     marginHorizontal: 30,
   },
+  updateButtonDisabled: {
+    backgroundColor: "#999",
+  },
   updateButtonText: {
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",
     letterSpacing: 1,
+  },
+  datePickerButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderWidth: 2,
+    borderColor: "#4864AC",
+    borderRadius: 25,
+    paddingHorizontal: 40,
+    paddingVertical: 18,
+    marginHorizontal: 30,
+  },
+  datePickerText: {
+    fontSize: 14,
+    color: "#333",
+    fontWeight: "500",
+    letterSpacing: 0.5,
+    flex: 1,
+    textAlign: "center",
+  },
+  iosPickerContainer: {
+    backgroundColor: "#FFFFFF",
+    padding: 10,
+    alignItems: "flex-end",
+    borderTopWidth: 1,
+    borderTopColor: "#E5E5E5",
+  },
+  iosPickerButton: {
+    backgroundColor: "#4864AC",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  iosPickerButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
