@@ -18,22 +18,35 @@ import {
 } from "react-native";
 import { useAuth } from "@/utils/axiosInstance";
 
+// Gender options
+const GENDER_OPTIONS = [
+  { id: 1, label: "Male", value: "male" },
+  { id: 2, label: "Female", value: "female" },
+  { id: 3, label: "Other", value: "other" },
+  { id: 4, label: "Prefer not to say", value: "not_specified" },
+];
+
 const SignupScreen = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [selectedOption1, setSelectedOption1] = useState("");
-  const [selectedOption2, setSelectedOption2] = useState("");
+  const [selectedGender, setSelectedGender] = useState("");
   const [loading, setLoading] = useState<Boolean>(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [showGenderDropdown, setShowGenderDropdown] = useState(false);
   const { register } = useAuth();
+
+  const handleGenderSelect = (gender: { label: string; value: string }) => {
+    setSelectedGender(gender.label);
+    setShowGenderDropdown(false);
+  };
 
   const handleSignup = async () => {
     setLoading(true);
     try {
-      if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      if (!firstName || !lastName || !email || !password || !confirmPassword || !selectedGender) {
         Alert.alert("Error", "Please fill in all fields.");
         return;
       }
@@ -54,6 +67,7 @@ const SignupScreen = () => {
         email,
         password,
         confirmPassword,
+        gender: selectedGender,
       };
 
       // Add your signup logic here
@@ -212,29 +226,60 @@ const SignupScreen = () => {
             />
           </View>
 
-          {/* Dropdown 1 */}
-          <TouchableOpacity style={styles.dropdownContainer}>
-            <Text style={styles.dropdownText}>
-              {selectedOption1 || "CHOOSE ONE"}
+          {/* Styled Gender Dropdown - Similar to Edit Profile */}
+          <TouchableOpacity
+            style={styles.styledDropdownContainer}
+            onPress={() => setShowGenderDropdown(!showGenderDropdown)}
+          >
+            <Ionicons
+              name="male-female-outline"
+              size={20}
+              color="rgba(255, 255, 255, 0.7)"
+              style={styles.inputIcon}
+            />
+            <Text
+              style={[
+                styles.styledDropdownText,
+                selectedGender && styles.selectedDropdownText,
+              ]}
+            >
+              {selectedGender ? selectedGender.toUpperCase() : "SELECT GENDER"}
             </Text>
             <Ionicons
               name="chevron-down"
               size={20}
               color="rgba(255, 255, 255, 0.7)"
+              style={[
+                styles.dropdownIcon,
+                showGenderDropdown && styles.dropdownIconRotated,
+              ]}
             />
           </TouchableOpacity>
 
-          {/* Dropdown 2 */}
-          <TouchableOpacity style={styles.dropdownContainer}>
-            <Text style={styles.dropdownText}>
-              {selectedOption2 || "CHOOSE ONE"}
-            </Text>
-            <Ionicons
-              name="chevron-down"
-              size={20}
-              color="rgba(255, 255, 255, 0.7)"
-            />
-          </TouchableOpacity>
+          {/* Gender Options - Styled like Edit Profile */}
+          {showGenderDropdown && (
+            <View style={styles.styledOptionsContainer}>
+              {GENDER_OPTIONS.map((option) => (
+                <TouchableOpacity
+                  key={option.id}
+                  style={[
+                    styles.styledOptionItem,
+                    selectedGender === option.label && styles.selectedOptionItem,
+                  ]}
+                  onPress={() => handleGenderSelect(option)}
+                >
+                  <Text
+                    style={[
+                      styles.styledOptionText,
+                      selectedGender === option.label && styles.selectedOptionText,
+                    ]}
+                  >
+                    {option.label.toUpperCase()}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
 
           {/* Submit Button Container */}
           <View style={styles.submitButtonContainer}>
@@ -331,7 +376,7 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     justifyContent: "center",
     alignItems: "center",
-    right:10
+    right: 10
   },
   scrollContainer: {
     flex: 1,
@@ -379,7 +424,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
   },
-  dropdownContainer: {
+  
+  // Styled Dropdown - Similar to Edit Profile
+  styledDropdownContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -388,12 +435,67 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     paddingHorizontal: 20,
     paddingVertical: 15,
+    position: "relative",
   },
-  dropdownText: {
+  styledDropdownText: {
     color: "rgba(255, 255, 255, 0.7)",
-    fontSize: 14,
+    fontSize: 15,
+    fontWeight: "500",
+    flex: 1,
+   // textAlign: "center",
+    letterSpacing: 0.5,
+  },
+  selectedDropdownText: {
+    color: "white",
     fontWeight: "500",
   },
+  dropdownIcon: {
+    position: "absolute",
+    right: 20,
+  },
+  dropdownIconRotated: {
+    transform: [{ rotate: "180deg" }],
+  },
+  
+  // Styled Options Container - Similar to Edit Profile
+  styledOptionsContainer: {
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.3)",
+    borderRadius: 15,
+    marginTop: -10,
+    marginBottom: 15,
+    marginHorizontal: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+  styledOptionItem: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  selectedOptionItem: {
+    backgroundColor: "#E3F2FD",
+  },
+  styledOptionText: {
+    fontSize: 14,
+    color: "#333",
+    textAlign: "center",
+    fontWeight: "500",
+    letterSpacing: 0.5,
+  },
+  selectedOptionText: {
+    color: "#4864AC",
+    fontWeight: "600",
+  },
+  
   submitButtonContainer: {
     position: "relative",
     marginTop: 20,

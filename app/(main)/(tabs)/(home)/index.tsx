@@ -1,9 +1,8 @@
 import { styles } from "@/components/Home/Home.styles";
 import { Feather, Ionicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -21,7 +20,6 @@ interface QuestionStats {
   incorrect: number;
 }
 
-
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
   const [stats, setStats] = useState<QuestionStats>({
@@ -29,37 +27,21 @@ const HomeScreen: React.FC = () => {
     correct: 1300,
     incorrect: 1000,
   });
-  
+
   const correctPercentage =
-  stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+    stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
   const incorrectPercentage =
-  stats.total > 0 ? Math.round((stats.incorrect / stats.total) * 100) : 0;
-  
+    stats.total > 0 ? Math.round((stats.incorrect / stats.total) * 100) : 0;
+
   // Individual stat values
   const cumulativePercentage = 90;
   const subjectWisePercentage = 75;
   const recentGainsPercentage = 35;
-  
+
   const handleNavPress = (id: string) => {
     console.log(`Navigating to: ${id}`);
   };
-  
-  useEffect(() => {
-    const checkToken = async () => {
-      try {
-        const token = await AsyncStorage.getItem("userToken");
-        if (!token) {
-          router.push("/login");
-        }
-      } catch (error) {
-        console.error("Error checking token:", error);
-        router.push("/login");
-      }
-    };
-  
-    checkToken();
-  }, []);
-  
+
   const handleMenuPress = () => {
     navigation.dispatch(DrawerActions.openDrawer());
   };
@@ -94,7 +76,7 @@ const HomeScreen: React.FC = () => {
 
   // Circular Progress Component Logic
   const renderMainCircularProgress = () => {
-    const size = 180;
+    const size = 160;
     const strokeWidth = 12;
     const radius = (size - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
@@ -222,26 +204,41 @@ const HomeScreen: React.FC = () => {
             <Text style={styles.homeLabel}>HOME</Text>
           </View>
 
-          {/* Main Progress Circle */}
-          <View style={styles.progressSection}>
-            {renderMainCircularProgress()}
-          </View>
+          {/* Main Progress and Stats Combined Section */}
+          <View style={styles.progressAndStatsSection}>
+            {/* Left side - Main Progress Circle */}
+            <View style={styles.leftProgressSection}>
+              {renderMainCircularProgress()}
+            </View>
 
-          {/* Stats Row */}
-          <View style={styles.statsContainer}>
-            <View style={styles.statsRow}>
-              <View style={styles.statItem}>
-                <Text style={[styles.statValue, styles.correctStat]}>
+            {/* Right side - Stats Column */}
+            <View style={styles.rightStatsSection}>
+              <View style={styles.statItemColumn}>
+                 <View style={[styles.statLine, { backgroundColor: "#4ECDC4" }]}
+                 />
+                 <View style={styles.statrow}>
+                 <Text style={[styles.statValue, styles.correctStat]}>
                   {stats.correct}({correctPercentage}%)
                 </Text>
-                <Text style={styles.statLabel}>CORRECT QUESTIONS</Text>
+                <View style={styles.label}>
+                <Text style={styles.statLabelbold}>CORRECT </Text>
+                <Text style={{fontSize:12,}}>QUESTIONS</Text>
+                </View>
               </View>
-              <View style={styles.statItem}>
-                <Text style={[styles.statValue, styles.incorrectStat]}>
+                 </View>
+                
+                 <View style={styles.statItemColumn}>
+                 <View                   style={[styles.statLine, { backgroundColor: "#FF6B6B" }]}/>
+                 <View style={styles.statrow}>
+                 <Text style={[styles.statValue, styles.incorrectStat]}>
                   {stats.incorrect}({incorrectPercentage}%)
                 </Text>
-                <Text style={styles.statLabel}>INCORRECT QUESTIONS</Text>
+                <View style={styles.label}>
+                <Text style={styles.statLabelbold}>INCORRECT </Text>
+                <Text style={{fontSize:12,}}>QUESTIONS</Text>
+                </View>
               </View>
+                 </View>
             </View>
           </View>
 

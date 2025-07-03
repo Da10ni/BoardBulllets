@@ -480,13 +480,15 @@ export default function QuizFlow() {
         <View
           style={{
             flex: 1,
-            backgroundColor: "rgba(0,0,0,0.5)",
+            backgroundColor: "rgba(36, 35, 35, 0.5)",
             justifyContent: "center",
             padding: 20,
+            marginTop: -160,
+            alignItems: 'flex-end' 
           }}
         >
           <View
-            style={{ backgroundColor: "white", borderRadius: 12, padding: 20 }}
+            style={{ backgroundColor: "white", borderRadius: 12, padding: 20, width: "70%", }}
           >
             <Text
               style={{ fontSize: 16, fontWeight: "bold", marginBottom: 10 }}
@@ -508,7 +510,7 @@ export default function QuizFlow() {
                     backgroundColor:
                       index < currentQuestionIndex ? "#4864AC" : "#E0E0E0",
                     padding: 10,
-                    borderRadius: 8,
+                    borderRadius: "100%",
                   }}
                 >
                   <Text
@@ -524,9 +526,9 @@ export default function QuizFlow() {
             <View style={styles.close}>
               <TouchableOpacity
                 onPress={() => setIsModalVisible(false)}
-                style={{ marginTop: 20, alignSelf: "flex-end" }}
+                style={{ marginTop: 20, padding:10, borderRadius: 30, width:"100%", backgroundColor: "#4864AC", alignItems: 'center' }}
               >
-                <Text style={{ color: "#3257a8" }}>Close</Text>
+                <Text style={{ color: "#FFF", }}>QUIT</Text>
               </TouchableOpacity>
             </View>
           </View>

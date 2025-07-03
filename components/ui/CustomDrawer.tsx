@@ -1,7 +1,7 @@
 import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { useNavigation } from "@react-navigation/native";
-import { Linking, StyleSheet, Text } from "react-native";
+import { Linking, StyleSheet, Text, View } from "react-native";
 
 const CustomDrawer = (props: any) => {
   const navigation = useNavigation();
@@ -58,6 +58,12 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textAlign: "center",
     marginVertical: 16,
+  },
+  statLine: {
+    width: 3,
+    height: 20,
+    backgroundColor: "#4864AC",
+    marginRight: 10,
   },
 });
 

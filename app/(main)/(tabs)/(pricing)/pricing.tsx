@@ -1,4 +1,9 @@
-import { FontAwesome6, Ionicons, MaterialIcons, SimpleLineIcons } from "@expo/vector-icons";
+import {
+  FontAwesome6,
+  Ionicons,
+  MaterialIcons,
+  SimpleLineIcons,
+} from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -12,12 +17,11 @@ import {
 } from "react-native";
 
 const SubscriptionScreen = () => {
-
   const handleSubscribe = () => {
-      console.log("Subscribe pressed");
-      router.push("/(main)/(tabs)/(home)");
-      // Add subscription logic here
-    };
+    console.log("Subscribe pressed");
+    router.push("/(main)/(tabs)/(home)");
+    // Add subscription logic here
+  };
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -29,10 +33,18 @@ const SubscriptionScreen = () => {
         {/* Feature Icons Row */}
         <View style={styles.iconRow}>
           <View style={styles.iconItem}>
-            <FontAwesome6 name="tablet-screen-button" size={28} color="#4864AC" />
+            <FontAwesome6
+              name="tablet-screen-button"
+              size={28}
+              color="#4864AC"
+            />
           </View>
           <View style={styles.iconItem}>
-            <MaterialIcons name="signal-cellular-alt" size={32} color="#4864AC" />
+            <MaterialIcons
+              name="signal-cellular-alt"
+              size={32}
+              color="#4864AC"
+            />
           </View>
           <View style={styles.iconItem}>
             <SimpleLineIcons name="badge" size={32} color="#4864AC" />
@@ -63,9 +75,11 @@ const SubscriptionScreen = () => {
               </View>
               <Text style={styles.radioLabel}>AUTO RENEW ON</Text>
             </View>
-            <TouchableOpacity style={styles.subscribeButton}  onPress={handleSubscribe}>
-              <Text style={styles.subscribeText}
-             >SUBSCRIBE</Text>
+            <TouchableOpacity
+              style={styles.subscribeButton}
+              onPress={handleSubscribe}
+            >
+              <Text style={styles.subscribeText}>SUBSCRIBE</Text>
             </TouchableOpacity>
           </View>
 
@@ -81,7 +95,10 @@ const SubscriptionScreen = () => {
               </View>
               <Text style={styles.radioLabel}>AUTO RENEW ON</Text>
             </View>
-            <TouchableOpacity style={styles.subscribeButton} onPress={handleSubscribe}>
+            <TouchableOpacity
+              style={styles.subscribeButton}
+              onPress={handleSubscribe}
+            >
               <Text style={styles.subscribeText}>SUBSCRIBE</Text>
             </TouchableOpacity>
           </View>
@@ -114,10 +131,10 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 24,
-    fontWeight: "300",
-    color: "#333",
-    marginTop: 20,
-    marginBottom: 30,
+    fontWeight: 500,
+    color: "#4864AC",
+    marginTop: 5,
+    marginBottom: 40,
     textAlign: "center",
     letterSpacing: 1,
   },
@@ -141,7 +158,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   upgradeSubtitle: {
-    fontSize: 13,
+    fontSize: 15,
     color: "#666",
     textAlign: "center",
     lineHeight: 18,
@@ -151,13 +168,16 @@ const styles = StyleSheet.create({
   },
   subscriptionOptions: {
     marginBottom: 30,
+    justifyContent: "center",
+    alignItems: "center",
   },
   subscriptionCard: {
     backgroundColor: "#F8F9FA",
     borderRadius: 12,
-    //padding: ,
+    padding: 20,
     marginBottom: 15,
     borderWidth: 1,
+    width: "80%",
     borderColor: "#E5E5E5",
   },
   priceContainer: {

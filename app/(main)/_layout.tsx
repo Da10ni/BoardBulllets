@@ -225,10 +225,12 @@ const drawerStyles = StyleSheet.create({
   navigationItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 15,
+    paddingVertical: 25,
     paddingHorizontal: 15,
     marginVertical: 2,
     borderRadius: 8,
+    borderBottomWidth:0.5,
+    borderBottomColor: "#fff"
   },
   activeNavigationItem: {
     backgroundColor: "rgba(255, 255, 255, 0.1)",

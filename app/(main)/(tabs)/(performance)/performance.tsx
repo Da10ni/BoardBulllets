@@ -51,10 +51,10 @@ const MyPerformanceScreen = () => {
               {/* Left Side - Progress Circle */}
               <View style={styles.circularContainer}>
                 <CircularProgress
-                  size={120}
+                  size={140}
                   width={20}
                   fill={55}
-                  tintColor="#4CAF50"
+                  tintColor="#4ECDC4"
                   backgroundColor="#FF6B6B"
                   rotation={0}
                 >
@@ -70,32 +70,43 @@ const MyPerformanceScreen = () => {
               <View style={styles.sideStats}>
                 <View style={styles.sideStatItem}>
                   <View style={styles.statLine} />
-                  <Text style={styles.sideStatNumber}>2000</Text>
-                  <Text style={styles.sideStatLabel}>
-                    TOTAL QUESTIONS ATTEMPTED
-                  </Text>
+                  <View style={styles.bottomrow}>
+                    <Text style={styles.sideStatNumber}>2000</Text>
+                    <View style={styles.bottomStatLabel}>
+                    <Text style={[styles.boldText, {fontSize:10}]}>TOTAL</Text>
+                    <Text style={{ fontSize: 10 }}>QUESTIONS ATTEMPTED</Text>
+                  </View>
+                  </View>
                 </View>
+
                 <View style={styles.sideStatItem}>
                   <View
-                    style={[styles.statLine, { backgroundColor: "#4CAF50" }]}
+                    style={[styles.statLine, { backgroundColor: "#4ECDC4" }]}
                   />
-                  <Text style={[styles.sideStatNumber, { color: "#4CAF50" }]}>
-                    1100
-                  </Text>
-                  <Text style={styles.sideStatLabel}>
-                    TOTAL QUESTIONS CORRECT
-                  </Text>
+                  <View style={styles.bottomrow}>
+                    <Text style={[styles.sideStatNumber, { color: "#4ECDC4" }]}>
+                      1100
+                    </Text>
+                    <View style={styles.bottomStatLabel}>
+                    <Text style={[styles.boldText, {fontSize:10}]}>TOTAL</Text>
+                    <Text style={{ fontSize: 10 }}>QUESTIONS CORRECT</Text>
+                  </View>
+                  </View>
                 </View>
+
                 <View style={styles.sideStatItem}>
                   <View
                     style={[styles.statLine, { backgroundColor: "#FF6B6B" }]}
                   />
-                  <Text style={[styles.sideStatNumber, { color: "#FF6B6B" }]}>
-                    900
-                  </Text>
-                  <Text style={styles.sideStatLabel}>
-                    TOTAL QUESTIONS INCORRECT
-                  </Text>
+                  <View style={styles.bottomrow}>
+                    <Text style={[styles.sideStatNumber, { color: "#FF6B6B" }]}>
+                      900
+                    </Text>
+                  <View style={styles.bottomStatLabel}>
+                    <Text style={[styles.boldText, {fontSize:10}]}>TOTAL</Text>
+                    <Text style={{ fontSize: 10 }}>QUESTIONS INCORRECT</Text>
+                  </View>
+                  </View>
                 </View>
               </View>
             </View>
@@ -354,13 +365,14 @@ const styles = StyleSheet.create({
   // Right side stats
   sideStats: {
     flex: 1,
-    paddingLeft: 20,
+    paddingLeft: 10,
     justifyContent: "center",
   },
   sideStatItem: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 15,
+    flex: 1,
+    marginTop: 10,
   },
   statLine: {
     width: 3,
@@ -414,7 +426,7 @@ const styles = StyleSheet.create({
     color: "#666",
     letterSpacing: 0.5,
     flex: 1,
-    gap: 4,
+    gap: 2,
     flexDirection: "row",
   },
   boldText: {
@@ -434,7 +446,7 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 30,
     borderWidth: 3,
-    borderColor: "#4CAF50",
+    borderColor: "#4ECDC4",
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 10,
@@ -442,11 +454,11 @@ const styles = StyleSheet.create({
   timeNumber: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#4CAF50",
+    color: "#4ECDC4",
   },
   timeUnit: {
     fontSize: 10,
-    color: "#4CAF50",
+    color: "#4ECDC4",
   },
   timeLabel: {
     fontSize: 10,

@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
-  // Main container
+  
   container: {
     flex: 1,
     backgroundColor: "#fff",
@@ -10,7 +10,6 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
 
-  // Home section
   homeSection: {
     paddingHorizontal: 20,
     paddingVertical: 10,
@@ -19,21 +18,30 @@ export const styles = StyleSheet.create({
   homeLabel: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#666",
+    color: "#4864AC",
     letterSpacing: 1,
   },
 
-  // Progress and stats combined section
   progressAndStatsSection: {
     paddingVertical: 30,
     paddingHorizontal: 20,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     minHeight: 220,
   },
+  leftProgressSection: {
+    flex: 1,
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+  rightStatsSection: {
+    flex: 1,
+    marginLeft:40,
+    justifyContent: "center",
+    paddingLeft: 10,
+  },
 
-  // Main circular progress
   progressSection: {
     alignItems: "center",
     justifyContent: "center",
@@ -50,7 +58,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   mainCircleNumber: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: "bold",
     color: "#333",
     textAlign: "center",
@@ -61,8 +69,38 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     letterSpacing: 1,
   },
-
-  // Stats container - FIXED: Added missing statsRow
+  centerStatsContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 5,
+  },
+  centerStatItem: {
+    alignItems: "center",
+    marginVertical: 2,
+  },
+  centerStatNumber: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  centerStatPercentage: {
+    fontSize: 12,
+    fontWeight: "500",
+    textAlign: "center",
+  },
+  centerDivider: {
+    width: 20,
+    height: 1,
+    backgroundColor: "#ddd",
+    marginVertical: 3,
+  },
+  centerLabel: {
+    fontSize: 10,
+    color: "#666",
+    textAlign: "center",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+  },
   statsContainer: {
     justifyContent: "center",
     paddingHorizontal: 20,
@@ -78,18 +116,45 @@ export const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 15,
   },
+
+  statItemColumn: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+    marginTop: 10,
+  },
   statValue: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#FF6B6B",
+    marginRight: 5,
+  },
+  statPercentage: {
     fontSize: 14,
     fontWeight: "600",
-    marginBottom: 2,
+    marginBottom: 4,
+  },
+  statrow: {
+    flexDirection: "column",
+  },
+  label: {
+    flexDirection: "row",
+  },
+  statLine: {
+    width: 3,
+    height: 20,
+    backgroundColor: "#4864AC",
+    marginRight: 10,
   },
   statLabel: {
-    fontSize: 10,
+    fontSize: 12,
     color: "#666",
-    textAlign: "left",
+    marginRight: "auto",
     textTransform: "uppercase",
-    letterSpacing: 0.5,
-    lineHeight: 12,
+  },
+  statLabelbold: {
+    fontWeight: "bold",
+    fontSize: 12,
   },
   correctStat: {
     color: "#4ECDC4",
@@ -97,25 +162,22 @@ export const styles = StyleSheet.create({
   incorrectStat: {
     color: "#FF6B6B",
   },
-
-  // View more button
   viewMoreButton: {
     alignSelf: "center",
     paddingHorizontal: 30,
     paddingVertical: 12,
     marginVertical: 20,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "white",
     borderRadius: 25,
   },
   viewMoreText: {
     fontSize: 12,
-    color: "#666",
+    color: "#4864AC",
     fontWeight: "500",
     letterSpacing: 0.5,
   },
 
-  // Stat circles
   statCirclesContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
