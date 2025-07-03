@@ -15,58 +15,12 @@ import {
   TouchableOpacity,
   View,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
+import { useQuiz } from "@/utils/axiosInstance"; // ✅ Import API hook
 
 const { width } = Dimensions.get("window");
-
-// Sample quiz data
-const QUIZ_DATA = [
-  {
-    id: 1,
-    question: "NERVE INJURED WITH A MEDIAL EPICONDYLE FRACTURE?",
-    options: ["MEDIAN NERVE", "RADIAL NERVE", "ULNAR NERVE"],
-    correctAnswer: 2, // index of correct answer
-    explanation:
-      "The ulnar nerve passes posterior to the medial epicondyle and is commonly injured with fractures in this area.",
-    difficulty: "VERY GOOD",
-    popularity: "VERY HIGH",
-  },
-  {
-    id: 2,
-    question: "WHICH BONE IS THE LONGEST IN THE HUMAN BODY?",
-    options: ["TIBIA", "FEMUR", "HUMERUS", "RADIUS"],
-    correctAnswer: 1,
-    explanation:
-      "The femur (thigh bone) is the longest and strongest bone in the human body.",
-    difficulty: "EASY",
-    popularity: "HIGH",
-  },
-  {
-    id: 3,
-    question: "WHAT IS THE SMALLEST BONE IN THE HUMAN BODY?",
-    options: ["STAPES", "MALLEUS", "INCUS", "HYOID"],
-    correctAnswer: 0,
-    explanation:
-      "The stapes (stirrup bone) in the middle ear is the smallest bone in the human body.",
-    difficulty: "MEDIUM",
-    popularity: "MEDIUM",
-  },
-  // Add more questions to get to 20
-  ...Array.from({ length: 10 }, (_, i) => ({
-    id: i + 4,
-    question: `SAMPLE QUESTION ${i + 4}?`,
-    options: ["OPTION A", "OPTION B", "OPTION C", "OPTION D"],
-    correctAnswer: Math.floor(Math.random() * 4),
-    explanation: `This is the explanation for question ${i + 4}.`,
-    difficulty: ["EASY", "MEDIUM", "HARD", "VERY GOOD"][
-      Math.floor(Math.random() * 4)
-    ],
-    popularity: ["LOW", "MEDIUM", "HIGH", "VERY HIGH"][
-      Math.floor(Math.random() * 4)
-    ],
-  })),
-];
 
 export default function QuizFlow() {
   const [currentScreen, setCurrentScreen] = useState("timer");
@@ -79,16 +33,62 @@ export default function QuizFlow() {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [reviewQuestionIndex, setReviewQuestionIndex] = useState(0); // For feedback screen
+  const [reviewQuestionIndex, setReviewQuestionIndex] = useState(0);
   const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
-  
+
   // Feedback popup states
-  const [selectedFeedback, setSelectedFeedback] = useState('');
-  const [customFeedback, setCustomFeedback] = useState('');
-  const [additionalComments, setAdditionalComments] = useState('');
+  const [selectedFeedback, setSelectedFeedback] = useState("");
+  const [customFeedback, setCustomFeedback] = useState("");
+  const [additionalComments, setAdditionalComments] = useState("");
   const [isPressed, setIsPressed] = useState(false);
 
+  // ✅ API Integration States
+  const [quizData, setQuizData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  // ✅ Get API hook
+  const { getQuestion } = useQuiz();
+
   const timeOptions = [5, 10, 20];
+
+  // ✅ Use API data if available, fallback to sample data
+  const QUIZ_DATA =
+    quizData.length > 0
+      ? quizData
+      : [
+          {
+            id: 1,
+            question: "NERVE INJURED WITH A MEDIAL EPICONDYLE FRACTURE?",
+            options: ["MEDIAN NERVE", "RADIAL NERVE", "ULNAR NERVE"],
+            correctAnswer: 2,
+            explanation:
+              "The ulnar nerve passes posterior to the medial epicondyle and is commonly injured with fractures in this area.",
+            difficulty: "VERY GOOD",
+            popularity: "VERY HIGH",
+          },
+          {
+            id: 2,
+            question: "WHICH BONE IS THE LONGEST IN THE HUMAN BODY?",
+            options: ["TIBIA", "FEMUR", "HUMERUS", "RADIUS"],
+            correctAnswer: 1,
+            explanation:
+              "The femur (thigh bone) is the longest and strongest bone in the human body.",
+            difficulty: "EASY",
+            popularity: "HIGH",
+          },
+          {
+            id: 3,
+            question: "WHAT IS THE SMALLEST BONE IN THE HUMAN BODY?",
+            options: ["STAPES", "MALLEUS", "INCUS", "HYOID"],
+            correctAnswer: 0,
+            explanation:
+              "The stapes (stirrup bone) in the middle ear is the smallest bone in the human body.",
+            difficulty: "MEDIUM",
+            popularity: "MEDIUM",
+          },
+        ];
+
   const currentQuestion = QUIZ_DATA[currentQuestionIndex];
   const totalQuestions = QUIZ_DATA.length;
 
@@ -98,11 +98,65 @@ export default function QuizFlow() {
   const rankAnim = useRef<any>(null);
 
   const feedbackOptions = [
-    { id: 'spelling', label: 'CHECK SPELLING' },
-    { id: 'grammar', label: 'CHECK GRAMMAR' },
-    { id: 'content', label: 'CONTENT REVIEW' },
-    { id: 'other', label: 'OTHER:' }
+    { id: "spelling", label: "CHECK SPELLING" },
+    { id: "grammar", label: "CHECK GRAMMAR" },
+    { id: "content", label: "CONTENT REVIEW" },
+    { id: "other", label: "OTHER:" },
   ];
+
+  // ✅ API Call Function
+  const fetchQuestions = async () => {
+    try {
+      setLoading(true);
+      setApiError(null);
+
+      console.log("🚀 Fetching questions from API...");
+      const result = await getQuestion();
+
+      if (result.success && result.question) {
+        console.log(
+          "✅ Questions fetched successfully:",
+          result.question.length
+        );
+
+        // ✅ Transform API data to match current structure
+        const transformedData = result.question.map(
+          (item: any, index: number) => ({
+            id: item._id || index + 1,
+            question: item.question || "Sample Question",
+            options: item.options || [
+              "Option A",
+              "Option B",
+              "Option C",
+              "Option D",
+            ],
+            correctAnswer: item.correctAnswer || 0,
+            explanation: item.explanation || "No explanation provided.",
+            difficulty: item.difficulty || "MEDIUM",
+            popularity: item.popularity || "MEDIUM",
+            category: item.category,
+            subCategory: item.subCategory,
+          })
+        );
+
+        setQuizData(transformedData);
+        console.log("✅ Quiz data set:", transformedData.length, "questions");
+      } else {
+        console.log("⚠️ No questions received from API, using fallback data");
+        setApiError("No questions available from server");
+      }
+    } catch (error) {
+      console.error("❌ Error fetching questions:", error);
+      setApiError("Failed to load questions. Using sample data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Fetch questions on component mount
+  useEffect(() => {
+    fetchQuestions();
+  }, []);
 
   // Timer countdown effect
   useEffect(() => {
@@ -122,7 +176,12 @@ export default function QuizFlow() {
   }, [quizStarted, timeRemaining, currentScreen]);
 
   const handleStartQuiz = () => {
-    setTimeRemaining(selectedTime * 60); // Convert minutes to seconds
+    if (QUIZ_DATA.length === 0) {
+      Alert.alert("Error", "No questions available. Please try again later.");
+      return;
+    }
+
+    setTimeRemaining(selectedTime * 60);
     setQuizStarted(true);
     setCurrentScreen("question");
     setCurrentQuestionIndex(0);
@@ -134,7 +193,6 @@ export default function QuizFlow() {
   };
 
   const handleNextQuestion = () => {
-    // Save the answer
     setUserAnswers((prev) => ({
       ...prev,
       [currentQuestion.id]: selectedAnswer,
@@ -145,7 +203,6 @@ export default function QuizFlow() {
     if (currentQuestionIndex < totalQuestions - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
     } else {
-      // Quiz completed - go directly to summary
       setCurrentScreen("summary");
     }
   };
@@ -176,6 +233,11 @@ export default function QuizFlow() {
     router.push("/(drawer)");
   };
 
+  // ✅ Retry API call function
+  const handleRetryFetch = () => {
+    fetchQuestions();
+  };
+
   // Feedback popup handlers
   const handleFeedbackSelect = (option: string) => {
     setSelectedFeedback(option);
@@ -183,31 +245,27 @@ export default function QuizFlow() {
 
   const handleFeedbackSubmit = () => {
     if (!selectedFeedback) {
-      Alert.alert('Error', 'Please select a feedback option');
+      Alert.alert("Error", "Please select a feedback option");
       return;
     }
-    
+
     const feedbackData = {
       type: selectedFeedback,
-      customText: selectedFeedback === 'other' ? customFeedback : '',
-      additionalComments: additionalComments
+      customText: selectedFeedback === "other" ? customFeedback : "",
+      additionalComments: additionalComments,
     };
-    
-    console.log('Feedback submitted:', feedbackData);
-    
-    // Reset form
+
+    console.log("Feedback submitted:", feedbackData);
+
     resetFeedbackForm();
-    
-    // Close modal
     setFeedbackModalVisible(false);
-    
-    Alert.alert('Success', 'Feedback submitted successfully!');
+    Alert.alert("Success", "Feedback submitted successfully!");
   };
 
   const resetFeedbackForm = () => {
-    setSelectedFeedback('');
-    setCustomFeedback('');
-    setAdditionalComments('');
+    setSelectedFeedback("");
+    setCustomFeedback("");
+    setAdditionalComments("");
     setIsPressed(false);
   };
 
@@ -259,13 +317,10 @@ export default function QuizFlow() {
     >
       <View style={feedbackPopupStyles.modalOverlay}>
         <View style={feedbackPopupStyles.modalContent}>
-          
-          {/* Header */}
           <View style={feedbackPopupStyles.header}>
             <Text style={feedbackPopupStyles.headerText}>FEEDBACK</Text>
           </View>
 
-          {/* Feedback Options Grid */}
           <View style={feedbackPopupStyles.optionsGrid}>
             {feedbackOptions.map((option) => (
               <TouchableOpacity
@@ -273,15 +328,17 @@ export default function QuizFlow() {
                 onPress={() => handleFeedbackSelect(option.id)}
                 style={[
                   feedbackPopupStyles.optionButton,
-                  selectedFeedback === option.id && (
-                    option.id === 'other' ? feedbackPopupStyles.selectedOtherButton : feedbackPopupStyles.selectedButton
-                  )
+                  selectedFeedback === option.id &&
+                    (option.id === "other"
+                      ? feedbackPopupStyles.selectedOtherButton
+                      : feedbackPopupStyles.selectedButton),
                 ]}
               >
                 <Text
                   style={[
                     feedbackPopupStyles.optionText,
-                    selectedFeedback === option.id && feedbackPopupStyles.selectedText
+                    selectedFeedback === option.id &&
+                      feedbackPopupStyles.selectedText,
                   ]}
                 >
                   {option.label}
@@ -290,20 +347,20 @@ export default function QuizFlow() {
             ))}
           </View>
 
-          {/* Text Input Fields */}
           <View style={feedbackPopupStyles.inputContainer}>
             <TextInput
               style={[
                 feedbackPopupStyles.textInput,
-                selectedFeedback !== 'other' && feedbackPopupStyles.disabledInput
+                selectedFeedback !== "other" &&
+                  feedbackPopupStyles.disabledInput,
               ]}
               placeholder="Enter feedback..."
               placeholderTextColor="#999"
-              value={selectedFeedback === 'other' ? customFeedback : ''}
+              value={selectedFeedback === "other" ? customFeedback : ""}
               onChangeText={setCustomFeedback}
-              editable={selectedFeedback === 'other'}
+              editable={selectedFeedback === "other"}
             />
-            
+
             <TextInput
               style={feedbackPopupStyles.textInput}
               placeholder="Additional comments..."
@@ -313,7 +370,6 @@ export default function QuizFlow() {
             />
           </View>
 
-          {/* Action Buttons */}
           <View style={feedbackPopupStyles.buttonContainer}>
             <TouchableOpacity
               onPress={handleFeedbackClose}
@@ -328,13 +384,15 @@ export default function QuizFlow() {
               onPressOut={() => setIsPressed(false)}
               style={[
                 feedbackPopupStyles.submitButton,
-                isPressed && feedbackPopupStyles.submitButtonPressed
+                isPressed && feedbackPopupStyles.submitButtonPressed,
               ]}
             >
-              <Text style={[
-                feedbackPopupStyles.submitText,
-                isPressed && feedbackPopupStyles.submitTextPressed
-              ]}>
+              <Text
+                style={[
+                  feedbackPopupStyles.submitText,
+                  isPressed && feedbackPopupStyles.submitTextPressed,
+                ]}
+              >
                 SUBMIT
               </Text>
             </TouchableOpacity>
@@ -364,6 +422,53 @@ export default function QuizFlow() {
 
         <Text style={styles.timedLabel}>TIMED</Text>
 
+        {/* ✅ Loading/Error State */}
+        {loading && (
+          <View style={{ alignItems: "center", marginVertical: 20 }}>
+            <ActivityIndicator size="large" color="#3257a8" />
+            <Text style={{ marginTop: 10, color: "#666" }}>
+              Loading questions...
+            </Text>
+          </View>
+        )}
+
+        {apiError && (
+          <View style={{ alignItems: "center", marginVertical: 20 }}>
+            <Text
+              style={{
+                color: "#F44336",
+                textAlign: "center",
+                marginBottom: 10,
+              }}
+            >
+              {apiError}
+            </Text>
+            <TouchableOpacity
+              onPress={handleRetryFetch}
+              style={{
+                backgroundColor: "#3257a8",
+                paddingHorizontal: 20,
+                paddingVertical: 10,
+                borderRadius: 5,
+              }}
+            >
+              <Text style={{ color: "white", fontWeight: "bold" }}>RETRY</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* ✅ Questions Count Display */}
+        <View style={{ alignItems: "center", marginVertical: 15 }}>
+          <Text style={{ color: "#666", fontSize: 14 }}>
+            📝 Questions Available: {QUIZ_DATA.length}
+          </Text>
+          {quizData.length > 0 && (
+            <Text style={{ color: "#4CAF50", fontSize: 12, marginTop: 5 }}>
+              ✅ Loaded from server
+            </Text>
+          )}
+        </View>
+
         <View style={styles.timeOptionsContainer}>
           {timeOptions.map((time) => (
             <TouchableOpacity
@@ -387,10 +492,16 @@ export default function QuizFlow() {
         </View>
 
         <TouchableOpacity
-          style={styles.startQuizButton}
+          style={[
+            styles.startQuizButton,
+            (loading || QUIZ_DATA.length === 0) && { backgroundColor: "#ccc" },
+          ]}
           onPress={handleStartQuiz}
+          disabled={loading || QUIZ_DATA.length === 0}
         >
-          <Text style={styles.startQuizButtonText}>START QUIZ</Text>
+          <Text style={styles.startQuizButtonText}>
+            {loading ? "LOADING..." : "START QUIZ"}
+          </Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -428,10 +539,12 @@ export default function QuizFlow() {
           ))}
         </View>
 
-        <Text style={styles.questionText}>{currentQuestion.question}</Text>
+        <Text style={styles.questionText}>
+          {currentQuestion?.question || "Loading question..."}
+        </Text>
 
         <View style={styles.optionsContainer}>
-          {currentQuestion.options.map((option, index) => (
+          {(currentQuestion?.options || []).map((option, index) => (
             <TouchableOpacity
               key={index}
               style={[
@@ -452,7 +565,6 @@ export default function QuizFlow() {
           ))}
         </View>
 
-        {/* Next Button */}
         <View style={{ marginTop: 30, marginBottom: 20 }}>
           <TouchableOpacity
             style={[
@@ -518,7 +630,7 @@ export default function QuizFlow() {
                       color: index < currentQuestionIndex ? "white" : "black",
                     }}
                   >
-                    {item.id}
+                    {index + 1}
                   </Text>
                 </TouchableOpacity>
               )}
@@ -545,16 +657,25 @@ export default function QuizFlow() {
     return (
       <ScrollView style={{ flex: 1, backgroundColor: "white" }}>
         <View style={flatFeedbackStyles.container}>
-          {/* Header Row */}
           <View style={flatFeedbackStyles.headerRow}>
             <Text style={flatFeedbackStyles.timerText}>00:25</Text>
-            <Text style={isCorrect ? flatFeedbackStyles.correct : flatFeedbackStyles.incorrect}>
+            <Text
+              style={
+                isCorrect
+                  ? flatFeedbackStyles.correct
+                  : flatFeedbackStyles.incorrect
+              }
+            >
               {isCorrect ? "CORRECT" : "INCORRECT"}
             </Text>
           </View>
 
-          <Text style={flatFeedbackStyles.questionNumber}>QUESTION {reviewQuestionIndex + 1}</Text>
-          <Text style={flatFeedbackStyles.questionText}>{reviewQuestion.question}</Text>
+          <Text style={flatFeedbackStyles.questionNumber}>
+            QUESTION {reviewQuestionIndex + 1}
+          </Text>
+          <Text style={flatFeedbackStyles.questionText}>
+            {reviewQuestion.question}
+          </Text>
 
           {reviewQuestion.options.map((opt, idx) => {
             const selected = userAnswer === idx;
@@ -562,7 +683,8 @@ export default function QuizFlow() {
             let style = flatFeedbackStyles.optionButton;
 
             if (correct) style = flatFeedbackStyles.correctOption;
-            else if (selected && !correct) style = flatFeedbackStyles.incorrectOption;
+            else if (selected && !correct)
+              style = flatFeedbackStyles.incorrectOption;
 
             return (
               <View key={idx} style={style}>
@@ -584,17 +706,21 @@ export default function QuizFlow() {
           <View style={flatFeedbackStyles.sliderRow}>
             <Text style={flatFeedbackStyles.sliderLabel}>QUALITY</Text>
             <View style={flatFeedbackStyles.sliderTrack}>
-              <View style={[flatFeedbackStyles.sliderFill, { width: '60%' }]} />
+              <View style={[flatFeedbackStyles.sliderFill, { width: "60%" }]} />
             </View>
-            <Text style={flatFeedbackStyles.sliderValue}>{reviewQuestion.popularity}</Text>
+            <Text style={flatFeedbackStyles.sliderValue}>
+              {reviewQuestion.popularity}
+            </Text>
           </View>
 
           <View style={flatFeedbackStyles.sliderRow}>
             <Text style={flatFeedbackStyles.sliderLabel}>DIFFICULTY</Text>
             <View style={flatFeedbackStyles.sliderTrack}>
-              <View style={[flatFeedbackStyles.sliderFill, { width: '50%' }]} />
+              <View style={[flatFeedbackStyles.sliderFill, { width: "50%" }]} />
             </View>
-            <Text style={flatFeedbackStyles.sliderValue}>{reviewQuestion.difficulty}</Text>
+            <Text style={flatFeedbackStyles.sliderValue}>
+              {reviewQuestion.difficulty}
+            </Text>
           </View>
 
           <View style={flatFeedbackStyles.dotsRow}>
@@ -664,14 +790,14 @@ export default function QuizFlow() {
     const renderReviewDot = (index: number) => {
       const question = QUIZ_DATA[index];
       const userAnswer = userAnswers[question.id];
-      let backgroundColor = "#E5E5E5"; // Gray for unanswered
+      let backgroundColor = "#E5E5E5";
 
       if (userAnswer === null || userAnswer === undefined) {
-        backgroundColor = "#E5E5E5"; // Gray for not attempted
+        backgroundColor = "#E5E5E5";
       } else if (userAnswer === question.correctAnswer) {
-        backgroundColor = "#4CAF50"; // Green for correct
+        backgroundColor = "#4CAF50";
       } else {
-        backgroundColor = "#F44336"; // Red for incorrect
+        backgroundColor = "#F44336";
       }
 
       return (
@@ -691,14 +817,11 @@ export default function QuizFlow() {
         showsVerticalScrollIndicator={false}
         style={summaryStyles.scrollContainer}
       >
-        {/* Header */}
         <View style={summaryStyles.header}>
           <Text style={summaryStyles.headerTitle}>QUIZ SUMMARY</Text>
         </View>
 
-        {/* Circles Grid */}
         <View style={summaryStyles.circlesGrid}>
-          {/* Top Row */}
           <View style={summaryStyles.circlesRow}>
             {renderCircle(
               "RAW\nSCORE",
@@ -709,7 +832,6 @@ export default function QuizFlow() {
             {renderCircle("QUIZ\nBB POINTS", "92", pointsAnim, "#4A90E2")}
           </View>
 
-          {/* Bottom Row */}
           <View style={summaryStyles.circlesRow}>
             {renderCircle("OVERALL\nRANK", rank, rankAnim, "#4CAF50")}
             {renderCircle(
@@ -721,11 +843,9 @@ export default function QuizFlow() {
           </View>
         </View>
 
-        {/* Review Quiz Section */}
         <View style={summaryStyles.reviewSection}>
           <Text style={summaryStyles.reviewTitle}>REVIEW QUIZ</Text>
 
-          {/* Question Dots Grid - Click any to see feedback */}
           <View style={summaryStyles.dotsContainer}>
             <View style={summaryStyles.dotsRow}>
               {QUIZ_DATA.map((_, index) => renderReviewDot(index))}
@@ -740,20 +860,20 @@ export default function QuizFlow() {
   const feedbackPopupStyles = StyleSheet.create({
     modalOverlay: {
       flex: 1,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      justifyContent: 'center',
-      alignItems: 'center',
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      justifyContent: "center",
+      alignItems: "center",
       paddingHorizontal: 20,
     },
     modalContent: {
-      backgroundColor: '#ffffff',
+      backgroundColor: "#ffffff",
       borderRadius: 24,
-      width: '100%',
+      width: "100%",
       maxWidth: 350,
       paddingTop: 24,
       paddingHorizontal: 24,
       paddingBottom: 0,
-      shadowColor: '#000',
+      shadowColor: "#000",
       shadowOffset: {
         width: 0,
         height: 4,
@@ -761,103 +881,103 @@ export default function QuizFlow() {
       shadowOpacity: 0.1,
       shadowRadius: 8,
       elevation: 8,
-      position: 'relative',
+      position: "relative",
     },
     header: {
-      alignItems: 'center',
+      alignItems: "center",
       marginBottom: 32,
     },
     headerText: {
       fontSize: 20,
-      fontWeight: 'bold',
-      color: '#333',
+      fontWeight: "bold",
+      color: "#333",
       letterSpacing: 1.5,
     },
     optionsGrid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'space-between',
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
       marginBottom: 24,
     },
     optionButton: {
-      backgroundColor: '#e5e5e5',
+      backgroundColor: "#e5e5e5",
       paddingVertical: 12,
       paddingHorizontal: 16,
       borderRadius: 8,
-      width: '48%',
+      width: "48%",
       marginBottom: 12,
-      alignItems: 'center',
+      alignItems: "center",
     },
     selectedButton: {
-      backgroundColor: '#9ca3af',
+      backgroundColor: "#9ca3af",
     },
     selectedOtherButton: {
-      backgroundColor: '#3b82f6',
+      backgroundColor: "#3b82f6",
     },
     optionText: {
       fontSize: 12,
-      fontWeight: '600',
-      color: '#555',
-      textAlign: 'center',
+      fontWeight: "600",
+      color: "#555",
+      textAlign: "center",
     },
     selectedText: {
-      color: '#ffffff',
+      color: "#ffffff",
     },
     inputContainer: {
       marginBottom: 24,
     },
     textInput: {
       borderWidth: 1,
-      borderColor: '#d1d5db',
+      borderColor: "#d1d5db",
       borderRadius: 8,
       paddingHorizontal: 12,
       paddingVertical: 12,
       marginBottom: 12,
       fontSize: 14,
-      color: '#333',
-      backgroundColor: '#fff',
+      color: "#333",
+      backgroundColor: "#fff",
     },
     disabledInput: {
-      backgroundColor: '#f5f5f5',
-      color: '#999',
+      backgroundColor: "#f5f5f5",
+      color: "#999",
     },
     buttonContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
+      flexDirection: "row",
+      justifyContent: "space-between",
     },
     cancelButton: {
       flex: 1,
       paddingVertical: 16,
-      alignItems: 'center',
+      alignItems: "center",
       marginRight: 8,
     },
     cancelText: {
-      color: '#666',
+      color: "#666",
       fontSize: 14,
-      fontWeight: 'bold',
+      fontWeight: "bold",
       letterSpacing: 1,
     },
     submitButton: {
-      backgroundColor: '#ffffff',
+      backgroundColor: "#ffffff",
       borderTopWidth: 1,
-      borderTopColor: '#d1d5db',
+      borderTopColor: "#d1d5db",
       flex: 1,
       paddingVertical: 16,
-      alignItems: 'center',
+      alignItems: "center",
       borderBottomRightRadius: 24,
       marginLeft: 8,
     },
     submitButtonPressed: {
-      backgroundColor: '#f3f4f6',
+      backgroundColor: "#f3f4f6",
     },
     submitText: {
-      color: '#000000',
+      color: "#000000",
       fontSize: 14,
-      fontWeight: 'bold',
+      fontWeight: "bold",
       letterSpacing: 1,
     },
     submitTextPressed: {
-      color: '#000000',
+      color: "#000000",
     },
   });
 
@@ -865,106 +985,106 @@ export default function QuizFlow() {
     container: {
       flex: 1,
       padding: 20,
-      backgroundColor: '#fff',
+      backgroundColor: "#fff",
     },
     headerRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
+      flexDirection: "row",
+      justifyContent: "space-between",
       marginBottom: 15,
     },
     timerText: {
       fontSize: 16,
-      color: '#999',
+      color: "#999",
     },
     correct: {
-      color: '#4CAF50',
-      fontWeight: 'bold',
+      color: "#4CAF50",
+      fontWeight: "bold",
     },
     incorrect: {
-      color: '#F44336',
-      fontWeight: 'bold',
+      color: "#F44336",
+      fontWeight: "bold",
     },
     questionNumber: {
       fontSize: 14,
-      fontWeight: '600',
+      fontWeight: "600",
       marginBottom: 8,
-      color: '#333',
+      color: "#333",
     },
     questionText: {
       fontSize: 16,
-      fontWeight: 'bold',
+      fontWeight: "bold",
       marginBottom: 20,
-      color: '#000',
+      color: "#000",
     },
     optionButton: {
       borderWidth: 1,
-      borderColor: '#ccc',
+      borderColor: "#ccc",
       borderRadius: 12,
       padding: 10,
       marginBottom: 10,
     },
     correctOption: {
-      backgroundColor: '#e6f4ea',
+      backgroundColor: "#e6f4ea",
       borderRadius: 12,
       padding: 10,
       marginBottom: 10,
       borderWidth: 1,
-      borderColor: '#4CAF50',
+      borderColor: "#4CAF50",
     },
     incorrectOption: {
-      backgroundColor: '#fbeaea',
+      backgroundColor: "#fbeaea",
       borderRadius: 12,
       padding: 10,
       marginBottom: 10,
       borderWidth: 1,
-      borderColor: '#F44336',
+      borderColor: "#F44336",
     },
     optionText: {
       fontSize: 14,
-      color: '#000',
+      color: "#000",
     },
     optionTextCorrect: {
       fontSize: 14,
-      color: '#4CAF50',
-      fontWeight: 'bold',
+      color: "#4CAF50",
+      fontWeight: "bold",
     },
     optionTextIncorrect: {
       fontSize: 14,
-      color: '#F44336',
-      fontWeight: 'bold',
+      color: "#F44336",
+      fontWeight: "bold",
     },
     sliderRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
+      flexDirection: "row",
+      alignItems: "center",
       marginVertical: 10,
     },
     sliderLabel: {
       width: 80,
       fontSize: 12,
-      fontWeight: 'bold',
-      color: '#666',
+      fontWeight: "bold",
+      color: "#666",
     },
     sliderTrack: {
       flex: 1,
       height: 6,
-      backgroundColor: '#e0e0e0',
+      backgroundColor: "#e0e0e0",
       borderRadius: 3,
       marginHorizontal: 8,
     },
     sliderFill: {
       height: 6,
-      backgroundColor: '#33c37e',
+      backgroundColor: "#33c37e",
       borderRadius: 3,
     },
     sliderValue: {
       fontSize: 12,
-      color: '#666',
+      color: "#666",
     },
     dotsRow: {
-      flexDirection: 'row',
-      justifyContent: 'center',
+      flexDirection: "row",
+      justifyContent: "center",
       marginVertical: 20,
-      flexWrap: 'wrap',
+      flexWrap: "wrap",
       gap: 8,
     },
     dot: {
@@ -974,21 +1094,21 @@ export default function QuizFlow() {
       margin: 4,
     },
     feedbackButton: {
-      backgroundColor: '#4864AC',
+      backgroundColor: "#4864AC",
       padding: 12,
       borderRadius: 20,
       marginTop: 20,
-      alignItems: 'center',
+      alignItems: "center",
     },
     feedbackButtonText: {
-      color: '#fff',
-      fontWeight: 'bold',
+      color: "#fff",
+      fontWeight: "bold",
       fontSize: 14,
     },
     footer: {
       marginTop: 30,
-      textAlign: 'center',
-      color: '#bbb',
+      textAlign: "center",
+      color: "#bbb",
       fontSize: 12,
     },
   });
