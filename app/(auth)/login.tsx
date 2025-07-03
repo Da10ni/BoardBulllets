@@ -193,7 +193,7 @@ const LoginScreen = () => {
 
           <View style={styles.copyright}>
             <Text style={styles.statement}>
-              COPYRIGHT (C) 2017 BOARDBULLETS,INC.
+              COPYRIGHT (C) 2017 B4 AI,INC.
             </Text>
             <Text style={styles.policy}>PRIVACY POLICY AND TERMS OF USE</Text>
           </View>

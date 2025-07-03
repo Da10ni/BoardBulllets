@@ -140,7 +140,7 @@ const SignupScreen = () => {
         {/* Form */}
         <View style={styles.formContainer}>
           <Text style={styles.title}>SIGN UP</Text>
-          <Text style={styles.subtitle}>TO CREATE A BOARDBULLETS ACCOUNT</Text>
+          <Text style={styles.subtitle}>TO CREATE A B4 AI ACCOUNT</Text>
 
           <View style={styles.inputContainer}>
             <Ionicons

@@ -79,7 +79,7 @@ const ReviewScreen = () => {
 
           {/* Question */}
           <Text style={styles.questionText}>
-            HOW WAS YOUR BOARDBULLETS EXPERIENCE?
+            HOW WAS YOUR B4 AI EXPERIENCE?
           </Text>
 
           {/* Star Rating */}

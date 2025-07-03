@@ -579,7 +579,7 @@ const VerificationScreen = () => {
           {/* Copyright Footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>
-              COPYRIGHT (C) 2017 BOARDBULLETS, INC.{"\n"}
+              COPYRIGHT (C) 2017 B4 AI, INC.{"\n"}
               PRIVACY POLICY | TERMS
             </Text>
           </View>
