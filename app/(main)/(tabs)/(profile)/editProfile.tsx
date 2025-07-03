@@ -19,7 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 const EditProfileScreen = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     firstName: "",
     lastName: "",
     DOB: "",
@@ -28,6 +28,7 @@ const EditProfileScreen = () => {
     residence: "",
     DOG: "", // Date of Graduation
     speciality: "",
+    profilePic: "",
   });
 
   const { userId } = useLocalSearchParams();
@@ -45,6 +46,13 @@ const EditProfileScreen = () => {
   const [dogDate, setDogDate] = useState(new Date());
 
   const genderOptions = ["male", "female"];
+
+  // ✅ Date validation helper functions
+  const getCurrentYear = () => new Date().getFullYear();
+  const getLastYearDate = () => {
+    const lastYear = getCurrentYear() - 1;
+    return new Date(lastYear, 11, 31); // December 31st of last year
+  };
 
   // ✅ Load existing user data with auto-refresh on focus
   useFocusEffect(
@@ -68,6 +76,7 @@ const EditProfileScreen = () => {
                 residence: user.profile?.residence || "",
                 DOG: user.profile?.DOG || "",
                 speciality: user.profile?.speciality || "",
+                profilePic: user?.profile?.profilePic || "",
               });
 
               // Set dates for picker if available
@@ -91,7 +100,7 @@ const EditProfileScreen = () => {
   );
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({
+    setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));
@@ -102,7 +111,7 @@ const EditProfileScreen = () => {
     setShowGenderPicker(false);
   };
 
-  // ✅ Date picker handlers
+  // ✅ Date picker handlers with validation
   const formatDate = (date: Date): string => {
     return date.toISOString().split("T")[0]; // Returns YYYY-MM-DD format
   };
@@ -113,6 +122,18 @@ const EditProfileScreen = () => {
     }
 
     if (selectedDate) {
+      const selectedYear = selectedDate.getFullYear();
+      const currentYear = getCurrentYear();
+      
+      // ✅ Validation: DOB cannot be current year or future
+      if (selectedYear >= currentYear) {
+        Alert.alert(
+          "Invalid Date", 
+          `Date of Birth cannot be from ${currentYear} or future years. Please select a date from ${currentYear - 1} or earlier.`
+        );
+        return;
+      }
+
       setDobDate(selectedDate);
       const formattedDate = formatDate(selectedDate);
       handleInputChange("DOB", formattedDate);
@@ -125,6 +146,18 @@ const EditProfileScreen = () => {
     }
 
     if (selectedDate) {
+      const selectedYear = selectedDate.getFullYear();
+      const currentYear = getCurrentYear();
+      
+      // ✅ Validation: DOG cannot be current year or future
+      if (selectedYear >= currentYear) {
+        Alert.alert(
+          "Invalid Date", 
+          `Date of Graduation cannot be from ${currentYear} or future years. Please select a date from ${currentYear - 1} or earlier.`
+        );
+        return;
+      }
+
       setDogDate(selectedDate);
       const formattedDate = formatDate(selectedDate);
       handleInputChange("DOG", formattedDate);
@@ -172,7 +205,7 @@ const EditProfileScreen = () => {
     }
   };
 
-  // ✅ Update profile function - FIXED FormData
+  // ✅ Update profile function
   const handleUpdate = async () => {
     try {
       // Basic validation
@@ -187,6 +220,25 @@ const EditProfileScreen = () => {
           "Please fill in all required fields (First Name, Last Name, Date of Birth, Gender)"
         );
         return;
+      }
+
+      // ✅ Additional date validation before submission
+      if (formData.DOB) {
+        const dobYear = new Date(formData.DOB).getFullYear();
+        const currentYear = getCurrentYear();
+        if (dobYear >= currentYear) {
+          Alert.alert("Error", "Date of Birth must be from previous years only.");
+          return;
+        }
+      }
+
+      if (formData.DOG) {
+        const dogYear = new Date(formData.DOG).getFullYear();
+        const currentYear = getCurrentYear();
+        if (dogYear >= currentYear) {
+          Alert.alert("Error", "Date of Graduation must be from previous years only.");
+          return;
+        }
       }
 
       setLoading(true);
@@ -212,7 +264,7 @@ const EditProfileScreen = () => {
 
       console.log("📸 Profile image data:", profileImage);
 
-      // ✅ FIXED: Add profile image with proper file structure for backend
+      // ✅ Add profile image with proper file structure for backend
       if (profileImage) {
         const fileExtension = profileImage.uri.split(".").pop() || "jpg";
         const fileName = `profile_${Date.now()}.${fileExtension}`;
@@ -277,12 +329,16 @@ const EditProfileScreen = () => {
         {/* Edit Profile Title */}
         <Text style={styles.pageTitle}>EDIT PROFILE</Text>
 
-        {/* ✅ FIXED: Upload Photo Section with proper styling */}
+        {/* ✅ FIXED: Upload Photo Section - Shows existing profile pic or new selection */}
         <View style={styles.uploadSection}>
           <TouchableOpacity style={styles.uploadButton} onPress={handleUpload}>
-            {profileImage ? (
+            {(formData.profilePic || profileImage) ? (
               <Image
-                source={{ uri: profileImage.uri }}
+                source={
+                  profileImage 
+                    ? { uri: profileImage.uri } 
+                    : { uri: formData.profilePic }
+                }
                 style={styles.profileImage}
                 resizeMode="cover"
               />
@@ -294,11 +350,15 @@ const EditProfileScreen = () => {
             )}
           </TouchableOpacity>
 
-          {profileImage && (
+          {(formData.profilePic || profileImage) && (
             <View style={styles.imageInfoContainer}>
-              <Text style={styles.imageSelectedText}>✓ Photo Selected</Text>
+              <Text style={styles.imageSelectedText}>
+                {profileImage ? "✓ New Photo Selected" : "✓ Current Profile Photo"}
+              </Text>
               <TouchableOpacity onPress={() => setProfileImage(null)}>
-                <Text style={styles.removeImageText}>Remove</Text>
+                <Text style={styles.removeImageText}>
+                  {profileImage ? "Remove New" : "Change Photo"}
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -346,14 +406,14 @@ const EditProfileScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Date of Birth Picker */}
+          {/* Date of Birth Picker - ✅ Updated with validation */}
           {showDOBPicker && (
             <DateTimePicker
               value={dobDate}
               mode="date"
               display={Platform.OS === "ios" ? "spinner" : "default"}
               onChange={onDOBChange}
-              maximumDate={new Date()} // Can't select future dates
+              maximumDate={getLastYearDate()} // ✅ Can only select up to last year
               minimumDate={new Date(1900, 0, 1)} // Reasonable minimum date
             />
           )}
@@ -448,14 +508,14 @@ const EditProfileScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Date of Graduation Picker */}
+          {/* Date of Graduation Picker - ✅ Updated with validation */}
           {showDOGPicker && (
             <DateTimePicker
               value={dogDate}
               mode="date"
               display={Platform.OS === "ios" ? "spinner" : "default"}
               onChange={onDOGChange}
-              maximumDate={new Date(2050, 11, 31)} // Future graduation dates allowed
+              maximumDate={getLastYearDate()} // ✅ Can only select up to last year
               minimumDate={new Date(1950, 0, 1)}
             />
           )}
@@ -483,8 +543,11 @@ const EditProfileScreen = () => {
           </View>
         </View>
 
-        {/* Required Fields Note */}
-        <Text style={styles.noteText}>* Required fields</Text>
+        {/* Required Fields Note - ✅ Updated with date restriction info */}
+        <Text style={styles.noteText}>
+          * Required fields{"\n"}
+          Note: Dates must be from previous years only
+        </Text>
 
         {/* Update Button */}
         <TouchableOpacity
@@ -535,7 +598,7 @@ const styles = StyleSheet.create({
     borderStyle: "dashed",
     overflow: "hidden", // ✅ Important for circular image
   },
-  // ✅ NEW: Profile image styling
+  // ✅ Profile image styling
   profileImage: {
     width: "100%",
     height: "100%",
@@ -549,7 +612,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 5,
   },
-  // ✅ NEW: Image info container
+  // ✅ Image info container
   imageInfoContainer: {
     alignItems: "center",
     marginTop: 10,
@@ -560,7 +623,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginBottom: 5,
   },
-  // ✅ NEW: Remove image button
+  // ✅ Remove image button
   removeImageText: {
     fontSize: 11,
     color: "#DC3545",
