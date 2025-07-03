@@ -19,18 +19,33 @@ export const styles = StyleSheet.create({
   homeLabel: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#666",
+    color: "#4864AC",
     letterSpacing: 1,
   },
 
-  // Progress and stats combined section
+  // Combined Progress and Stats Section
   progressAndStatsSection: {
     paddingVertical: 30,
     paddingHorizontal: 20,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     minHeight: 220,
+  },
+
+  // Left side - Progress Circle
+  leftProgressSection: {
+    flex: 1,
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+
+  // Right side - Stats Column
+  rightStatsSection: {
+    flex: 1,
+    alignItems: "flex-end",
+    justifyContent: "center",
+    paddingLeft: 20,
   },
 
   // Main circular progress
@@ -50,7 +65,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   mainCircleNumber: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: "bold",
     color: "#333",
     textAlign: "center",
@@ -62,7 +77,41 @@ export const styles = StyleSheet.create({
     letterSpacing: 1,
   },
 
-  // Stats container - FIXED: Added missing statsRow
+  // New center stats styles for the main circle
+  centerStatsContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 5,
+  },
+  centerStatItem: {
+    alignItems: "center",
+    marginVertical: 2,
+  },
+  centerStatNumber: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  centerStatPercentage: {
+    fontSize: 12,
+    fontWeight: "500",
+    textAlign: "center",
+  },
+  centerDivider: {
+    width: 20,
+    height: 1,
+    backgroundColor: "#ddd",
+    marginVertical: 3,
+  },
+  centerLabel: {
+    fontSize: 10,
+    color: "#666",
+    textAlign: "center",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+  },
+
+  // Stats container - Original styles (kept for compatibility)
   statsContainer: {
     justifyContent: "center",
     paddingHorizontal: 20,
@@ -78,18 +127,30 @@ export const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 15,
   },
+
+  // New column stats styles
+  statItemColumn: {
+    alignItems: "flex-end",
+    marginBottom: 20,
+  },
   statValue: {
-    fontSize: 14,
-    fontWeight: "600",
+    fontSize: 18,
+    fontWeight: "bold",
     marginBottom: 2,
   },
-  statLabel: {
+  statPercentage: {
+    fontSize: 14,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+   statLabel: {
     fontSize: 10,
     color: "#666",
-    textAlign: "left",
+    marginRight:  "auto",
     textTransform: "uppercase",
-    letterSpacing: 0.5,
+    letterSpacing: 1,
     lineHeight: 12,
+    maxWidth: 100,
   },
   correctStat: {
     color: "#4ECDC4",
@@ -105,12 +166,12 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
     marginVertical: 20,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: "white",
     borderRadius: 25,
   },
   viewMoreText: {
     fontSize: 12,
-    color: "#666",
+    color: "#4864AC",
     fontWeight: "500",
     letterSpacing: 0.5,
   },
