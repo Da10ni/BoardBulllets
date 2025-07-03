@@ -47,10 +47,7 @@ function CustomDrawerHeader({ title, more }) {
           <Ionicons name="menu" size={24} color="#4864AC" />
         </TouchableOpacity>
 
-        <View style={headerStyles.titleContainer}>
-          <Text style={headerStyles.titleBold}>B4</Text>
-          <Text style={headerStyles.titleLight}>AI</Text>
-        </View>
+        <Text style={headerStyles.title}>{title}</Text>
 
         <TouchableOpacity
           onPress={handleMorePress}
@@ -88,25 +85,14 @@ const headerStyles = StyleSheet.create({
     marginLeft: 8,
     padding: 4,
   },
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-    justifyContent: "center",
-    marginRight: 14,
-  },
-  titleBold: {
+  title: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#4864AC",
     letterSpacing: 0.5,
-  },
-  titleLight: {
-    fontSize: 18,
-    fontWeight: "300",
-    color: "#4864AC",
-    letterSpacing: 0.5,
-    marginLeft: 4,
+    marginRight: 14,
+    flex: 1,
+    textAlign: "center",
   },
   moreButton: {
     padding: 4,
@@ -174,10 +160,7 @@ function CustomDrawerContent(props) {
 
         {/* Bottom Branding */}
         <View style={drawerStyles.brandingSection}>
-          <View style={drawerStyles.brandingContainer}>
-            <Text style={drawerStyles.brandingTextBold}>B4</Text>
-            <Text style={drawerStyles.brandingTextLight}>AI</Text>
-          </View>
+          <Text style={drawerStyles.brandingText}>B4AI</Text>
         </View>
 
         {/* Side indicator dots */}
@@ -269,22 +252,11 @@ const drawerStyles = StyleSheet.create({
     paddingVertical: 30,
     alignItems: "center",
   },
-  brandingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  brandingTextBold: {
+  brandingText: {
     color: "#ffffff",
     fontSize: 20,
     fontWeight: "bold",
     letterSpacing: 1,
-  },
-  brandingTextLight: {
-    color: "#ffffff",
-    fontSize: 20,
-    fontWeight: "300",
-    letterSpacing: 1,
-    marginLeft: 4,
   },
   sideIndicators: {
     position: "absolute",

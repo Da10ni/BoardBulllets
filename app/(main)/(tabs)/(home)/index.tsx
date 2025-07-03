@@ -94,7 +94,7 @@ const HomeScreen: React.FC = () => {
 
   // Circular Progress Component Logic
   const renderMainCircularProgress = () => {
-    const size = 160;
+    const size = 180;
     const strokeWidth = 12;
     const radius = (size - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
@@ -222,23 +222,21 @@ const HomeScreen: React.FC = () => {
             <Text style={styles.homeLabel}>HOME</Text>
           </View>
 
-          {/* Main Progress and Stats Combined Section */}
-          <View style={styles.progressAndStatsSection}>
-            {/* Left side - Main Progress Circle */}
-            <View style={styles.leftProgressSection}>
-              {renderMainCircularProgress()}
-            </View>
+          {/* Main Progress Circle */}
+          <View style={styles.progressSection}>
+            {renderMainCircularProgress()}
+          </View>
 
-            {/* Right side - Stats Column */}
-            <View style={styles.rightStatsSection}>
-              <View style={styles.statItemColumn}>
+          {/* Stats Row */}
+          <View style={styles.statsContainer}>
+            <View style={styles.statsRow}>
+              <View style={styles.statItem}>
                 <Text style={[styles.statValue, styles.correctStat]}>
                   {stats.correct}({correctPercentage}%)
                 </Text>
                 <Text style={styles.statLabel}>CORRECT QUESTIONS</Text>
               </View>
-              
-              <View style={styles.statItemColumn}>
+              <View style={styles.statItem}>
                 <Text style={[styles.statValue, styles.incorrectStat]}>
                   {stats.incorrect}({incorrectPercentage}%)
                 </Text>

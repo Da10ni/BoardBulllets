@@ -36,10 +36,10 @@ export default function TabsLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color, focused }) => (
-            <IconSymbol 
-              size={28} 
-              name="house.fill" 
-              color={focused ? "#4864AC" : "#4864AC"} // Using the same colors
+            <IconSymbol
+              size={28}
+              name="house.fill"
+              color={focused ? "#4864AC" : "#B0B0B0"} // Using the same colors
             />
           ),
         }}
@@ -49,10 +49,10 @@ export default function TabsLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color, focused }) => (
-            <FontAwesome 
-              size={28} 
-              name="user-o" 
-              color={focused ? "#4864AC" : "#4864AC"} // Using the same colors
+            <FontAwesome
+              size={28}
+              name="user-o"
+              color={focused ? "#4864AC" : "#B0B0B0"} // Using the same colors
             />
           ),
         }}
@@ -62,10 +62,10 @@ export default function TabsLayout() {
         options={{
           title: "Pricing",
           tabBarIcon: ({ color, focused }) => (
-            <AntDesign 
-              name="shoppingcart" 
-              size={28} 
-              color={focused ? "#4864AC" : "#4864AC"} // Using the same colors
+            <AntDesign
+              name="shoppingcart"
+              size={28}
+              color={focused ? "#4864AC" : "#B0B0B0"} // Using the same colors
             />
           ),
         }}

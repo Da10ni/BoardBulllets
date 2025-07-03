@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   editIcon: {
-    color: "#666",
+    color: "#000",
   },
   nameSection: {
     flex: 1,
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#4864AC",
+    color: "#333",
     marginBottom: 5,
     letterSpacing: 0.5,
   },

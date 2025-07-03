@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     fontSize: 16,
-    color: "#4864AC",
+    color: "#999",
     textAlign: "center",
     marginVertical: 25,
     letterSpacing: 1,

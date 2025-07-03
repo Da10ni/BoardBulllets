@@ -1,4 +1,4 @@
-import { FontAwesome6, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -29,23 +29,23 @@ const SubscriptionScreen = () => {
         {/* Feature Icons Row */}
         <View style={styles.iconRow}>
           <View style={styles.iconItem}>
-            <FontAwesome6 name="tablet-screen-button" size={32} color="#4864AC" />
+            <Ionicons name="desktop-outline" size={32} color="#4864AC" />
           </View>
           <View style={styles.iconItem}>
             <Ionicons name="bar-chart-outline" size={32} color="#4864AC" />
           </View>
           <View style={styles.iconItem}>
-            <Ionicons name="ribbon-outline" size={32} color="#4864AC" />
+            <Ionicons name="notifications-outline" size={32} color="#4864AC" />
           </View>
           <View style={styles.iconItem}>
-  <Ionicons name="trophy" size={32} color="#2E4A72" />
-</View>
+            <Ionicons name="trophy-outline" size={32} color="#4864AC" />
+          </View>
         </View>
 
         {/* Upgrade Message */}
         <Text style={styles.upgradeTitle}>UPGRADE TO BB PREMIUM</Text>
         <Text style={styles.upgradeSubtitle}>
-          GET FULL-ACCESS TO PERFORMANCE ANALYTICS, ENTIRE QUESTION DATABASE &
+          GET FULL ACCESS TO PERFORMANCE ANALYTICS, ENTIRE QUESTION DATABASE &
           ADDITIONAL FEATURES
         </Text>
 
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 24,
     fontWeight: "300",
-    color: "#4864AC",
+    color: "#333",
     marginTop: 20,
     marginBottom: 30,
     textAlign: "center",
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   upgradeTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: "#4864AC",
+    color: "#333",
     textAlign: "center",
     marginBottom: 15,
     letterSpacing: 0.5,
