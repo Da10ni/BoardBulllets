@@ -78,7 +78,6 @@ export default function QuizFlow() {
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [quizStarted, setQuizStarted] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
   const [reviewQuestionIndex, setReviewQuestionIndex] = useState(0); // For feedback screen
   const [modalVisible, setModalVisible] = useState(false);
   const [feedbackModalVisible, setFeedbackModalVisible] = useState(false); // New state for feedback modal
@@ -123,13 +122,7 @@ export default function QuizFlow() {
   };
   const handleFeedbackClick = () => {
     setFeedbackModalVisible(true);
-  };
-  const handleFeedbackSubmit = (feedbackData) => {
-    console.log('Feedback Data:', feedbackData);
-    // Yahan tumhara API call hoga feedback submit karne ke liye
-    // API call example:
-    // submitFeedbackToAPI(feedbackData);
-  };  
+  }; 
 
   const handleAnswerSelect = (answerIndex: number) => {
     setSelectedAnswer(answerIndex);
