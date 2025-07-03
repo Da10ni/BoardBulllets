@@ -110,13 +110,7 @@ interface AddQuestionResponse extends ApiResponse {
 interface GetQuestionsResponse extends ApiResponse {
   count?: number;
   data?: QuizQuestion[];
-}
-
-interface GetCategoriesResponse extends ApiResponse {
-  data?: {
-    categories: string[];
-    subCategories: string[];
-  };
+  question?: QuizQuestion[]; // For getQuestion API response
 }
 
 const BASE_URL: string = `${process.env.EXPO_PUBLIC_API_URL}`;
@@ -276,42 +270,9 @@ export const quizAPI = {
   ): Promise<AxiosResponse<GetQuestionsResponse>> =>
     api.get(`/quiz/user/${userId}`),
 
-  // Get single question by ID
-  getQuestionById: (
-    questionId: string
-  ): Promise<AxiosResponse<ApiResponse<QuizQuestion>>> =>
-    api.get(`/quiz/question/${questionId}`),
-
-  // Get questions by category
-  getQuestionsByCategory: (
-    userId: string,
-    category: string
-  ): Promise<AxiosResponse<GetQuestionsResponse>> =>
-    api.get(`/quiz/user/${userId}/category/${category}`),
-
-  // Get random quiz questions (without correct answers)
-  getRandomQuiz: (
-    userId: string,
-    limit: number = 10
-  ): Promise<AxiosResponse<GetQuestionsResponse>> =>
-    api.get(`/quiz/random?userId=${userId}&limit=${limit}`),
-
-  // Get all categories for a user
-  getCategories: (
-    userId: string
-  ): Promise<AxiosResponse<GetCategoriesResponse>> =>
-    api.get(`/quiz/categories/${userId}`),
-
-  // Delete a question
-  deleteQuestion: (questionId: string): Promise<AxiosResponse<ApiResponse>> =>
-    api.delete(`/quiz/question/${questionId}`),
-
-  // Update a question
-  updateQuestion: (
-    questionId: string,
-    updateData: Partial<QuizQuestion>
-  ): Promise<AxiosResponse<ApiResponse<QuizQuestion>>> =>
-    api.put(`/quiz/question/${questionId}`, updateData),
+  // ✅ NEW: Get questions from other users (not created by current user)
+  getQuestion: (): Promise<AxiosResponse<GetQuestionsResponse>> =>
+    api.get("/quiz/get-question"),
 };
 
 // Generic API methods with types
@@ -532,101 +493,15 @@ export const useQuiz = () => {
     }
   };
 
-  const handleGetQuestionById = async (questionId: string) => {
+  // ✅ NEW: Handle getQuestion API call
+  const handleGetQuestion = async () => {
     try {
-      const response = await quizAPI.getQuestionById(questionId);
+      const response = await quizAPI.getQuestion();
       if (response.data.success) {
         return {
           success: true,
           message: response.data.message,
-          data: response.data.data,
-        };
-      }
-    } catch (error) {
-      const errorMessage = handleApiError(error as AxiosError);
-      return { success: false, message: errorMessage };
-    }
-  };
-
-  const handleGetQuestionsByCategory = async (
-    userId: string,
-    category: string
-  ) => {
-    try {
-      const response = await quizAPI.getQuestionsByCategory(userId, category);
-      if (response.data.success) {
-        return {
-          success: true,
-          message: response.data.message,
-          count: response.data.count,
-          data: response.data.data,
-        };
-      }
-    } catch (error) {
-      const errorMessage = handleApiError(error as AxiosError);
-      return { success: false, message: errorMessage };
-    }
-  };
-
-  const handleGetRandomQuiz = async (userId: string, limit: number = 10) => {
-    try {
-      const response = await quizAPI.getRandomQuiz(userId, limit);
-      if (response.data.success) {
-        return {
-          success: true,
-          message: response.data.message,
-          count: response.data.count,
-          data: response.data.data,
-        };
-      }
-    } catch (error) {
-      const errorMessage = handleApiError(error as AxiosError);
-      return { success: false, message: errorMessage };
-    }
-  };
-
-  const handleGetCategories = async (userId: string) => {
-    try {
-      const response = await quizAPI.getCategories(userId);
-      if (response.data.success) {
-        return {
-          success: true,
-          message: response.data.message,
-          data: response.data.data,
-        };
-      }
-    } catch (error) {
-      const errorMessage = handleApiError(error as AxiosError);
-      return { success: false, message: errorMessage };
-    }
-  };
-
-  const handleDeleteQuestion = async (questionId: string) => {
-    try {
-      const response = await quizAPI.deleteQuestion(questionId);
-      if (response.data.success) {
-        return {
-          success: true,
-          message: response.data.message,
-        };
-      }
-    } catch (error) {
-      const errorMessage = handleApiError(error as AxiosError);
-      return { success: false, message: errorMessage };
-    }
-  };
-
-  const handleUpdateQuestion = async (
-    questionId: string,
-    updateData: Partial<QuizQuestion>
-  ) => {
-    try {
-      const response = await quizAPI.updateQuestion(questionId, updateData);
-      if (response.data.success) {
-        return {
-          success: true,
-          message: response.data.message,
-          data: response.data.data,
+          question: response.data.question, // Backend returns 'question' field
         };
       }
     } catch (error) {
@@ -639,12 +514,7 @@ export const useQuiz = () => {
     addQuestion: handleAddQuestion,
     addCategory: handleAddCategory,
     getUserQuestions: handleGetUserQuestions,
-    getQuestionById: handleGetQuestionById,
-    getQuestionsByCategory: handleGetQuestionsByCategory,
-    getRandomQuiz: handleGetRandomQuiz,
-    getCategories: handleGetCategories,
-    deleteQuestion: handleDeleteQuestion,
-    updateQuestion: handleUpdateQuestion,
+    getQuestion: handleGetQuestion, // ✅ NEW function
   };
 };
 
@@ -664,7 +534,6 @@ export type {
   AddCategoryData,
   AddQuestionResponse,
   GetQuestionsResponse,
-  GetCategoriesResponse,
   AxiosError,
   AxiosResponse,
 };
